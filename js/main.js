@@ -65,10 +65,34 @@ const invFinalAccount = invoice.querySelector('.invoice__final-payment__account'
 const genBtn = document.querySelector('.btn--gen-inv');
 
 
+const itemNameInp = document.querySelector('.item__name');
+const itemUnitInp = document.querySelector('.item__unit');
+const itemQuantInp = document.querySelector('.item__quantity');
+const itemPrice = document.querySelector('.item__price');
+const itemNetVal = document.querySelector('.item__net-value');
+const itemTaxRate = document.querySelector('.item__tax-rate');
+const itemTotVal = document.querySelector('.item__total-value');
+const addBtn = document.querySelector('.btn--add-item');
+
+
 
 // generate invoice event listener
 
 genBtn.addEventListener('click', generateInvoice);
+addBtn.addEventListener('click', addItem);
+
+
+// function addItem() {
+//   const item
+//   itemNameInp.value
+//   itemUnitInp.value
+//   itemQuantInp.value
+//   itemPrice.value
+//   itemNetVal.value
+//   itemTaxRate.value
+//   itemTotVal.value
+
+// }
 
 
 function generateInvoice() {

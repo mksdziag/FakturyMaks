@@ -122,7 +122,7 @@
       <fieldset class="fieldset invoice-items">
         <p class="fieldset__name">Pozycje do dodania na fakturę:</p>
         <ul class="items-list">
-          <li class="item">
+          <div class="item">
             <input placeholder="nazwa towaru" type="text" id="item__name" class="input item__name">
             <input placeholder="jednosta miary" type="text" id="item__unit" class="input item__unit">
             <input placeholder="ilość" type="number" name="item__quantity" id="item__quantity" class="input item__quantity">
@@ -137,8 +137,8 @@
             </select>
             <input placeholder="wartość VAT" type="text" id="item__tax-value" class="input item__tax-value" disabled>
             <input placeholder="cena brutto" type="text" id="item__total-value" class="input item__total-value" disabled>
-
-          </li>
+            <button class="btn btn--add-item">Dodaj</button>
+          </div>
 
 
         </ul>
