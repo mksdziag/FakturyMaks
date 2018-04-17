@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>FakturyMaks</title>
+
+  <!-- styleshets -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+  <div class="main__header">
+    <div class="wrapper">
+      <h1 class="page__title">FakturyMaks</h1>
+    </div>
+  </div>
+  <main class="wrapper">
+    <section class="document__data">
+      <fieldset class="data-input">
+        <form class="data__document-details">
+          <label class="label" for="document-type">Wystawiany document</label>
+          <select name="document-type" id="document-type" class="select data__doc-type">
+            <option value="faktura">Faktura VAT</option>
+            <option value="pro-forma">Faktura pro-forma</option>
+          </select>
+          <label class="label" for="document-number">Numet dokumentu</label>
+          <input type="text" name="document-number" id="document-number" class="input data__doc-number">
+          <label class="label" for="document-place">Miejsce wystawienia dokumentu</label>
+          <input type="text" name="document-place" id="document-place" class="input data__doc-place">
+          <label class="label" for="data-wystawienia">Data wystawiania dokumentu</label>
+          <input type="date" name="data-wystawienia" id="data-wystawienia" class="input data__doc-date">
+          <label class="label" for="data-sprzedaży">Data sprzedaży</label>
+          <input type="date" name="data-sprzedaży" id="data-sprzedaży" class="input data__doc-sell-date">
+
+          <fieldset class="data__seller">
+            <label class="label" for="data__seller-name">Nazwa</label>
+            <input type="text" id="data__seller-name" class="input data__seller-name">
+            <label class="label" for="data__seller-street">Ulica</label>
+            <input type="text" id="data__seller-street" class="input data__seller-street">
+            <label class="label" for="data__seller-city">Miejscowość</label>
+            <input type="text" id="data__seller-city" class="input data__seller-city">
+            <label class="label" for="data__seller-post-code">Kod pocztowy</label>
+            <input type="text" id="data__seller-post-code" class="input data__seller-post-code">
+            <label class="label" for="data__seller-nip">NIP</label>
+            <input type="text" id="data__seller-nip" class="input data__seller-nip">
+          </fieldset>
+
+          <fieldset class="data__buyer">
+            <label class="label" for="data__buyer-name">Nazwa</label>
+            <input type="text" id="data__buyer-name" class="input data__buyer-name">
+            <label class="label" for="data__buyer-street">Ulica</label>
+            <input type="text" id="data__buyer-street" class="input data__buyer-street">
+            <label class="label" for="data__buyer-city">Miejscowość</label>
+            <input type="text" id="data__buyer-city" class="input data__buyer-city">
+            <label class="label" for="data__buyer-post-code">Kod pocztowy</label>
+            <input type="text" id="data__buyer-post-code" class="input data__buyer-post-code">
+            <label class="label" for="data__buyer-nip">NIP</label>
+            <input type="text" id="data__buyer-nip" class="input data__buyer-nip">
+          </fieldset>
+
+
+          <fieldset class="payment">
+            <select name="payment__method" id="payment__method" class="select payment__method">
+              <option value="przelew">przelew</option>
+              <option value="gotówka">gotówka</option>
+              <option value="pobranie">pobranie</option>
+              <option value="czek">czek</option>
+            </select>
+            <label class="label" for="payment__term">Termin płatności</label>
+            <input type="date" name="payment__term" id="payment__term" class="input payment__term">
+            <label class="label" for="payment__account">Konto</label>
+            <input type="text" name="payment__account" id="payment__account" class="input payment__account">
+          </fieldset>
+        </form>
+      </fieldset>
+    </section>
+
+
+  </main>
+</body>
+
+</html>

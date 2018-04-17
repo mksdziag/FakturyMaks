@@ -1,0 +1,14 @@
+//centered flex
+@mixin column($text-align:center) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: $text-align;
+}
+
+@mixin row($text-align:center) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: $text-align;
+}

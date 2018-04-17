@@ -1,0 +1,41 @@
+//////////////////////////////////////
+////////   Buttons 
+/////////////////////////////////////
+.btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  font-size: 1.75rem;
+  transition: 150ms;
+  &--primary {
+    &:hover {}
+  }
+  &--secondary {
+    &:hover {}
+  }
+  &--circle {
+    padding: .5rem 1rem;
+    border-radius: 50%;
+    &:hover {}
+  }
+}
+
+// inputs
+.input {
+  display: inline-block;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  margin: .25rem;
+  border-radius: 3px;
+  border: 1px solid rgb(212, 212, 212);
+}
+
+.select {
+  display: inline-block;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  margin: .25rem;
+  background-color: white;
+  border-radius: 3px;
+  border: 1px solid rgb(212, 212, 212);
+}

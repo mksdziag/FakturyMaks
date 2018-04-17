@@ -1,0 +1,23 @@
+// ----- Responsive -----
+@mixin respond($breakpoint) {
+  @if $breakpoint==phone {
+    @media screen and (max-width: 576px) {
+      @content
+    }
+  }
+  @if $breakpoint==tablet {
+    @media screen and (max-width: 768px) {
+      @content
+    }
+  }
+  @if $breakpoint==tablet-land {
+    @media screen and (max-width: 992px) {
+      @content
+    }
+  }
+  @if $breakpoint==desktop {
+    @media screen and (max-width: 1200px) {
+      @content
+    }
+  }
+}

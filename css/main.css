@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css?family=Dosis:400,700|Fira+Sans:400,700|PT+Serif:400,700&subset=latin-ext");
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+img {
+  display: inline-block;
+  width: 100%;
+}
+
+.wrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.m-auto {
+  margin: 0 auto;
+}
+
+.w {
+  display: inline-block;
+}
+
+.w50 {
+  width: 50%;
+}
+
+.w66 {
+  width: 66.666666%;
+}
+
+.w75 {
+  width: 75%;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Fira Sans", sans-serif;
+  line-height: 1.25;
+}
+
+.btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  font-size: 1.75rem;
+  transition: 150ms;
+}
+
+.btn--circle {
+  padding: .5rem 1rem;
+  border-radius: 50%;
+}
+
+.input {
+  display: inline-block;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  margin: .25rem;
+  border-radius: 3px;
+  border: 1px solid #d4d4d4;
+}
+
+.select {
+  display: inline-block;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  margin: .25rem;
+  background-color: white;
+  border-radius: 3px;
+  border: 1px solid #d4d4d4;
+}
+/*# sourceMappingURL=main.css.map */
