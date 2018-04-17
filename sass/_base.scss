@@ -1,0 +1,83 @@
+*:focus {
+  outline: none;
+  box-shadow: 0 .25rem .25rem -.1rem rgba(0, 0, 0, 0.25);
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $color2;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.20);
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invoice {
+  padding: 5rem 1rem;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.20);
+  border: 1px solid $color2;
+  &__heading {
+    position: relative;
+    padding: 3rem 0 6rem;
+  }
+  &__title {
+    text-align: center;
+    font-size: 2.25rem;
+  }
+  &__details {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    text-align: right;
+  }
+  &__sides {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__side-title {
+    font-weight: 400;
+    position: absolute;
+    top: -1rem;
+    right: 1rem;
+    padding: .5rem 1rem;
+    display: inline-block;
+    background-color: white;
+  }
+  &__seller,
+  &__buyer {
+    position: relative;
+    border: 1px solid $color2;
+    padding: 2rem;
+    width: 40%;
+    max-width: 500px;
+    font-weight: 700;
+    &-name {
+      line-height: 1.5;
+    }
+    &-street {
+      line-height: 1.5;
+    }
+    &-city {
+      line-height: 1.5;
+    }
+    &-nip {
+      line-height: 1.5;
+    }
+  }
+  &__positions {
+    margin: 3rem 0;
+  }
+  &__item {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+}

@@ -25,10 +25,12 @@ img {
   width: 100%;
 }
 
+/* RGB */
 .wrapper {
   margin: 0 auto;
   width: 100%;
   max-width: 1200px;
+  padding: 0 1rem;
 }
 
 .m-auto {
@@ -57,6 +59,7 @@ html {
 
 body {
   font-family: "Fira Sans", sans-serif;
+  color: #565656;
   line-height: 1.25;
 }
 
@@ -79,7 +82,15 @@ body {
   font-size: 1.25rem;
   margin: .25rem;
   border-radius: 3px;
-  border: 1px solid #d4d4d4;
+  border: none;
+  background-color: #fafafa;
+  border-bottom: 1px solid #d4d4d4;
+  flex: 1;
+  transition: all 150ms ease-out;
+}
+
+.input:focus {
+  border-bottom: 1px solid #ef6f6c;
 }
 
 .select {
@@ -90,5 +101,114 @@ body {
   background-color: white;
   border-radius: 3px;
   border: 1px solid #d4d4d4;
+  flex: 1;
+  border: none;
+  background-color: #fafafa;
+  border-bottom: 1px solid #d4d4d4;
+  transition: all 150ms ease-out;
+}
+
+.select:focus {
+  border-bottom: 1px solid #ef6f6c;
+}
+
+.label {
+  font-size: 1.25rem;
+  flex: 1;
+}
+
+*:focus {
+  outline: none;
+  box-shadow: 0 0.25rem 0.25rem -0.1rem rgba(0, 0, 0, 0.25);
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invoice {
+  padding: 5rem 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  border: 1px solid #e4e4e4;
+}
+
+.invoice__heading {
+  position: relative;
+  padding: 3rem 0 6rem;
+}
+
+.invoice__title {
+  text-align: center;
+  font-size: 2.25rem;
+}
+
+.invoice__details {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  text-align: right;
+}
+
+.invoice__sides {
+  display: flex;
+  justify-content: space-between;
+}
+
+.invoice__side-title {
+  font-weight: 400;
+  position: absolute;
+  top: -1rem;
+  right: 1rem;
+  padding: .5rem 1rem;
+  display: inline-block;
+  background-color: white;
+}
+
+.invoice__seller, .invoice__buyer {
+  position: relative;
+  border: 1px solid #e4e4e4;
+  padding: 2rem;
+  width: 40%;
+  max-width: 500px;
+  font-weight: 700;
+}
+
+.invoice__seller-name, .invoice__buyer-name {
+  line-height: 1.5;
+}
+
+.invoice__seller-street, .invoice__buyer-street {
+  line-height: 1.5;
+}
+
+.invoice__seller-city, .invoice__buyer-city {
+  line-height: 1.5;
+}
+
+.invoice__seller-nip, .invoice__buyer-nip {
+  line-height: 1.5;
+}
+
+.invoice__positions {
+  margin: 3rem 0;
+}
+
+.invoice__item {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 /*# sourceMappingURL=main.css.map */

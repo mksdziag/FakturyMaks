@@ -19,65 +19,195 @@
   </div>
   <main class="wrapper">
     <section class="document__data">
-      <fieldset class="data-input">
-        <form class="data__document-details">
-          <label class="label" for="document-type">Wystawiany document</label>
-          <select name="document-type" id="document-type" class="select data__doc-type">
-            <option value="faktura">Faktura VAT</option>
-            <option value="pro-forma">Faktura pro-forma</option>
-          </select>
-          <label class="label" for="document-number">Numet dokumentu</label>
-          <input type="text" name="document-number" id="document-number" class="input data__doc-number">
-          <label class="label" for="document-place">Miejsce wystawienia dokumentu</label>
-          <input type="text" name="document-place" id="document-place" class="input data__doc-place">
-          <label class="label" for="data-wystawienia">Data wystawiania dokumentu</label>
-          <input type="date" name="data-wystawienia" id="data-wystawienia" class="input data__doc-date">
-          <label class="label" for="data-sprzedaży">Data sprzedaży</label>
-          <input type="date" name="data-sprzedaży" id="data-sprzedaży" class="input data__doc-sell-date">
+      <form class="data-input">
+        <fieldset class="fieldset data__document-details">
+          <div class="input-wrapper">
+            <label class="label" for="document-type">Wystawiany document:</label>
+            <select name="document-type" id="document-type" class="select data__doc-type">
+              <option value="faktura">Faktura VAT</option>
+              <option value="pro-forma">Faktura pro-forma</option>
+            </select>
+          </div>
 
-          <fieldset class="data__seller">
-            <label class="label" for="data__seller-name">Nazwa</label>
+          <div class="input-wrapper">
+            <label class="label" for="document-number">Numet dokumentu:</label>
+            <input type="text" name="document-number" id="document-number" class="input data__doc-number">
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="document-place">Miejsce wystawienia dokumentu:</label>
+            <input type="text" name="document-place" id="document-place" class="input data__doc-place">
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data-wystawienia">Data wystawiania dokumentu:</label>
+            <input type="date" name="data-wystawienia" id="data-wystawienia" class="input data__doc-date">
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data-sprzedaży">Data sprzedaży:</label>
+            <input type="date" name="data-sprzedaży" id="data-sprzedaży" class="input data__doc-sell-date">
+          </div>
+        </fieldset>
+        <fieldset class="fieldset data__seller">
+          <div class="input-wrapper">
+            <label class="label" for="data__seller-name">Nazwa:</label>
             <input type="text" id="data__seller-name" class="input data__seller-name">
-            <label class="label" for="data__seller-street">Ulica</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__seller-street">Ulica:</label>
             <input type="text" id="data__seller-street" class="input data__seller-street">
-            <label class="label" for="data__seller-city">Miejscowość</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__seller-city">Miejscowość:</label>
             <input type="text" id="data__seller-city" class="input data__seller-city">
-            <label class="label" for="data__seller-post-code">Kod pocztowy</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__seller-post-code">Kod pocztowy:</label>
             <input type="text" id="data__seller-post-code" class="input data__seller-post-code">
-            <label class="label" for="data__seller-nip">NIP</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__seller-nip">NIP:</label>
             <input type="text" id="data__seller-nip" class="input data__seller-nip">
-          </fieldset>
+          </div>
+        </fieldset>
 
-          <fieldset class="data__buyer">
-            <label class="label" for="data__buyer-name">Nazwa</label>
+        <fieldset class="fieldset data__buyer">
+          <div class="input-wrapper">
+            <label class="label" for="data__buyer-name">Nazwa:</label>
             <input type="text" id="data__buyer-name" class="input data__buyer-name">
-            <label class="label" for="data__buyer-street">Ulica</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__buyer-street">Ulica:</label>
             <input type="text" id="data__buyer-street" class="input data__buyer-street">
-            <label class="label" for="data__buyer-city">Miejscowość</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__buyer-city">Miejscowość:</label>
             <input type="text" id="data__buyer-city" class="input data__buyer-city">
-            <label class="label" for="data__buyer-post-code">Kod pocztowy</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__buyer-post-code">Kod pocztowy:</label>
             <input type="text" id="data__buyer-post-code" class="input data__buyer-post-code">
-            <label class="label" for="data__buyer-nip">NIP</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="data__buyer-nip">NIP:</label>
             <input type="text" id="data__buyer-nip" class="input data__buyer-nip">
-          </fieldset>
+          </div>
+        </fieldset>
 
 
-          <fieldset class="payment">
+        <fieldset class="fieldset payment">
+          <div class="input-wrapper">
+            <label for="payment__method" class="label">Metoda Płatnosci</label>
             <select name="payment__method" id="payment__method" class="select payment__method">
               <option value="przelew">przelew</option>
-              <option value="gotówka">gotówka</option>
+              <option value="gotowka">gotówka</option>
               <option value="pobranie">pobranie</option>
               <option value="czek">czek</option>
             </select>
-            <label class="label" for="payment__term">Termin płatności</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="payment__term">Termin płatności:</label>
             <input type="date" name="payment__term" id="payment__term" class="input payment__term">
-            <label class="label" for="payment__account">Konto</label>
+          </div>
+          <div class="input-wrapper">
+            <label class="label" for="payment__account">Konto:</label>
             <input type="text" name="payment__account" id="payment__account" class="input payment__account">
-          </fieldset>
-        </form>
-      </fieldset>
-    </section>
+          </div>
+        </fieldset>
+      </form>
+      <fieldset class="fieldset invoice-items">
+        <ul class="items-list">
+          <li class="item">
+            <input placeholder="nazwa towaru" type="text" id="item__name" class="input item__name">
+            <input placeholder="jednosta miary" type="text" id="item__unit" class="input item__unit">
+            <input placeholder="ilość" type="number" name="item__quantity" id="item__quantity" class="input item__quantity">
+            <input placeholder="cena" type="number" name="item__price" id="item__price" class="input item__price">
+            <input placeholder="wartość" type="text" id="item__net-value" class="input item__net-value" disabled>
+            <select name="item__tax-rate" id="item__tax-rate" class="input select item__tax-rate">
+              <option value="0">0%</option>
+              <option value="3">3%</option>
+              <option value="5">5%</option>
+              <option value="8">8%</option>
+              <option value="23">23%</option>
+            </select>
+            <input placeholder="wartość VAT" type="text" id="item__tax-value" class="input item__tax-value" disabled>
+            <input placeholder="cena brutto" type="text" id="item__total-value" class="input item__total-value" disabled>
 
+          </li>
+
+
+        </ul>
+      </fieldset>
+      </input>
+    </section>
+    <section class="invoice">
+      <div class="invoice__heading">
+        <div class="invoice__title">
+          <h2 class="invoice__type">Faktura VAT</h2>
+          <span class="invoice__number">nr 001/05/2018</span>
+        </div>
+        <div class="invoice__details">
+          <p class="invoice__place">miejsce wystawinia: Skierniewice</p>
+          <p class="invoice__place-date">data wystawinia: 10.05.2017</p>
+          <p class="invoice__sell-date">data sprzedaży: 11.05.2018</p>
+        </div>
+      </div>
+      <div class="invoice__sides">
+        <div class="invoice__seller">
+          <span class="invoice__side-title">Sprzedawca:</span>
+          <p class="invoice__seller-name">Gospodarstwo Polne Marian Dziag</p>
+          <p class="invoice__seller-street">Gzów 68</p>
+          <p class="invoice__seller-city">
+            <span class="seller__post-code">96-128</span> Słupia</p>
+          <p class="invoice__seller-nip">PL7589558855</p>
+
+        </div>
+        <div class="invoice__buyer">
+          <span class="invoice__side-title">Nabywca:</span>
+          <p class="invoice__buyer-name">Gospodarstwo Polne Marian Dziag</p>
+          <p class="invoice__buyer-street">Gzów 68</p>
+          <p class="invoice__buyer-city">
+            <span class="buyer__post-code">96-128</span> Słupia</p>
+          <p class="invoice__buyer-nip">PL7589558855</p>
+        </div>
+      </div>
+      <div class="invoice__positions">
+        <div id="inv-item-2" class="invoice__item">
+          <p class="invoice__item-name">Ubrania Damskie</p>
+          <p class="invoice__item-unit">szt.</p>
+          <p class="invoice__item-quantity">2</p>
+          <p class="invoice__item-price">55 zł</p>
+          <p class="invoice__item-net-value">55 zł</p>
+          <p class="invoice__item-tax-rate">23%</p>
+          <p class="invoice__item-tax-value">10.33 zł</p>
+          <p class="invoice__item-total-value">65.33 zł</p>
+        </div>
+        <div id="inv-item-3" class="invoice__item">
+          <p class="invoice__item-name">Ubrania Damskie</p>
+          <p class="invoice__item-unit">szt.</p>
+          <p class="invoice__item-quantity">2</p>
+          <p class="invoice__item-price">55 zł</p>
+          <p class="invoice__item-net-value">55 zł</p>
+          <p class="invoice__item-tax-rate">23%</p>
+          <p class="invoice__item-tax-value">10.33 zł</p>
+          <p class="invoice__item-total-value">65.33 zł</p>
+        </div>
+        <div id="inv-item-4" class="invoice__item">
+          <p class="invoice__item-name">Ubrania Damskie</p>
+          <p class="invoice__item-unit">szt.</p>
+          <p class="invoice__item-quantity">2</p>
+          <p class="invoice__item-price">55 zł</p>
+          <p class="invoice__item-net-value">55 zł</p>
+          <p class="invoice__item-tax-rate">23%</p>
+          <p class="invoice__item-tax-value">10.33 zł</p>
+          <p class="invoice__item-total-value">65.33 zł</p>
+        </div>
+      </div>
+
+
+
+
+
+
+    </section>
 
   </main>
 </body>

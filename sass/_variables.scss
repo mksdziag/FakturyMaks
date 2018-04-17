@@ -1,9 +1,13 @@
 //////////////////////////////////////
 ////////  Colors
 /////////////////////////////////////
-$color-primary: #F43E50;
-$color-secondary: #F7F7F7;
-$color-white: #fdfdfd;
+/* RGB */
+
+$color1: rgba(239, 111, 108, 1);
+$color2: rgb(228, 228, 228);
+$color3: rgba(127, 182, 133, 1);
+$color4: rgba(66, 106, 90, 1);
+$color5: rgba(86, 86, 86, 1);
 //////////////////////////////////////
 //////// Gradients 
 /////////////////////////////////////
@@ -11,6 +15,5 @@ $darker: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
 //////////////////////////////////////
 ////////  Text Colors
 /////////////////////////////////////
-$text-dark: #282828;
-$text-gray: #777777;
-$text-white: #fdfdfd;
+$color-text: $color5;
+$color-white: #fdfdfd;

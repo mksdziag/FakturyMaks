@@ -27,7 +27,14 @@
   font-size: 1.25rem;
   margin: .25rem;
   border-radius: 3px;
-  border: 1px solid rgb(212, 212, 212);
+  border: none;
+  background-color: darken($color-white, 1%);
+  border-bottom: 1px solid rgb(212, 212, 212);
+  flex: 1;
+  transition: all 150ms ease-out;
+  &:focus {
+    border-bottom: 1px solid $color1;
+  }
 }
 
 .select {
@@ -38,4 +45,17 @@
   background-color: white;
   border-radius: 3px;
   border: 1px solid rgb(212, 212, 212);
+  flex: 1;
+  border: none;
+  background-color: darken($color-white, 1%);
+  border-bottom: 1px solid rgb(212, 212, 212);
+  transition: all 150ms ease-out;
+  &:focus {
+    border-bottom: 1px solid $color1;
+  }
+}
+
+.label {
+  font-size: 1.25rem;
+  flex: 1;
 }
