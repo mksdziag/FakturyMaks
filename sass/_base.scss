@@ -20,7 +20,7 @@
 }
 
 .invoice {
-  padding: 5rem 1rem;
+  padding: 5rem 2rem;
   box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.20);
   border: 1px solid $color2;
   &__heading {
@@ -40,11 +40,12 @@
   &__sides {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10rem;
   }
   &__side-title {
     font-weight: 400;
     position: absolute;
-    top: -1rem;
+    top: -1.5rem;
     right: 1rem;
     padding: .5rem 1rem;
     display: inline-block;
@@ -55,6 +56,7 @@
     position: relative;
     border: 1px solid $color2;
     padding: 2rem;
+    font-size: 1.5rem;
     width: 40%;
     max-width: 500px;
     font-weight: 700;
@@ -72,12 +74,72 @@
     }
   }
   &__positions {
-    margin: 3rem 0;
-  }
-  &__item {
-    display: flex;
+    padding: 2rem;
+    border: 1px solid $color2;
     width: 100%;
-    justify-content: center;
-    align-items: center;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-bottom: 10rem;
+  }
+  &__legend {
+    text-align: center;
+    text-transform: uppercase;
+  }
+  &__position {
+    text-align: right;
+  }
+  &__item-name {
+    text-align: left;
+  }
+  &__item-unit,
+  &__item-quantity,
+  &__item-price,
+  &__item-net-value,
+  &__item-tax-rate,
+  &__item-tax-value,
+  &__item-total-value {}
+  th,
+  td {
+    border: 1px solid $color2;
+    padding: .5rem;
+  }
+  &__summary {
+    &-row {
+      adding: 2rem;
+      border: 1px solid $color2;
+      width: 50%;
+      margin-left: auto;
+      text-align: right;
+    }
+    &-legend {
+      text-align: right;
+    }
+  }
+  &__final {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    width: 50%;
+    padding: 2rem 1rem;
+    background-color: lighten($color2, 5%);
+    line-height: 1.5;
+    margin-bottom: 5rem;
+  }
+  &__signatures {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 15rem;
+  }
+  .buyer-signature,
+  .seller-signature {
+    text-align: center;
+    line-height: 1.5;
+    display: inline-block;
+    padding: .5rem;
+    min-width: 200px;
+    width: 35%;
+    margin: 0 auto;
+    border-top: 2px dotted $color5;
   }
 }

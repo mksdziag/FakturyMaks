@@ -169,44 +169,101 @@
           <p class="invoice__buyer-nip">PL7589558855</p>
         </div>
       </div>
-      <div class="invoice__positions">
-        <div id="inv-item-2" class="invoice__item">
-          <p class="invoice__item-name">Ubrania Damskie</p>
-          <p class="invoice__item-unit">szt.</p>
-          <p class="invoice__item-quantity">2</p>
-          <p class="invoice__item-price">55 zł</p>
-          <p class="invoice__item-net-value">55 zł</p>
-          <p class="invoice__item-tax-rate">23%</p>
-          <p class="invoice__item-tax-value">10.33 zł</p>
-          <p class="invoice__item-total-value">65.33 zł</p>
+      <table class="invoice__positions">
+        <tr class="invoice__legend">
+          <th class="invoice__item-lp--legend">L.p.</th>
+          <th class="invoice__item-name--legend">Produkt</th>
+          <th class="invoice__item-unit--legend">J.m.</th>
+          <th class="invoice__item-quantity--legend">Ilość</th>
+          <th class="invoice__item-price--legend">cena netto</th>
+          <th class="invoice__item-net-value--legend">wartość netto</th>
+          <th class="invoice__item-tax-rate--legend">stawka VAT</th>
+          <th class="invoice__item-tax-value--legend">wartość podatku</th>
+          <th class="invoice__item-total-value--legend">wartość brutto</th>
+        </tr>
+        <tr class="invoice__position" id="invoice__item1">
+          <td class="invoice__item-lp">1</td>
+          <td class="invoice__item-name">Ubrania Damskie i wszystko inne co tylko chcesz i masz ochotę</td>
+          <td class="invoice__item-unit">szt.</td>
+          <td class="invoice__item-quantity">2</td>
+          <td class="invoice__item-price">55 zł</td>
+          <td class="invoice__item-net-value">55 zł</td>
+          <td class="invoice__item-tax-rate">23%</td>
+          <td class="invoice__item-tax-value">10.33 zł</td>
+          <td class="invoice__item-total-value">65.33 zł</td>
+        </tr>
+        <tr class="invoice__position" id="invoice__item2">
+          <td class="invoice__item-lp">1</td>
+          <td class="invoice__item-name">Ubrania Damskie</td>
+          <td class="invoice__item-unit">szt.</td>
+          <td class="invoice__item-quantity">2</td>
+          <td class="invoice__item-price">55 zł</td>
+          <td class="invoice__item-net-value">55 zł</td>
+          <td class="invoice__item-tax-rate">23%</td>
+          <td class="invoice__item-tax-value">10.33 zł</td>
+          <td class="invoice__item-total-value">65.33 zł</td>
+        </tr>
+        <tr class="invoice__position" id="invoice__item3">
+          <td class="invoice__item-lp">1</td>
+          <td class="invoice__item-name">Ubrania Damskie</td>
+          <td class="invoice__item-unit">szt.</td>
+          <td class="invoice__item-quantity">2</td>
+          <td class="invoice__item-price">55 zł</td>
+          <td class="invoice__item-net-value">55 zł</td>
+          <td class="invoice__item-tax-rate">23%</td>
+          <td class="invoice__item-tax-value">10.33 zł</td>
+          <td class="invoice__item-total-value">65.33 zł</td>
+        </tr>
+        <tr class="invoice__position" id="invoice__item4">
+          <td class="invoice__item-lp">1</td>
+          <td class="invoice__item-name">Ubrania Damskie</td>
+          <td class="invoice__item-unit">szt.</td>
+          <td class="invoice__item-quantity">2</td>
+          <td class="invoice__item-price">55 zł</td>
+          <td class="invoice__item-net-value">55 zł</td>
+          <td class="invoice__item-tax-rate">23%</td>
+          <td class="invoice__item-tax-value">10.33 zł</td>
+          <td class="invoice__item-total-value">65.33 zł</td>
+        </tr>
+
+
+        <tr class="invoice__summary-row">
+          <th colspan="5" class="invoice__summary-legend">Razem:</th>
+          <th class="invoice__summary-net-value--legend">65550.33</th>
+          <th class=""></th>
+          <th class="invoice__summary-vat-value--legend">1122.98</th>
+          <th class="invoice__summary-total--legend">81555.65</th>
+        </tr>
+        <tr class="invoice__summary-row">
+          <td colspan="5" class="invoice__summary-legend">W tym:</td>
+          <td class="invoice__summary-net-value">65550.33</td>
+          <td class="">23%</td>
+          <td class="invoice__summary-vat-value">1122.95</td>
+          <td class="invoice__summary-total">81555.65</td>
+        </tr>
+
+      </table>
+      <div class="invoice__final">
+        <p class="invoice__final-to-pay">Do zapłaty: 8 060,20 PLN</p>
+        <p class="invoice__final-to-pay-in-words">
+          Słownie: osiem tysięcy sześćdziesiąt PLN 20/100 </p>
+        <p class="invoice__final-payment-method">
+          Sposób płatności: przelew
+        </p>
+        <p class="invoice__final-payment-term">Termin płatności: 14 dni</p>
+        <p class="invoice__final-payment__account">
+          Konto: 98 9288 1079 1720 4499 3000 0010
+
+        </p>
+      </div>
+      <div class="invoice__signatures">
+        <div class="seller-signature">
+          <p class="seller">podpis sprzedającego</p>
         </div>
-        <div id="inv-item-3" class="invoice__item">
-          <p class="invoice__item-name">Ubrania Damskie</p>
-          <p class="invoice__item-unit">szt.</p>
-          <p class="invoice__item-quantity">2</p>
-          <p class="invoice__item-price">55 zł</p>
-          <p class="invoice__item-net-value">55 zł</p>
-          <p class="invoice__item-tax-rate">23%</p>
-          <p class="invoice__item-tax-value">10.33 zł</p>
-          <p class="invoice__item-total-value">65.33 zł</p>
-        </div>
-        <div id="inv-item-4" class="invoice__item">
-          <p class="invoice__item-name">Ubrania Damskie</p>
-          <p class="invoice__item-unit">szt.</p>
-          <p class="invoice__item-quantity">2</p>
-          <p class="invoice__item-price">55 zł</p>
-          <p class="invoice__item-net-value">55 zł</p>
-          <p class="invoice__item-tax-rate">23%</p>
-          <p class="invoice__item-tax-value">10.33 zł</p>
-          <p class="invoice__item-total-value">65.33 zł</p>
+        <div class="buyer-signature">
+          <p class="buyer">podpis kupującego</p>
         </div>
       </div>
-
-
-
-
-
-
     </section>
 
   </main>

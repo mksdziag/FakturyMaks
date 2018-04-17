@@ -139,7 +139,7 @@ body {
 }
 
 .invoice {
-  padding: 5rem 1rem;
+  padding: 5rem 2rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   border: 1px solid #e4e4e4;
 }
@@ -164,12 +164,13 @@ body {
 .invoice__sides {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10rem;
 }
 
 .invoice__side-title {
   font-weight: 400;
   position: absolute;
-  top: -1rem;
+  top: -1.5rem;
   right: 1rem;
   padding: .5rem 1rem;
   display: inline-block;
@@ -180,6 +181,7 @@ body {
   position: relative;
   border: 1px solid #e4e4e4;
   padding: 2rem;
+  font-size: 1.5rem;
   width: 40%;
   max-width: 500px;
   font-weight: 700;
@@ -202,13 +204,72 @@ body {
 }
 
 .invoice__positions {
-  margin: 3rem 0;
+  padding: 2rem;
+  border: 1px solid #e4e4e4;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-bottom: 10rem;
 }
 
-.invoice__item {
+.invoice__legend {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.invoice__position {
+  text-align: right;
+}
+
+.invoice__item-name {
+  text-align: left;
+}
+
+.invoice th,
+.invoice td {
+  border: 1px solid #e4e4e4;
+  padding: .5rem;
+}
+
+.invoice__summary-row {
+  adding: 2rem;
+  border: 1px solid #e4e4e4;
+  width: 50%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.invoice__summary-legend {
+  text-align: right;
+}
+
+.invoice__final {
   display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  font-size: 1.5rem;
+  width: 50%;
+  padding: 2rem 1rem;
+  background-color: #f1f1f1;
+  line-height: 1.5;
+  margin-bottom: 5rem;
+}
+
+.invoice__signatures {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 15rem;
+}
+
+.invoice .buyer-signature,
+.invoice .seller-signature {
+  text-align: center;
+  line-height: 1.5;
+  display: inline-block;
+  padding: .5rem;
+  min-width: 200px;
+  width: 35%;
+  margin: 0 auto;
+  border-top: 2px dotted #565656;
 }
 /*# sourceMappingURL=main.css.map */
