@@ -64,22 +64,28 @@ body {
 }
 
 .btn {
-  display: inline-block;
+  display: block;
   padding: 1rem 2rem;
   text-transform: uppercase;
   font-size: 1.75rem;
   transition: 150ms;
 }
 
-.btn--circle {
-  padding: .5rem 1rem;
-  border-radius: 50%;
+.btn--gen-inv {
+  width: 50%;
+  margin: 0 auto 5rem;
+  background-color: #ef6f6c;
+  color: white;
+  font-weight: 700;
+  letter-spacing: 3px;
+  border: none;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 
 .input {
   display: inline-block;
   padding: .5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin: .25rem;
   border-radius: 3px;
   border: none;
@@ -96,7 +102,7 @@ body {
 .select {
   display: inline-block;
   padding: .5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin: .25rem;
   background-color: white;
   border-radius: 3px;
@@ -113,7 +119,7 @@ body {
 }
 
 .label {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   flex: 1;
 }
 
@@ -122,13 +128,35 @@ body {
   box-shadow: 0 0.25rem 0.25rem -0.1rem rgba(0, 0, 0, 0.25);
 }
 
+.main-header {
+  margin-top: 2rem;
+  margin-bottom: 5rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
 .fieldset {
   display: flex;
   flex-direction: column;
   border: 1px solid #e4e4e4;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
-  padding: 1rem;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  flex: 1;
+  position: relative;
+}
+
+.fieldset__name {
+  position: absolute;
+  top: -1.5rem;
+  left: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: block;
+  padding: .5rem 1.5rem;
+  background: #ef6f6c;
+  border-radius: 3px;
+  color: white;
 }
 
 .input-wrapper {
@@ -136,6 +164,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.sides-input-wrapper {
+  display: flex;
+}
+
+.data__seller {
+  margin-right: 1rem;
 }
 
 .invoice {

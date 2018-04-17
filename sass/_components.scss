@@ -2,21 +2,20 @@
 ////////   Buttons 
 /////////////////////////////////////
 .btn {
-  display: inline-block;
+  display: block;
   padding: 1rem 2rem;
   text-transform: uppercase;
   font-size: 1.75rem;
   transition: 150ms;
-  &--primary {
-    &:hover {}
-  }
-  &--secondary {
-    &:hover {}
-  }
-  &--circle {
-    padding: .5rem 1rem;
-    border-radius: 50%;
-    &:hover {}
+  &--gen-inv {
+    width: 50%;
+    margin: 0 auto 5rem;
+    background-color: $color1;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 3px;
+    border: none;
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -24,7 +23,7 @@
 .input {
   display: inline-block;
   padding: .5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin: .25rem;
   border-radius: 3px;
   border: none;
@@ -40,7 +39,7 @@
 .select {
   display: inline-block;
   padding: .5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin: .25rem;
   background-color: white;
   border-radius: 3px;
@@ -56,6 +55,6 @@
 }
 
 .label {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   flex: 1;
 }

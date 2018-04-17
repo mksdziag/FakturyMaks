@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <div class="main__header">
+  <div class="main-header">
     <div class="wrapper">
       <h1 class="page__title">FakturyMaks</h1>
     </div>
@@ -21,16 +21,17 @@
     <section class="document__data">
       <form class="data-input">
         <fieldset class="fieldset data__document-details">
+          <p class="fieldset__name">Dane dokumentu:</p>
           <div class="input-wrapper">
             <label class="label" for="document-type">Wystawiany document:</label>
             <select name="document-type" id="document-type" class="select data__doc-type">
-              <option value="faktura">Faktura VAT</option>
-              <option value="pro-forma">Faktura pro-forma</option>
+              <option value="Faktura VAT">Faktura VAT</option>
+              <option value="Faktura Pro-forma">Faktura pro-forma</option>
             </select>
           </div>
 
           <div class="input-wrapper">
-            <label class="label" for="document-number">Numet dokumentu:</label>
+            <label class="label" for="document-number">Numer dokumentu:</label>
             <input type="text" name="document-number" id="document-number" class="input data__doc-number">
           </div>
           <div class="input-wrapper">
@@ -46,54 +47,59 @@
             <input type="date" name="data-sprzedaży" id="data-sprzedaży" class="input data__doc-sell-date">
           </div>
         </fieldset>
-        <fieldset class="fieldset data__seller">
-          <div class="input-wrapper">
-            <label class="label" for="data__seller-name">Nazwa:</label>
-            <input type="text" id="data__seller-name" class="input data__seller-name">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__seller-street">Ulica:</label>
-            <input type="text" id="data__seller-street" class="input data__seller-street">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__seller-city">Miejscowość:</label>
-            <input type="text" id="data__seller-city" class="input data__seller-city">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__seller-post-code">Kod pocztowy:</label>
-            <input type="text" id="data__seller-post-code" class="input data__seller-post-code">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__seller-nip">NIP:</label>
-            <input type="text" id="data__seller-nip" class="input data__seller-nip">
-          </div>
-        </fieldset>
 
-        <fieldset class="fieldset data__buyer">
-          <div class="input-wrapper">
-            <label class="label" for="data__buyer-name">Nazwa:</label>
-            <input type="text" id="data__buyer-name" class="input data__buyer-name">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__buyer-street">Ulica:</label>
-            <input type="text" id="data__buyer-street" class="input data__buyer-street">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__buyer-city">Miejscowość:</label>
-            <input type="text" id="data__buyer-city" class="input data__buyer-city">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__buyer-post-code">Kod pocztowy:</label>
-            <input type="text" id="data__buyer-post-code" class="input data__buyer-post-code">
-          </div>
-          <div class="input-wrapper">
-            <label class="label" for="data__buyer-nip">NIP:</label>
-            <input type="text" id="data__buyer-nip" class="input data__buyer-nip">
-          </div>
-        </fieldset>
+        <div class="sides-input-wrapper">
+          <fieldset class="fieldset data__seller">
+            <p class="fieldset__name">Dane sprzedawcy:</p>
+            <div class="input-wrapper">
+              <label class="label" for="data__seller-name">Nazwa:</label>
+              <input type="text" id="data__seller-name" class="input data__seller-name">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__seller-street">Ulica:</label>
+              <input type="text" id="data__seller-street" class="input data__seller-street">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__seller-city">Miejscowość:</label>
+              <input type="text" id="data__seller-city" class="input data__seller-city">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__seller-post-code">Kod pocztowy:</label>
+              <input type="text" id="data__seller-post-code" class="input data__seller-post-code">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__seller-nip">NIP:</label>
+              <input type="text" id="data__seller-nip" class="input data__seller-nip">
+            </div>
+          </fieldset>
 
+          <fieldset class="fieldset data__buyer">
+            <p class="fieldset__name">Dane nabywcy:</p>
+            <div class="input-wrapper">
+              <label class="label" for="data__buyer-name">Nazwa:</label>
+              <input type="text" id="data__buyer-name" class="input data__buyer-name">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__buyer-street">Ulica:</label>
+              <input type="text" id="data__buyer-street" class="input data__buyer-street">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__buyer-city">Miejscowość:</label>
+              <input type="text" id="data__buyer-city" class="input data__buyer-city">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__buyer-post-code">Kod pocztowy:</label>
+              <input type="text" id="data__buyer-post-code" class="input data__buyer-post-code">
+            </div>
+            <div class="input-wrapper">
+              <label class="label" for="data__buyer-nip">NIP:</label>
+              <input type="text" id="data__buyer-nip" class="input data__buyer-nip">
+            </div>
+          </fieldset>
+        </div>
 
         <fieldset class="fieldset payment">
+          <p class="fieldset__name">Szczegóły płatności:</p>
           <div class="input-wrapper">
             <label for="payment__method" class="label">Metoda Płatnosci</label>
             <select name="payment__method" id="payment__method" class="select payment__method">
@@ -114,6 +120,7 @@
         </fieldset>
       </form>
       <fieldset class="fieldset invoice-items">
+        <p class="fieldset__name">Pozycje do dodania na fakturę:</p>
         <ul class="items-list">
           <li class="item">
             <input placeholder="nazwa towaru" type="text" id="item__name" class="input item__name">
@@ -137,6 +144,7 @@
         </ul>
       </fieldset>
       </input>
+      <button class="btn btn--gen-inv">Generuj fakturę</button>
     </section>
     <section class="invoice">
       <div class="invoice__heading">
@@ -145,7 +153,7 @@
           <span class="invoice__number">nr 001/05/2018</span>
         </div>
         <div class="invoice__details">
-          <p class="invoice__place">miejsce wystawinia: Skierniewice</p>
+          <p class="invoice__place">miejsce wystawienia: Skierniewice</p>
           <p class="invoice__place-date">data wystawinia: 10.05.2017</p>
           <p class="invoice__sell-date">data sprzedaży: 11.05.2018</p>
         </div>
@@ -267,6 +275,12 @@
     </section>
 
   </main>
+
+
+
+
+
+  <script src="js/main.js"></script>
 </body>
 
 </html>
