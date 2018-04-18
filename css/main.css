@@ -341,4 +341,20 @@ td {
   margin: 0 auto;
   border-top: 2px dotted #565656;
 }
+
+.draft__legend {
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.draft__positions {
+  padding: 2rem;
+  border: 1px solid #e4e4e4;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-bottom: 10rem;
+  text-align: right;
+}
 /*# sourceMappingURL=main.css.map */

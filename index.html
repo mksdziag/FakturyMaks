@@ -130,7 +130,7 @@
             <option value="usł.">usł.</option>
           </select>
           <input placeholder="ilość" type="number" name="item__quantity" id="item__quantity" class="input item__quantity">
-          <input placeholder="cena" type="number" name="item__price" id="item__price" class="input item__price">
+          <input placeholder="cena netto" type="number" name="item__price" id="item__price" class="input item__price">
           <input placeholder="wartość" type="text" id="item__net-value" class="input item__net-value" disabled>
           <select name="item__tax-rate" id="item__tax-rate" class="input select item__tax-rate">
             <option value="0">0%</option>
@@ -146,23 +146,33 @@
 
 
         </div>
-        <table class="invoice__positions">
-          <thead>
-            <tr class="invoice__legend">
-              <th class="invoice__item-lp--legend">usuń</th>
-              <th class="invoice__item-name--legend">Produkt</th>
-              <th class="invoice__item-unit--legend">J.m.</th>
-              <th class="invoice__item-quantity--legend">Ilość</th>
-              <th class="invoice__item-price--legend">cena netto</th>
-              <th class="invoice__item-net-value--legend">wartość netto</th>
-              <th class="invoice__item-tax-rate--legend">stawka VAT</th>
-              <th class="invoice__item-tax-value--legend">wartość podatku</th>
-              <th class="invoice__item-total-value--legend">wartość brutto</th>
+        <table class="draft__positions">
+          <thead class="draft__legend">
+            <tr>
+              <th class="draft__item-lp--legend">usuń</th>
+              <th class="draft__item-name--legend">Produkt</th>
+              <th class="draft__item-unit--legend">J.m.</th>
+              <th class="draft__item-quantity--legend">Ilość</th>
+              <th class="draft__item-price--legend">cena netto</th>
+              <th class="draft__item-net-value--legend">wartość netto</th>
+              <th class="draft__item-tax-rate--legend">stawka VAT</th>
+              <th class="draft__item-tax-value--legend">wartość podatku</th>
+              <th class="draft__item-total-value--legend">wartość brutto</th>
             </tr>
           </thead>
-          <tbody class="working-items-table">
+          <tbody class="draft-items">
 
           </tbody>
+          <tfoot class="draft__summary">
+            <tr class="draft__summary-row">
+              <th colspan="5" class="draft__summary-legend">Razem:</th>
+              <th class="draft__summary-net-value"></th>
+              <th class=""></th>
+              <th class="draft__summary-vat-value"></th>
+              <th class="draft__summary-total"></th>
+            </tr>
+
+          </tfoot>
         </table>
 
       </fieldset>
@@ -201,78 +211,81 @@
         </div>
       </div>
       <table class="invoice__positions">
-        <tr class="invoice__legend">
-          <th class="invoice__item-lp--legend">L.p.</th>
-          <th class="invoice__item-name--legend">Produkt</th>
-          <th class="invoice__item-unit--legend">J.m.</th>
-          <th class="invoice__item-quantity--legend">Ilość</th>
-          <th class="invoice__item-price--legend">cena netto</th>
-          <th class="invoice__item-net-value--legend">wartość netto</th>
-          <th class="invoice__item-tax-rate--legend">stawka VAT</th>
-          <th class="invoice__item-tax-value--legend">wartość podatku</th>
-          <th class="invoice__item-total-value--legend">wartość brutto</th>
-        </tr>
-        <tr class="invoice__position" id="invoice__item1">
-          <td class="invoice__item-lp">1</td>
-          <td class="invoice__item-name">Ubrania Damskie i wszystko inne co tylko chcesz i masz ochotę</td>
-          <td class="invoice__item-unit">szt.</td>
-          <td class="invoice__item-quantity">2</td>
-          <td class="invoice__item-price">55 zł</td>
-          <td class="invoice__item-net-value">55 zł</td>
-          <td class="invoice__item-tax-rate">23%</td>
-          <td class="invoice__item-tax-value">10.33 zł</td>
-          <td class="invoice__item-total-value">65.33 zł</td>
-        </tr>
-        <tr class="invoice__position" id="invoice__item2">
-          <td class="invoice__item-lp">1</td>
-          <td class="invoice__item-name">Ubrania Damskie</td>
-          <td class="invoice__item-unit">szt.</td>
-          <td class="invoice__item-quantity">2</td>
-          <td class="invoice__item-price">55 zł</td>
-          <td class="invoice__item-net-value">55 zł</td>
-          <td class="invoice__item-tax-rate">23%</td>
-          <td class="invoice__item-tax-value">10.33 zł</td>
-          <td class="invoice__item-total-value">65.33 zł</td>
-        </tr>
-        <tr class="invoice__position" id="invoice__item3">
-          <td class="invoice__item-lp">1</td>
-          <td class="invoice__item-name">Ubrania Damskie</td>
-          <td class="invoice__item-unit">szt.</td>
-          <td class="invoice__item-quantity">2</td>
-          <td class="invoice__item-price">55 zł</td>
-          <td class="invoice__item-net-value">55 zł</td>
-          <td class="invoice__item-tax-rate">23%</td>
-          <td class="invoice__item-tax-value">10.33 zł</td>
-          <td class="invoice__item-total-value">65.33 zł</td>
-        </tr>
-        <tr class="invoice__position" id="invoice__item4">
-          <td class="invoice__item-lp">1</td>
-          <td class="invoice__item-name">Ubrania Damskie</td>
-          <td class="invoice__item-unit">szt.</td>
-          <td class="invoice__item-quantity">2</td>
-          <td class="invoice__item-price">55 zł</td>
-          <td class="invoice__item-net-value">55 zł</td>
-          <td class="invoice__item-tax-rate">23%</td>
-          <td class="invoice__item-tax-value">10.33 zł</td>
-          <td class="invoice__item-total-value">65.33 zł</td>
-        </tr>
-
-
-        <tr class="invoice__summary-row">
-          <th colspan="5" class="invoice__summary-legend">Razem:</th>
-          <th class="invoice__summary-net-value--legend">65550.33</th>
-          <th class=""></th>
-          <th class="invoice__summary-vat-value--legend">1122.98</th>
-          <th class="invoice__summary-total--legend">81555.65</th>
-        </tr>
-        <tr class="invoice__summary-row">
-          <td colspan="5" class="invoice__summary-legend">W tym:</td>
-          <td class="invoice__summary-net-value">65550.33</td>
-          <td class="">23%</td>
-          <td class="invoice__summary-vat-value">1122.95</td>
-          <td class="invoice__summary-total">81555.65</td>
-        </tr>
-
+        <thead class="invoice__legend">
+          <tr>
+            <th class="invoice__item-lp--legend">L.p.</th>
+            <th class="invoice__item-name--legend">Produkt</th>
+            <th class="invoice__item-unit--legend">J.m.</th>
+            <th class="invoice__item-quantity--legend">Ilość</th>
+            <th class="invoice__item-price--legend">cena netto</th>
+            <th class="invoice__item-net-value--legend">wartość netto</th>
+            <th class="invoice__item-tax-rate--legend">stawka VAT</th>
+            <th class="invoice__item-tax-value--legend">wartość podatku</th>
+            <th class="invoice__item-total-value--legend">wartość brutto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="invoice__position" id="invoice__item1">
+            <td class="invoice__item-lp">1</td>
+            <td class="invoice__item-name">Ubrania Damskie i wszystko inne co tylko chcesz i masz ochotę</td>
+            <td class="invoice__item-unit">szt.</td>
+            <td class="invoice__item-quantity">2</td>
+            <td class="invoice__item-price">55 zł</td>
+            <td class="invoice__item-net-value">55 zł</td>
+            <td class="invoice__item-tax-rate">23%</td>
+            <td class="invoice__item-tax-value">10.33 zł</td>
+            <td class="invoice__item-total-value">65.33 zł</td>
+          </tr>
+          <tr class="invoice__position" id="invoice__item2">
+            <td class="invoice__item-lp">1</td>
+            <td class="invoice__item-name">Ubrania Damskie</td>
+            <td class="invoice__item-unit">szt.</td>
+            <td class="invoice__item-quantity">2</td>
+            <td class="invoice__item-price">55 zł</td>
+            <td class="invoice__item-net-value">55 zł</td>
+            <td class="invoice__item-tax-rate">23%</td>
+            <td class="invoice__item-tax-value">10.33 zł</td>
+            <td class="invoice__item-total-value">65.33 zł</td>
+          </tr>
+          <tr class="invoice__position" id="invoice__item3">
+            <td class="invoice__item-lp">1</td>
+            <td class="invoice__item-name">Ubrania Damskie</td>
+            <td class="invoice__item-unit">szt.</td>
+            <td class="invoice__item-quantity">2</td>
+            <td class="invoice__item-price">55 zł</td>
+            <td class="invoice__item-net-value">55 zł</td>
+            <td class="invoice__item-tax-rate">23%</td>
+            <td class="invoice__item-tax-value">10.33 zł</td>
+            <td class="invoice__item-total-value">65.33 zł</td>
+          </tr>
+          <tr class="invoice__position" id="invoice__item4">
+            <td class="invoice__item-lp">1</td>
+            <td class="invoice__item-name">Ubrania Damskie</td>
+            <td class="invoice__item-unit">szt.</td>
+            <td class="invoice__item-quantity">2</td>
+            <td class="invoice__item-price">55 zł</td>
+            <td class="invoice__item-net-value">55 zł</td>
+            <td class="invoice__item-tax-rate">23%</td>
+            <td class="invoice__item-tax-value">10.33 zł</td>
+            <td class="invoice__item-total-value">65.33 zł</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="invoice__summary-row">
+            <th colspan="5" class="invoice__summary-legend">Razem:</th>
+            <th class="invoice__summary-net-value--legend">65550.33</th>
+            <th class=""></th>
+            <th class="invoice__summary-vat-value--legend">1122.98</th>
+            <th class="invoice__summary-total--legend">81555.65</th>
+          </tr>
+          <tr class="invoice__summary-row">
+            <td colspan="5" class="invoice__summary-legend">W tym:</td>
+            <td class="invoice__summary-net-value">65550.33</td>
+            <td class="">23%</td>
+            <td class="invoice__summary-vat-value">1122.95</td>
+            <td class="invoice__summary-total">81555.65</td>
+          </tr>
+        </tfoot>
       </table>
       <div class="invoice__final">
         <p class="invoice__final-to-pay">Do zapłaty: 8 060,20 PLN</p>

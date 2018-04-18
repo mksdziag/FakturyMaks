@@ -32,7 +32,7 @@ const itemTaxValInp = document.querySelector('.item__tax-value');
 const itemTotValInp = document.querySelector('.item__total-value');
 const addBtn = document.querySelector('.btn--add-item');
 
-const workingItemTable = document.querySelector('.working-items-table');
+const draftItemTable = document.querySelector('.draft-items');
 const itemDelBtn = document.querySelectorAll('.btn--item-del');
 
 // DOM output/invoice elements
@@ -106,6 +106,141 @@ function addItem() {
   updateItemsList()
 }
 
+
+// array prototype new functions
+
+Array.prototype.totalTaxVal = function () {
+  return this.reduce(function (acc, obj) {
+    return acc + obj.taxValue;
+  }, 0);
+}
+Array.prototype.totalnetVal = function () {
+  return this.reduce(function (acc, obj) {
+    return acc + obj.netValue;
+  }, 0);
+}
+Array.prototype.totalVal = function () {
+  return this.reduce(function (acc, obj) {
+    return acc + obj.total;
+  }, 0);
+}
+
+function checkVatRates(arr) {
+
+
+
+
+  const areThere23 = arr.some(function (item) {
+    return item.taxRate === 0.23;
+  });
+  const areThere3 = arr.some((item) => item.taxRate === 0.03);
+  const areThere5 = arr.some(function (item) {
+    return item.taxRate === 0.05;
+  });
+  const areThere8 = arr.some(function (item) {
+    return item.taxRate === 0.08;
+  });
+
+  if (areThere23) {
+    const vat23ItemsArr = arr.filter(item => item.taxRate === 0.23);
+
+    const vat23net = vat23ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.netValue;
+    }, 0);
+    const vat23tax = vat23ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.taxValue;
+    }, 0);
+    const vat23total = vat23ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.total;
+    }, 0);
+
+    const vat23finalrow = document.createElement('tr');
+    vat23finalrow.classList.add('draft__summary-row');
+    vat23finalrow.innerHTML = `
+                            <td colspan="5" class="draft__summary-legend">W tym:</td>
+                            <td class="draft__summary-net-value">${vat23net}</td>
+                            <td class="">23%</td>
+                            <td class="draft__summary-vat-value">${vat23tax}</td>
+                            <td class="draft__summary-total">${vat23total}</td>`
+    document.querySelector('.draft__summary').appendChild(vat23finalrow);
+
+  }
+
+
+
+  if (areThere3) {
+    const vat03ItemsArr = arr.filter(item => item.taxRate === 0.03);
+
+    const vat03net = vat03ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.netValue;
+    }, 0);
+    const vat03tax = vat03ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.taxValue;
+    }, 0);
+    const vat03total = vat03ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.total;
+    }, 0);
+
+    const vat03finalrow = document.createElement('tr');
+    vat03finalrow.classList.add('draft__summary-row');
+    vat03finalrow.innerHTML = `
+                            <td colspan="5" class="draft__summary-legend">W tym:</td>
+                            <td class="draft__summary-net-value">${vat03net}</td>
+                            <td class="">3%</td>
+                            <td class="draft__summary-vat-value">${vat03tax}</td>
+                            <td class="draft__summary-total">${vat03total}</td>`
+    document.querySelector('.draft__summary').appendChild(vat03finalrow);
+
+  }
+  if (areThere5) {
+    const vat05ItemsArr = arr.filter(item => item.taxRate === 0.05);
+
+    const vat05net = vat05ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.netValue;
+    }, 0);
+    const vat05tax = vat05ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.taxValue;
+    }, 0);
+    const vat05total = vat05ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.total;
+    }, 0);
+
+    const vat05finalrow = document.createElement('tr');
+    vat05finalrow.classList.add('draft__summary-row');
+    vat05finalrow.innerHTML = `
+                            <td colspan="5" class="draft__summary-legend">W tym:</td>
+                            <td class="draft__summary-net-value">${vat05net}</td>
+                            <td class="">5%</td>
+                            <td class="draft__summary-vat-value">${vat05tax}</td>
+                            <td class="draft__summary-total">${vat05total}</td>`
+    document.querySelector('.draft__summary').appendChild(vat05finalrow);
+  }
+  if (areThere8) {
+    const vat08temsArr = arr.filter(item => item.taxRate === 0.08);
+    const vat08net = vat08ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.netValue;
+    }, 0);
+    const vat08tax = vat08ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.taxValue;
+    }, 0);
+    const vat08total = vat08ItemsArr.reduce(function (acc, obj) {
+      return acc + obj.total;
+    }, 0);
+
+    const vat08finalrow = document.createElement('tr');
+    vat08finalrow.classList.add('draft__summary-row');
+    vat08finalrow.innerHTML = `
+                            <td colspan="5" class="draft__summary-legend">W tym:</td>
+                            <td class="draft__summary-net-value">${vat08net}</td>
+                            <td class="">8%</td>
+                            <td class="draft__summary-vat-value">${vat08tax}</td>
+                            <td class="draft__summary-total">${vat08total}</td>`
+    document.querySelector('.draft__summary').appendChild(vat08finalrow);
+  }
+
+}
+
+
 // adding event listeners to  items list delete buttons
 function addingListenersForDelBtns() {
   // selecting all delete buttons
@@ -133,32 +268,49 @@ function clearItemFieldset() {
 
 
 function updateItemsList() {
-  workingItemTable.innerHTML = '';
+  draftItemTable.innerHTML = '';
   invoiceiIems.forEach(item => {
 
     const newRow = document.createElement('tr');
-    newRow.classList.add('invoice__position');
-    newRow.id = `working-item${item.id}`
+    newRow.classList.add('draft__position');
+    newRow.id = `draft-item${item.id}`
     newRow.dataset.identifier = `${item.id}`;
     newRow.innerHTML = `
-    <tr id="working-item${item.id} class="invoice__position" id="invoice__item1">
-      <td class="invoice__item-lp"><button class="btn btn--item-del">usuń</button></td>
-      <td class="invoice__item-name">${item.name}</td>
-      <td class="invoice__item-unit">${item.unit}</td>
-      <td class="invoice__item-quantity">${item.quantity}</td>
-      <td class="invoice__item-price">${item.netPrice}</td>
-      <td class="invoice__item-net-value">${item.netValue}</td>
-      <td class="invoice__item-tax-rate">${item.taxRate}</td>
-      <td class="invoice__item-tax-value">${item.taxValue}</td>
-      <td class="invoice__item-total-value">${item.total}</td>
-    </tr>`;
-    workingItemTable.appendChild(newRow);
+      <td class="draft__item-lp"><button class="btn btn--item-del">usuń</button></td>
+      <td class="draft__item-name">${item.name}</td>
+      <td class="draft__item-unit">${item.unit}</td>
+      <td class="draft__item-quantity">${item.quantity}</td>
+      <td class="draft__item-price">${item.netPrice}</td>
+      <td class="draft__item-net-value">${item.netValue}</td>
+      <td class="draft__item-tax-rate">${item.taxRate}</td>
+      <td class="draft__item-tax-value">${item.taxValue}</td>
+      <td class="draft__item-total-value">${item.total}</td>`;
+    draftItemTable.appendChild(newRow);
 
 
   });
   addingListenersForDelBtns()
 
+  const draftSunNetVal = document.querySelector('.draft__summary-net-value');
+  const draftSunVatVal = document.querySelector('.draft__summary-vat-value');
+  const draftSunTotVal = document.querySelector('.draft__summary-total');
+
+  // draft items summary
+  const sumaNet = invoiceiIems.reduce(function (acc, item) {
+    return acc + item.netValue;
+  }, 0);
+  const sumaVat = invoiceiIems.reduce(function (acc, item) {
+    return acc + item.taxValue;
+  }, 0);
+  const sumaTotal = invoiceiIems.reduce(function (acc, item) {
+    return acc + item.total;
+  }, 0);
+
+  draftSunNetVal.textContent = sumaNet.toFixed(2);
+  draftSunVatVal.textContent = sumaVat.toFixed(2);
+  draftSunTotVal.textContent = sumaTotal.toFixed(2);
 }
+
 
 
 /*/////////////////////////////////////////

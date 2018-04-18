@@ -187,3 +187,21 @@
     border-top: 2px dotted $color5;
   }
 }
+
+.draft {
+  &__legend {
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  &__positions {
+    padding: 2rem;
+    border: 1px solid $color2;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-bottom: 10rem;
+    text-align: right;
+  }
+  &__summary-legend {}
+}
