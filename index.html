@@ -14,7 +14,7 @@
 <body>
   <div class="main-header">
     <div class="wrapper">
-      <h1 class="page__title">FakturyMaks</h1>
+      <h1 class="page__title">FakturyMaks 0.0.1</h1>
     </div>
   </div>
   <main class="wrapper">
@@ -121,27 +121,50 @@
       </form>
       <fieldset class="fieldset invoice-items">
         <p class="fieldset__name">Pozycje do dodania na fakturę:</p>
-        <ul class="items-list">
-          <div class="item">
-            <input placeholder="nazwa towaru" type="text" id="item__name" class="input item__name">
-            <input placeholder="jednosta miary" type="text" id="item__unit" class="input item__unit">
-            <input placeholder="ilość" type="number" name="item__quantity" id="item__quantity" class="input item__quantity">
-            <input placeholder="cena" type="number" name="item__price" id="item__price" class="input item__price">
-            <input placeholder="wartość" type="text" id="item__net-value" class="input item__net-value" disabled>
-            <select name="item__tax-rate" id="item__tax-rate" class="input select item__tax-rate">
-              <option value="0">0%</option>
-              <option value="3">3%</option>
-              <option value="5">5%</option>
-              <option value="8">8%</option>
-              <option value="23">23%</option>
-            </select>
-            <input placeholder="wartość VAT" type="text" id="item__tax-value" class="input item__tax-value" disabled>
-            <input placeholder="cena brutto" type="text" id="item__total-value" class="input item__total-value" disabled>
-            <button class="btn btn--add-item">Dodaj</button>
-          </div>
+        <div class="items-list">
+
+          <input placeholder="nazwa towaru" type="text" id="item__name" class="input item__name">
+          <select placeholder="jednosta miary" type="text" id="item__unit" class="input item__unit">
+            <option value="szt.">szt.</option>
+            <option value="kg">kg</option>
+            <option value="usł.">usł.</option>
+          </select>
+          <input placeholder="ilość" type="number" name="item__quantity" id="item__quantity" class="input item__quantity">
+          <input placeholder="cena" type="number" name="item__price" id="item__price" class="input item__price">
+          <input placeholder="wartość" type="text" id="item__net-value" class="input item__net-value" disabled>
+          <select name="item__tax-rate" id="item__tax-rate" class="input select item__tax-rate">
+            <option value="0">0%</option>
+            <option value="0.03">3%</option>
+            <option value="0.05">5%</option>
+            <option value="0.08">8%</option>
+            <option value="0.23">23%</option>
+          </select>
+          <input placeholder="wartość VAT" type="text" id="item__tax-value" class="input item__tax-value" disabled>
+          <input placeholder="cena brutto" type="text" id="item__total-value" class="input item__total-value" disabled>
+          <button class="btn btn--add-item">Dodaj</button>
 
 
-        </ul>
+
+        </div>
+        <table class="invoice__positions">
+          <thead>
+            <tr class="invoice__legend">
+              <th class="invoice__item-lp--legend">usuń</th>
+              <th class="invoice__item-name--legend">Produkt</th>
+              <th class="invoice__item-unit--legend">J.m.</th>
+              <th class="invoice__item-quantity--legend">Ilość</th>
+              <th class="invoice__item-price--legend">cena netto</th>
+              <th class="invoice__item-net-value--legend">wartość netto</th>
+              <th class="invoice__item-tax-rate--legend">stawka VAT</th>
+              <th class="invoice__item-tax-value--legend">wartość podatku</th>
+              <th class="invoice__item-total-value--legend">wartość brutto</th>
+            </tr>
+          </thead>
+          <tbody class="working-items-table">
+
+          </tbody>
+        </table>
+
       </fieldset>
       </input>
       <button class="btn btn--gen-inv">Generuj fakturę</button>

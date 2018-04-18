@@ -33,6 +33,20 @@
   }
 }
 
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  &>* {
+    flex: 1;
+    margin: .5rem;
+  }
+}
+
+.item__name {}
+
 .input-wrapper {
   width: 100%;
   display: flex;

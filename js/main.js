@@ -30,6 +30,10 @@ const itemNetValInp = document.querySelector('.item__net-value');
 const itemTaxRateInp = document.querySelector('.item__tax-rate');
 const itemTaxValInp = document.querySelector('.item__tax-value');
 const itemTotValInp = document.querySelector('.item__total-value');
+const addBtn = document.querySelector('.btn--add-item');
+
+const workingItemTable = document.querySelector('.working-items-table');
+const itemDelBtn = document.querySelectorAll('.btn--item-del');
 
 // DOM output/invoice elements
 const invoice = document.querySelector('.invoice');
@@ -65,35 +69,101 @@ const invFinalAccount = invoice.querySelector('.invoice__final-payment__account'
 const genBtn = document.querySelector('.btn--gen-inv');
 
 
-const itemNameInp = document.querySelector('.item__name');
-const itemUnitInp = document.querySelector('.item__unit');
-const itemQuantInp = document.querySelector('.item__quantity');
-const itemPrice = document.querySelector('.item__price');
-const itemNetVal = document.querySelector('.item__net-value');
-const itemTaxRate = document.querySelector('.item__tax-rate');
-const itemTotVal = document.querySelector('.item__total-value');
-const addBtn = document.querySelector('.btn--add-item');
-
-
-
 // generate invoice event listener
 
 genBtn.addEventListener('click', generateInvoice);
 addBtn.addEventListener('click', addItem);
 
 
-// function addItem() {
-//   const item
-//   itemNameInp.value
-//   itemUnitInp.value
-//   itemQuantInp.value
-//   itemPrice.value
-//   itemNetVal.value
-//   itemTaxRate.value
-//   itemTotVal.value
 
-// }
 
+
+// create empty array for all invoice items
+const invoiceiIems = [];
+
+/*/////////////////////////////////////////
+Input section Functions                              
+----------------------------------------*/
+// adding new items to array with item objects
+function addItem() {
+  // creating new invoice item
+  const newitem = {
+    id: invoiceiIems.length,
+    name: itemNameInp.value,
+    unit: itemUnitInp.value,
+    quantity: itemQuantInp.valueAsNumber,
+    netPrice: itemPriceInp.valueAsNumber,
+    netValue: itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber,
+    taxRate: parseFloat(itemTaxRateInp.value),
+    taxValue: parseFloat((itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber * parseFloat(itemTaxRateInp.value)).toFixed(2)),
+    total: parseFloat((itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber * parseFloat(itemTaxRateInp.value)).toFixed(2)),
+  }
+  // pushing newly created item to items array
+  invoiceiIems.push(newitem);
+  // clearing item input fieldset
+  clearItemFieldset();
+  // generating items list
+  updateItemsList()
+}
+
+// adding event listeners to  items list delete buttons
+function addingListenersForDelBtns() {
+  // selecting all delete buttons
+  const itemDelBtn = document.querySelectorAll('.btn--item-del');
+  // attaching for each delete button click event listener with deleteItem function
+  itemDelBtn.forEach(button => button.addEventListener('click', deleteItem));
+}
+
+// delete item from item list function
+function deleteItem(e) {
+  // determine clicked row identifier which equals item object id from array
+  const deletingId = parseFloat(e.target.parentElement.parentElement.dataset.identifier);
+  // splice clicked item from invoiceItems array
+  invoiceiIems.splice((invoiceiIems.findIndex(item => item.id == deletingId)), 1);
+  // generating items working list again
+  updateItemsList()
+}
+
+// clear fields after generate new item
+function clearItemFieldset() {
+  itemNameInp.value = '';
+  itemQuantInp.value = '';
+  itemPriceInp.value = '';
+}
+
+
+function updateItemsList() {
+  workingItemTable.innerHTML = '';
+  invoiceiIems.forEach(item => {
+
+    const newRow = document.createElement('tr');
+    newRow.classList.add('invoice__position');
+    newRow.id = `working-item${item.id}`
+    newRow.dataset.identifier = `${item.id}`;
+    newRow.innerHTML = `
+    <tr id="working-item${item.id} class="invoice__position" id="invoice__item1">
+      <td class="invoice__item-lp"><button class="btn btn--item-del">usuń</button></td>
+      <td class="invoice__item-name">${item.name}</td>
+      <td class="invoice__item-unit">${item.unit}</td>
+      <td class="invoice__item-quantity">${item.quantity}</td>
+      <td class="invoice__item-price">${item.netPrice}</td>
+      <td class="invoice__item-net-value">${item.netValue}</td>
+      <td class="invoice__item-tax-rate">${item.taxRate}</td>
+      <td class="invoice__item-tax-value">${item.taxValue}</td>
+      <td class="invoice__item-total-value">${item.total}</td>
+    </tr>`;
+    workingItemTable.appendChild(newRow);
+
+
+  });
+  addingListenersForDelBtns()
+
+}
+
+
+/*/////////////////////////////////////////
+Generate invoice functions
+----------------------------------------*/
 
 function generateInvoice() {
   const invoiceObj = {
@@ -118,7 +188,6 @@ function generateInvoice() {
   }
 
   // inserting values on invoice
-
   invType.textContent = `${invoiceObj.invoiceType}`;
   invNum.textContent = `nr ${invoiceObj.invoiceNumber}`;
   invPlace.textContent = `Miejsce wystawienia: ${invoiceObj.invoicePlace}`;
