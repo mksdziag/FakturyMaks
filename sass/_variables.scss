@@ -1,23 +1,20 @@
 //////////////////////////////////////
 ////////  Colors
 /////////////////////////////////////
-/* RGB */
-
-// $color1: rgba(239, 111, 108, 1);
-// $color2: rgb(228, 228, 228);
-// $color3: rgba(127, 182, 133, 1);
-// $color4: rgba(66, 106, 90, 1);
 $color5: rgba(86, 86, 86, 1);
 $color4: rgb(236, 62, 106);
-$color2: rgb(231, 233, 219);
+$color2:rgb(212, 212, 212);
 $color3: rgb(231, 231, 231);
 $color1: rgb(57, 161, 149);
 //////////////////////////////////////
-//////// Gradients 
+////////  utilities colors
 /////////////////////////////////////
-$darker: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+$color-border: $color2;
+$color-inputs-bg: #f8f8f8;
+$color-black: #000000;
 //////////////////////////////////////
 ////////  Text Colors
 /////////////////////////////////////
 $color-text: $color5;
 $color-white: #fdfdfd;
+$color-pure-white: #ffffff;

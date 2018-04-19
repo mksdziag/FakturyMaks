@@ -1,0 +1,123 @@
+.invoice {
+  padding: 4rem 2rem;
+  border: 1px solid $color2;
+  box-shadow: 0 .5rem 1rem rgba($color-black, 0.20);
+  &__heading {
+    position: relative;
+    padding: 2.5rem 0 5rem;
+  }
+  &__title {
+    text-align: center;
+    font-size: 2.25rem;
+  }
+  &__details {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    text-align: right;
+  }
+  &__sides {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10rem;
+  }
+  &__side-title {
+    position: absolute;
+    top: -1.5rem;
+    right: 1rem;
+    display: inline-block;
+    padding: .5rem 1rem;
+    font-weight: 400;
+    background-color: $color-pure-white;
+  }
+  &__seller,
+  &__buyer {
+    position: relative;
+    padding: 2rem;
+    width: 40%;
+    max-width: 500px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 1px solid $color2;
+    &-name,
+    &-street,
+    &-city,
+    &-nip {
+      line-height: 1.5;
+    }
+  }
+  &__positions {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-bottom: 10rem;
+    padding: 2rem;
+    font-size: 1.15rem;
+    border: 1px solid $color2;
+  }
+  &__legend {
+    text-align: center;
+    text-transform: uppercase;
+  }
+  &__position {
+    text-align: right;
+    font-size: 1.25rem;
+  }
+  &__item-name {
+    text-align: left;
+  }
+  &__invoice__item-lp,
+  &__item-quantity,
+  &__item-unit {
+    text-align: center;
+  }
+  &__item-price,
+  &__item-net-value,
+  &__item-tax-rate,
+  &__item-tax-value,
+  &__item-total-value {}
+  th,
+  td {
+    padding: .5rem;
+    border: 1px solid $color2;
+  }
+  &__summary {
+    &-row {
+      width: 50%;
+      margin-left: auto;
+      text-align: right;
+      border: 1px solid $color2;
+    }
+    &-legend {
+      text-align: right;
+    }
+  }
+  &__final {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 2rem 1rem;
+    margin-bottom: 5rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    background-color: lighten($color2, 9.5%);
+  }
+  &__signatures {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 15rem;
+  }
+  .buyer-signature,
+  .seller-signature {
+    display: inline-block;
+    width: 35%;
+    min-width: 200px;
+    padding: .5rem;
+    margin: 0 auto;
+    line-height: 1.5;
+    text-align: center;
+    border-top: 2px dotted $color5;
+  }
+}

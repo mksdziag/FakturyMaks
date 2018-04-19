@@ -25,7 +25,6 @@ img {
   width: 100%;
 }
 
-/* RGB */
 .wrapper {
   margin: 0 auto;
   width: 100%;
@@ -59,26 +58,25 @@ html {
 
 body {
   font-family: "Fira Sans", sans-serif;
-  color: #565656;
   line-height: 1.25;
+  color: #565656;
 }
 
 .btn {
   display: block;
   padding: 1rem;
+  font-size: 1.25rem;
   text-transform: uppercase;
-  font-size: 1.75rem;
-  color: white;
   border: none;
-  transition: 150ms;
   border-radius: 3px;
+  color: #fdfdfd;
+  transition: 150ms;
 }
 
 .btn--gen-inv {
   width: 50%;
   margin: 0 auto 5rem;
   background-color: #39a195;
-  color: white;
   font-weight: 700;
   letter-spacing: 3px;
   padding: 1rem 2rem;
@@ -86,53 +84,36 @@ body {
 }
 
 .btn--add-item {
-  font-size: 1.25rem;
-  background-color: #39a195;
   font-weight: 700;
+  background-color: #39a195;
 }
 
 .btn--item-del {
-  background-color: #ec3e6a;
-  font-size: 1rem;
   padding: .5rem 1rem;
-  border-radius: 3px;
+  margin: 0 auto;
+  font-size: 1rem;
   font-weight: 700;
+  background-color: #ec3e6a;
 }
 
+.select,
 .input {
   display: inline-block;
-  padding: .5rem 1rem;
   font-size: 1.5rem;
+  padding: .5rem 1rem;
   margin: .25rem;
-  border-radius: 3px;
   border: none;
-  background-color: #fafafa;
+  border-radius: 3px;
   border-bottom: 1px solid #d4d4d4;
-  flex: 1;
+  background-color: #f8f8f8;
   transition: all 150ms ease-out;
+  flex: 1;
 }
 
+.select:focus,
 .input:focus {
   border-bottom: 1px solid #39a195;
-}
-
-.select {
-  display: inline-block;
-  padding: .5rem 1rem;
-  font-size: 1.5rem;
-  margin: .25rem;
-  background-color: white;
-  border-radius: 3px;
-  border: 1px solid #d4d4d4;
-  flex: 1;
-  border: none;
-  background-color: #fafafa;
-  border-bottom: 1px solid #d4d4d4;
-  transition: all 150ms ease-out;
-}
-
-.select:focus {
-  border-bottom: 1px solid #39a195;
+  box-shadow: 0 0.2rem 0.25rem rgba(57, 161, 149, 0.75);
 }
 
 .label {
@@ -142,55 +123,55 @@ body {
 
 th,
 td {
-  border: 1px solid #e7e9db;
   padding: .5rem;
+  border: 1px solid #d4d4d4;
 }
 
 *:focus {
   outline: none;
-  box-shadow: 0 0.25rem 0.25rem -0.1rem rgba(0, 0, 0, 0.25);
 }
 
 .main-header {
   margin-top: 2rem;
   margin-bottom: 5rem;
   text-align: center;
-  font-size: 2rem;
 }
 
 .fieldset {
+  position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid #e7e9db;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  margin-bottom: 3rem;
   padding: 1.5rem;
+  margin-bottom: 3rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 3px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   flex: 1;
-  position: relative;
 }
 
 .fieldset__name {
   position: absolute;
   top: -1.5rem;
   left: 1rem;
-  font-size: 1.5rem;
-  font-weight: 700;
   display: block;
   padding: .5rem 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
   background: #39a195;
   border-radius: 3px;
-  color: white;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
 }
 
-.items-list {
+.draft-constructor {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
-.items-list > * {
+.draft-constructor > * {
   flex: 1;
   margin: .5rem;
 }
@@ -202,7 +183,7 @@ td {
   align-items: center;
 }
 
-.sides-input-wrapper {
+.data__sides {
   display: flex;
 }
 
@@ -210,15 +191,36 @@ td {
   margin-right: 1rem;
 }
 
+.draft__legend {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.draft__positions {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-bottom: 10rem;
+  text-align: right;
+  font-weight: 700;
+  border: 1px solid #d4d4d4;
+}
+
+.draft__item-delete {
+  text-align: center;
+  font-weight: 700;
+}
+
 .invoice {
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
+  border: 1px solid #d4d4d4;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  border: 1px solid #e7e9db;
 }
 
 .invoice__heading {
   position: relative;
-  padding: 3rem 0 6rem;
+  padding: 2.5rem 0 5rem;
 }
 
 .invoice__title {
@@ -236,52 +238,42 @@ td {
 .invoice__sides {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   margin-bottom: 10rem;
 }
 
 .invoice__side-title {
-  font-weight: 400;
   position: absolute;
   top: -1.5rem;
   right: 1rem;
-  padding: .5rem 1rem;
   display: inline-block;
-  background-color: white;
+  padding: .5rem 1rem;
+  font-weight: 400;
+  background-color: #ffffff;
 }
 
 .invoice__seller, .invoice__buyer {
   position: relative;
-  border: 1px solid #e7e9db;
   padding: 2rem;
-  font-size: 1.5rem;
   width: 40%;
   max-width: 500px;
+  font-size: 1.5rem;
   font-weight: 700;
+  border: 1px solid #d4d4d4;
 }
 
-.invoice__seller-name, .invoice__buyer-name {
-  line-height: 1.5;
-}
-
-.invoice__seller-street, .invoice__buyer-street {
-  line-height: 1.5;
-}
-
-.invoice__seller-city, .invoice__buyer-city {
-  line-height: 1.5;
-}
-
-.invoice__seller-nip, .invoice__buyer-nip {
+.invoice__seller-name, .invoice__seller-street, .invoice__seller-city, .invoice__seller-nip, .invoice__buyer-name, .invoice__buyer-street, .invoice__buyer-city, .invoice__buyer-nip {
   line-height: 1.5;
 }
 
 .invoice__positions {
-  padding: 2rem;
-  border: 1px solid #e7e9db;
   width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
   margin-bottom: 10rem;
+  padding: 2rem;
+  font-size: 1.15rem;
+  border: 1px solid #d4d4d4;
 }
 
 .invoice__legend {
@@ -291,24 +283,28 @@ td {
 
 .invoice__position {
   text-align: right;
+  font-size: 1.25rem;
 }
 
 .invoice__item-name {
   text-align: left;
 }
 
+.invoice__invoice__item-lp, .invoice__item-quantity, .invoice__item-unit {
+  text-align: center;
+}
+
 .invoice th,
 .invoice td {
-  border: 1px solid #e7e9db;
   padding: .5rem;
+  border: 1px solid #d4d4d4;
 }
 
 .invoice__summary-row {
-  adding: 2rem;
-  border: 1px solid #e7e9db;
   width: 50%;
   margin-left: auto;
   text-align: right;
+  border: 1px solid #d4d4d4;
 }
 
 .invoice__summary-legend {
@@ -318,12 +314,12 @@ td {
 .invoice__final {
   display: flex;
   flex-direction: column;
-  font-size: 1.5rem;
   width: 50%;
   padding: 2rem 1rem;
-  background-color: #f2f3eb;
+  margin-bottom: 5rem;
+  font-size: 1.5rem;
   line-height: 1.5;
-  margin-bottom: 5rer;
+  background-color: #ececec;
 }
 
 .invoice__signatures {
@@ -335,35 +331,13 @@ td {
 
 .invoice .buyer-signature,
 .invoice .seller-signature {
-  text-align: center;
-  line-height: 1.5;
   display: inline-block;
-  padding: .5rem;
-  min-width: 200px;
   width: 35%;
+  min-width: 200px;
+  padding: .5rem;
   margin: 0 auto;
+  line-height: 1.5;
+  text-align: center;
   border-top: 2px dotted #565656;
-}
-
-.draft__legend {
-  font-weight: 700;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.draft__positions {
-  padding: 2rem;
-  border: 1px solid #e7e9db;
-  width: 100%;
-  border-spacing: 0;
-  border-collapse: collapse;
-  margin-bottom: 10rem;
-  text-align: right;
-  font-weight: 700;
-}
-
-.draft__item-delete {
-  text-align: center;
-  font-weight: 700;
 }
 /*# sourceMappingURL=main.css.map */

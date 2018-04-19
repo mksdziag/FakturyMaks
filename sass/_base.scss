@@ -1,51 +1,49 @@
 *:focus {
   outline: none;
-  box-shadow: 0 .25rem .25rem -.1rem rgba(0, 0, 0, 0.25);
 }
 
 .main-header {
   margin-top: 2rem;
   margin-bottom: 5rem;
   text-align: center;
-  font-size: 2rem;
 }
 
 .fieldset {
+  position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid $color2;
-  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.20);
-  margin-bottom: 3rem;
   padding: 1.5rem;
+  margin-bottom: 3rem;
+  border: 1px solid $color2;
+  border-radius: 3px;
+  box-shadow: 0 .5rem 1rem rgba($color-black, 0.20);
   flex: 1;
-  position: relative;
   &__name {
     position: absolute;
     top: -1.5rem;
     left: 1rem;
-    font-size: 1.5rem;
-    font-weight: 700;
     display: block;
     padding: .5rem 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $color-pure-white;
     background: $color1;
     border-radius: 3px;
-    color: white;
+    box-shadow: 0 .25rem .75rem rgba($color-black, 0.20);
   }
 }
 
-.items-list {
+.draft-constructor {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
   &>* {
     flex: 1;
     margin: .5rem;
   }
 }
-
-.item__name {}
 
 .input-wrapper {
   width: 100%;
@@ -54,157 +52,29 @@
   align-items: center;
 }
 
-.sides-input-wrapper {
+.data__sides {
   display: flex;
 }
 
-.data__seller,
-  {
+.data__seller {
   margin-right: 1rem;
-}
-
-.invoice {
-  padding: 5rem 2rem;
-  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.20);
-  border: 1px solid $color2;
-  &__heading {
-    position: relative;
-    padding: 3rem 0 6rem;
-  }
-  &__title {
-    text-align: center;
-    font-size: 2.25rem;
-  }
-  &__details {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    text-align: right;
-  }
-  &__sides {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10rem;
-  }
-  &__side-title {
-    font-weight: 400;
-    position: absolute;
-    top: -1.5rem;
-    right: 1rem;
-    padding: .5rem 1rem;
-    display: inline-block;
-    background-color: white;
-  }
-  &__seller,
-  &__buyer {
-    position: relative;
-    border: 1px solid $color2;
-    padding: 2rem;
-    font-size: 1.5rem;
-    width: 40%;
-    max-width: 500px;
-    font-weight: 700;
-    &-name {
-      line-height: 1.5;
-    }
-    &-street {
-      line-height: 1.5;
-    }
-    &-city {
-      line-height: 1.5;
-    }
-    &-nip {
-      line-height: 1.5;
-    }
-  }
-  &__positions {
-    padding: 2rem;
-    border: 1px solid $color2;
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
-    margin-bottom: 10rem;
-  }
-  &__legend {
-    text-align: center;
-    text-transform: uppercase;
-  }
-  &__position {
-    text-align: right;
-  }
-  &__item-name {
-    text-align: left;
-  }
-  &__item-unit,
-  &__item-quantity,
-  &__item-price,
-  &__item-net-value,
-  &__item-tax-rate,
-  &__item-tax-value,
-  &__item-total-value {}
-  th,
-  td {
-    border: 1px solid $color2;
-    padding: .5rem;
-  }
-  &__summary {
-    &-row {
-      adding: 2rem;
-      border: 1px solid $color2;
-      width: 50%;
-      margin-left: auto;
-      text-align: right;
-    }
-    &-legend {
-      text-align: right;
-    }
-  }
-  &__final {
-    display: flex;
-    flex-direction: column;
-    font-size: 1.5rem;
-    width: 50%;
-    padding: 2rem 1rem;
-    background-color: lighten($color2, 5%);
-    line-height: 1.5;
-    margin-bottom: 5rer;
-  }
-  &__signatures {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    height: 15rem;
-  }
-  .buyer-signature,
-  .seller-signature {
-    text-align: center;
-    line-height: 1.5;
-    display: inline-block;
-    padding: .5rem;
-    min-width: 200px;
-    width: 35%;
-    margin: 0 auto;
-    border-top: 2px dotted $color5;
-  }
 }
 
 .draft {
   &__legend {
-    font-weight: 700;
+    font-size: 1.25rem;
     text-transform: uppercase;
     text-align: center;
   }
   &__positions {
-    padding: 2rem;
-    border: 1px solid $color2;
     width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
     margin-bottom: 10rem;
     text-align: right;
     font-weight: 700;
+    border: 1px solid $color2;
   }
-  &__summary-legend {}
   &__item-delete {
     text-align: center;
     font-weight: 700;

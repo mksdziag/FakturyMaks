@@ -22,17 +22,17 @@ const payMethodInp = document.querySelector('.payment__method');
 const payTermInp = document.querySelector('.payment__term');
 const payAccountInp = document.querySelector('.payment__account');
 // invoice position inputs
-const itemNameInp = document.querySelector('.item__name');
-const itemUnitInp = document.querySelector('.item__unit');
-const itemQuantInp = document.querySelector('.item__quantity');
-const itemPriceInp = document.querySelector('.item__price');
-const itemNetValInp = document.querySelector('.item__net-value');
-const itemTaxRateInp = document.querySelector('.item__tax-rate');
-const itemTaxValInp = document.querySelector('.item__tax-value');
-const itemTotValInp = document.querySelector('.item__total-value');
+const itemNameInp = document.querySelector('.draft-item__name');
+const itemUnitInp = document.querySelector('.draft-item__unit');
+const itemQuantInp = document.querySelector('.draft-item__quantity');
+const itemPriceInp = document.querySelector('.draft-item__price');
+const itemNetValInp = document.querySelector('.draft-item__net-value');
+const itemTaxRateInp = document.querySelector('.draft-item__tax-rate');
+const itemTaxValInp = document.querySelector('.draft-item__tax-value');
+const itemTotValInp = document.querySelector('.draft-item__total-value');
 const addBtn = document.querySelector('.btn--add-item');
 
-const draftItemTable = document.querySelector('.draft-items');
+const draftItemTable = document.querySelector('.draft-added-items');
 const drawtSumTable = document.querySelector('.draft__summary')
 const itemDelBtn = document.querySelectorAll('.btn--item-del');
 
