@@ -202,6 +202,11 @@
     border-collapse: collapse;
     margin-bottom: 10rem;
     text-align: right;
+    font-weight: 700;
   }
   &__summary-legend {}
+  &__item-delete {
+    text-align: center;
+    font-weight: 700;
+  }
 }

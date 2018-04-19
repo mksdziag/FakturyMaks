@@ -9,6 +9,7 @@
   color: white;
   border: none;
   transition: 150ms;
+  border-radius: 3px;
   &--gen-inv {
     width: 50%;
     margin: 0 auto 5rem;
@@ -20,14 +21,16 @@
     box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.25);
   }
   &--add-item {
-    font-size: 1rem;
+    font-size: 1.25rem;
     background-color: $color1;
+    font-weight: 700;
   }
   &--item-del {
     background-color: $color4;
     font-size: 1rem;
     padding: .5rem 1rem;
     border-radius: 3px;
+    font-weight: 700;
   }
 }
 

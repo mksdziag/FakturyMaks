@@ -71,12 +71,13 @@ body {
   color: white;
   border: none;
   transition: 150ms;
+  border-radius: 3px;
 }
 
 .btn--gen-inv {
   width: 50%;
   margin: 0 auto 5rem;
-  background-color: #ef6f6c;
+  background-color: #39a195;
   color: white;
   font-weight: 700;
   letter-spacing: 3px;
@@ -85,15 +86,17 @@ body {
 }
 
 .btn--add-item {
-  font-size: 1rem;
-  background-color: #ef6f6c;
+  font-size: 1.25rem;
+  background-color: #39a195;
+  font-weight: 700;
 }
 
 .btn--item-del {
-  background-color: #426a5a;
+  background-color: #ec3e6a;
   font-size: 1rem;
   padding: .5rem 1rem;
   border-radius: 3px;
+  font-weight: 700;
 }
 
 .input {
@@ -110,7 +113,7 @@ body {
 }
 
 .input:focus {
-  border-bottom: 1px solid #ef6f6c;
+  border-bottom: 1px solid #39a195;
 }
 
 .select {
@@ -129,7 +132,7 @@ body {
 }
 
 .select:focus {
-  border-bottom: 1px solid #ef6f6c;
+  border-bottom: 1px solid #39a195;
 }
 
 .label {
@@ -139,7 +142,7 @@ body {
 
 th,
 td {
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   padding: .5rem;
 }
 
@@ -158,7 +161,7 @@ td {
 .fieldset {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   margin-bottom: 3rem;
   padding: 1.5rem;
@@ -174,7 +177,7 @@ td {
   font-weight: 700;
   display: block;
   padding: .5rem 1.5rem;
-  background: #ef6f6c;
+  background: #39a195;
   border-radius: 3px;
   color: white;
 }
@@ -210,7 +213,7 @@ td {
 .invoice {
   padding: 5rem 2rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
 }
 
 .invoice__heading {
@@ -248,7 +251,7 @@ td {
 
 .invoice__seller, .invoice__buyer {
   position: relative;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   padding: 2rem;
   font-size: 1.5rem;
   width: 40%;
@@ -274,7 +277,7 @@ td {
 
 .invoice__positions {
   padding: 2rem;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
@@ -296,13 +299,13 @@ td {
 
 .invoice th,
 .invoice td {
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   padding: .5rem;
 }
 
 .invoice__summary-row {
   adding: 2rem;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   width: 50%;
   margin-left: auto;
   text-align: right;
@@ -318,7 +321,7 @@ td {
   font-size: 1.5rem;
   width: 50%;
   padding: 2rem 1rem;
-  background-color: #f1f1f1;
+  background-color: #f2f3eb;
   line-height: 1.5;
   margin-bottom: 5rer;
 }
@@ -350,11 +353,17 @@ td {
 
 .draft__positions {
   padding: 2rem;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #e7e9db;
   width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
   margin-bottom: 10rem;
   text-align: right;
+  font-weight: 700;
+}
+
+.draft__item-delete {
+  text-align: center;
+  font-weight: 700;
 }
 /*# sourceMappingURL=main.css.map */
