@@ -133,7 +133,7 @@ td {
 
 .invalid {
   border-bottom: 1px solid #ec3e6a;
-  background-color: rgba(236, 62, 106, 0.1);
+  background-color: rgba(236, 62, 106, 0.055);
   box-shadow: 0 0.2rem 0.25rem rgba(236, 62, 106, 0.75);
 }
 

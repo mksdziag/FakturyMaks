@@ -77,28 +77,45 @@ const genBtn = document.querySelector('.btn--gen-inv');
 genBtn.addEventListener('click', generateInvoice);
 addBtn.addEventListener('click', addItem);
 
+itemQuantInp.addEventListener('change', calculateItemTaxes);
+itemPriceInp.addEventListener('change', calculateItemTaxes);
+itemNetValInp.addEventListener('change', calculateItemTaxes);
+itemTaxRateInp.addEventListener('change', calculateItemTaxes);
+
+function calculateItemTaxes() {
+  if (itemQuantInp.value !== '' && itemPriceInp.value !== '') {
+    itemNetValInp.value = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber;
+    itemTaxValInp.value = (itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100)).toFixed(2);
+    itemTotValInp.value = (itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100)).toFixed(2);
+  }
+}
 
 
-// input validation 
 
-sellerPostCodeInp.addEventListener('blur', validatePostCode);
-buyerPostCodeInp.addEventListener('blur', validatePostCode);
-sellerNipInp.addEventListener('blur', validateNip);
-buyerNipInp.addEventListener('blur', validateNip);
-payAccountInp.addEventListener('blur', validateAccount);
 
-docNumInp.addEventListener('blur', validateCont);
-docPlaceInp.addEventListener('blur', validateCont);
-docDateInp.addEventListener('blur', validateCont);
-docSellDateInp.addEventListener('blur', validateCont);
-sellerNameInp.addEventListener('blur', validateCont);
-sellerStreetInp.addEventListener('blur', validateCont);
-sellerCityInp.addEventListener('blur', validateCont);
-buyerNameInp.addEventListener('blur', validateCont);
-buyerStreetInp.addEventListener('blur', validateCont);
-buyerCityInp.addEventListener('blur', validateCont);
-payMethodInp.addEventListener('blur', validateCont);
-payTermInp.addEventListener('blur', validateCont);
+
+const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
+inputs.forEach((input) => input.addEventListener('blur', validateInputs));
+
+
+function validateInputs(e) {
+  if (e.target === sellerPostCodeInp || e.target === sellerPostCodeInp) {
+    validatePostCode(e)
+  } else if (e.target === sellerNipInp || e.target === buyerNipInp) {
+    validateNip(e);
+  } else if (e.target === payAccountInp) {
+    validateAccount(e);
+  } else {
+    if (e.target.value === '' || e.target.value === ' ') {
+      e.target.classList.add('invalid');
+    } else {
+      e.target.classList.remove('invalid');
+    }
+  }
+
+}
+
+
 
 function validateCont(e) {
   if (e.target.value === '' || e.target.value === ' ') {
@@ -215,10 +232,10 @@ function assignValuesToItem(item) {
   item.unit = itemUnitInp.value;
   item.quantity = itemQuantInp.valueAsNumber;
   item.netPrice = itemPriceInp.valueAsNumber;
-  item.netValue = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber;
+  item.netValue = itemNetValInp.valueAsNumber;
   item.taxRate = parseFloat(itemTaxRateInp.value);
-  item.taxValue = itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100);
-  item.total = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100);
+  item.taxValue = itemTaxValInp.valueAsNumber;
+  item.total = itemTotValInp.valueAsNumber;
 }
 
 
@@ -249,6 +266,9 @@ function clearItemFieldset() {
   itemNameInp.value = '';
   itemQuantInp.value = '';
   itemPriceInp.value = '';
+  itemNetValInp.value = '';
+  itemTaxValInp.value = '';
+  itemTotValInp.value = '';
   // target focus to item name field
   itemNameInp.focus();
 }
@@ -343,7 +363,6 @@ function generateSumRow(boolie, checkingTaxRate) {
 
 // function for draft items summary - checking summary items values and calculating specific tax rate partial values
 function checkVatRates(arr) {
-  debugger;
   // boolean values for check if there are some products with specific tax rates
   const areThere00 = arr.some((item) => item.taxRate === 0);
   const areThere3 = arr.some((item) => item.taxRate === 3);
@@ -389,7 +408,15 @@ function generateInvoiceSumRow(boolie, checkingTaxRate) {
   }
 };
 
+
 function generateInvoice() {
+
+  const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
+  if (inputs.some((input) => input.value === '' || input.value === ' ')) {
+    inputs.filter(input => input.value === '' || input.value === ' ').forEach(input => input.classList.add('invalid'));
+    return;
+  }
+
   const invoiceObj = {
     invoiceType: docTypeInp.value,
     invoiceNumber: docNumInp.value,
