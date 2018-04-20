@@ -290,10 +290,10 @@ function updateItemsList() {
       <td class="draft__item-unit">${item.unit}</td>
       <td class="draft__item-quantity">${item.quantity}</td>
       <td class="draft__item-price">${item.netPrice}</td>
-      <td class="draft__item-net-value">${item.netValue.toFixed(2)}</td>
+      <td class="draft__item-net-value">${item.netValue}</td>
       <td class="draft__item-tax-rate">${item.taxRate}</td>
-      <td class="draft__item-tax-value">${item.taxValue.toFixed(2)}</td>
-      <td class="draft__item-total-value">${item.total.toFixed(2)}</td>`;
+      <td class="draft__item-tax-value">${item.taxValue}</td>
+      <td class="draft__item-total-value">${item.total}</td>`;
     draftItemTable.appendChild(newRow);
 
   });
@@ -324,10 +324,10 @@ function updateDraftSumValues() {
   const draftSumRow = document.createElement('tr');
   draftSumRow.classList.add('draft__summary-row');
   draftSumRow.innerHTML = `<th colspan="5" class="draft__summary-legend">Razem:</th>
-                          <th class="draft__summary-net-value">${sumaNet.toFixed(2)}</th>
+                          <th class="draft__summary-net-value">${sumaNet}</th>
                           <th class=""></th>
-                          <th class="draft__summary-vat-value">${sumaVat.toFixed(2)}</th>
-                          <th class="draft__summary-total">${sumaTotal.toFixed(2)}</th>`
+                          <th class="draft__summary-vat-value">${sumaVat}</th>
+                          <th class="draft__summary-total">${sumaTotal}</th>`
   drawtSumTable.appendChild(draftSumRow);
   // total invoice value;
   invoiceTotal = sumaTotal;
@@ -353,10 +353,10 @@ function generateSumRow(boolie, checkingTaxRate) {
     vatRatefinalrow.classList.add('draft__summary-row');
     vatRatefinalrow.innerHTML = `
                             <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vatRateNetValue.toFixed(2)}</td>
+                            <td class="draft__summary-net-value">${vatRateNetValue}</td>
                             <td class="">${checkingTaxRate}%</td>
-                            <td class="draft__summary-vat-value">${vatRateTax.toFixed(2)}</td>
-                            <td class="draft__summary-total">${vatRateTotal.toFixed(2)}</td>`
+                            <td class="draft__summary-vat-value">${vatRateTax}</td>
+                            <td class="draft__summary-total">${vatRateTotal}</td>`
     drawtSumTable.appendChild(vatRatefinalrow);
   }
 };
@@ -400,10 +400,10 @@ function generateInvoiceSumRow(boolie, checkingTaxRate) {
     vatRatefinalrow.classList.add('invoice__summary-row');
     vatRatefinalrow.innerHTML = `
                             <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                            <td class="invoice__summary-net-value">${vatRateNetValue.toFixed(2)}</td>
+                            <td class="invoice__summary-net-value">${vatRateNetValue}</td>
                             <td class="">${checkingTaxRate}%</td>
-                            <td class="invoice__summary-vat-value">${vatRateTax.toFixed(2)}</td>
-                            <td class="invoice__summary-total">${vatRateTotal.toFixed(2)}</td>`
+                            <td class="invoice__summary-vat-value">${vatRateTax}</td>
+                            <td class="invoice__summary-total">${vatRateTotal}</td>`
     invoicePositionsTable.appendChild(vatRatefinalrow);
   }
 };
@@ -482,10 +482,10 @@ function generateInvoicePositions(arr) {
         <td class="invoice__item-unit">${item.unit}</td>
         <td class="invoice__item-quantity">${item.quantity}</td>
         <td class="invoice__item-price">${item.netPrice}</td>
-        <td class="invoice__item-net-value">${item.netValue.toFixed(2)}</td>
+        <td class="invoice__item-net-value">${item.netValue}</td>
         <td class="invoice__item-tax-rate">${item.taxRate}</td>
-        <td class="invoice__item-tax-value">${item.taxValue.toFixed(2)}</td>
-        <td class="invoice__item-total-value">${item.total.toFixed(2)}</td>`;
+        <td class="invoice__item-tax-value">${item.taxValue}</td>
+        <td class="invoice__item-total-value">${item.total}</td>`;
     invoicePositionsTable.appendChild(newRow);
   });
 
@@ -504,10 +504,10 @@ function generateInvoicePositions(arr) {
   const invoiceSumRow = document.createElement('tr');
   invoiceSumRow.classList.add('invoice__summary-row');
   invoiceSumRow.innerHTML = `<th colspan="5" class="invoice__summary-legend">Razem:</th>
-                          <th class="invoice__summary-net-value">${sumaNet.toFixed(2)}</th>
+                          <th class="invoice__summary-net-value">${sumaNet}</th>
                           <th class=""></th>
-                          <th class="invoice__summary-vat-value">${sumaVat.toFixed(2)}</th>
-                          <th class="invoice__summary-total">${sumaTotal.toFixed(2)}</th>`
+                          <th class="invoice__summary-vat-value">${sumaVat}</th>
+                          <th class="invoice__summary-total">${sumaTotal}</th>`
   invoicePositionsTable.appendChild(invoiceSumRow);
 
 
