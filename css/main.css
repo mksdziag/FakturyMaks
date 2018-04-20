@@ -88,6 +88,10 @@ body {
   background-color: #39a195;
 }
 
+.btn--add-item:disabled {
+  background-color: #bee8e3;
+}
+
 .btn--item-del {
   padding: .5rem 1rem;
   margin: 0 auto;

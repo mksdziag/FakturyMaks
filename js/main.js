@@ -154,9 +154,20 @@ function validateAccount(e) {
 }
 
 
+// input items validation
+itemNameInp.addEventListener('keyup', disableAddBtn);
+itemQuantInp.addEventListener('keyup', disableAddBtn);
+itemPriceInp.addEventListener('keyup', disableAddBtn);
 
-
-
+function disableAddBtn() {
+  if (itemNameInp.value !== '' &&
+    itemQuantInp.value !== '' &&
+    itemPriceInp.value !== '') {
+    addBtn.disabled = false;
+  } else {
+    addBtn.disabled = true;
+  }
+}
 
 
 // create empty array for all invoice items
@@ -192,6 +203,8 @@ function addItem() {
   updateItemsList()
   // print summary vat totals in draft prewiev
   updateDraftSumValues()
+
+  addBtn.disabled = true;
 }
 
 
