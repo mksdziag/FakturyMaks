@@ -74,14 +74,105 @@ const genBtn = document.querySelector('.btn--gen-inv');
 
 
 // generate invoice event listener
-
 genBtn.addEventListener('click', generateInvoice);
 addBtn.addEventListener('click', addItem);
+
+
+
+// input validation 
+
+sellerPostCodeInp.addEventListener('blur', validatePostCode);
+buyerPostCodeInp.addEventListener('blur', validatePostCode);
+sellerNipInp.addEventListener('blur', validateNip);
+buyerNipInp.addEventListener('blur', validateNip);
+payAccountInp.addEventListener('blur', validateAccount);
+
+docNumInp.addEventListener('blur', validateCont);
+docPlaceInp.addEventListener('blur', validateCont);
+docDateInp.addEventListener('blur', validateCont);
+docSellDateInp.addEventListener('blur', validateCont);
+sellerNameInp.addEventListener('blur', validateCont);
+sellerStreetInp.addEventListener('blur', validateCont);
+sellerCityInp.addEventListener('blur', validateCont);
+buyerNameInp.addEventListener('blur', validateCont);
+buyerStreetInp.addEventListener('blur', validateCont);
+buyerCityInp.addEventListener('blur', validateCont);
+payMethodInp.addEventListener('blur', validateCont);
+payTermInp.addEventListener('blur', validateCont);
+
+function validateCont(e) {
+  if (e.target.value === '' || e.target.value === ' ') {
+    e.target.classList.add('invalid');
+  } else {
+    e.target.classList.remove('invalid');
+  }
+}
+
+function validatePostCode(e) {
+  reg = /^\d\d-\d\d\d$/;
+  if (e.target.classList.contains('data__seller-post-code')) {
+    if (!reg.test(sellerPostCodeInp.value)) {
+      e.target.classList.add('invalid')
+    } else {
+      e.target.classList.remove('invalid')
+    }
+  } else if (e.target.classList.contains('data__buyer-post-code')) {
+    if (!reg.test(sellerPostCodeInp.value)) {
+      e.target.classList.add('invalid')
+    } else {
+      e.target.classList.remove('invalid')
+    }
+  }
+}
+
+function validateNip(e) {
+  reg = /^\d{3}[- ]?\d{3}[- ]?\d\d[- ]?\d\d\s?$/;
+  if (e.target.classList.contains('data__seller-nip')) {
+    if (!reg.test(sellerNipInp.value)) {
+      e.target.classList.add('invalid')
+    } else {
+      e.target.classList.remove('invalid')
+    }
+  } else if (e.target.classList.contains('data__buyer-nip')) {
+    if (!reg.test(buyerNipInp.value)) {
+      e.target.classList.add('invalid')
+    } else {
+      e.target.classList.remove('invalid')
+    }
+  }
+}
+
+
+
+function validateAccount(e) {
+  reg = /^([A-Za-z]{2})?[ ]?\d{2}([ ]?\d{4}){6}\s?$/;
+  if (!reg.test(payAccountInp.value)) {
+    e.target.classList.add('invalid')
+  } else {
+    e.target.classList.remove('invalid')
+  }
+}
+
+
+
+
+
 
 
 // create empty array for all invoice items
 const invoiceItems = [];
 let invoiceTotal;
+
+
+class Item {
+  constructor() {
+    {}
+  }
+  sayID() {
+    console.log(`My id is ${this.id}`);
+  }
+}
+
 
 /*------------------------------------------------------------------------------------
 Input section Functions                              
@@ -89,48 +180,33 @@ Input section Functions
 
 // adding new items to array with item objects
 function addItem() {
-  // creating new invoice item
-  const newitem = {
-    id: invoiceItems.length,
-    name: itemNameInp.value,
-    unit: itemUnitInp.value,
-    quantity: itemQuantInp.valueAsNumber,
-    netPrice: itemPriceInp.valueAsNumber,
-    netValue: itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber,
-    taxRate: parseFloat(itemTaxRateInp.value),
-    taxValue: parseFloat((itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber * parseFloat(itemTaxRateInp.value)).toFixed(2)),
-    total: parseFloat((itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber * parseFloat(itemTaxRateInp.value)).toFixed(2)),
-  }
+  // creating new draft item
+  const newItem = new Item;
+  // assigning input values to item
+  assignValuesToItem(newItem);
   // pushing newly created item to items array
-  invoiceItems.push(newitem);
+  invoiceItems.push(newItem);
   // clearing item input fieldset
   clearItemFieldset();
   // generating items list
   updateItemsList()
   // print summary vat totals in draft prewiev
   updateDraftSumValues()
-
 }
 
 
-
-// array prototype new functions
-Array.prototype.totalTaxVal = function () {
-  return this.reduce(function (acc, obj) {
-    return acc + obj.taxValue;
-  }, 0);
+function assignValuesToItem(item) {
+  // asigning values to newitem
+  item.id = invoiceItems.length;
+  item.name = itemNameInp.value;
+  item.unit = itemUnitInp.value;
+  item.quantity = itemQuantInp.valueAsNumber;
+  item.netPrice = itemPriceInp.valueAsNumber;
+  item.netValue = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber;
+  item.taxRate = parseFloat(itemTaxRateInp.value);
+  item.taxValue = itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100);
+  item.total = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100);
 }
-Array.prototype.totalnetVal = function () {
-  return this.reduce(function (acc, obj) {
-    return acc + obj.netValue;
-  }, 0);
-}
-Array.prototype.totalVal = function () {
-  return this.reduce(function (acc, obj) {
-    return acc + obj.total;
-  }, 0);
-}
-
 
 
 // adding event listeners to  items list delete buttons
@@ -140,7 +216,6 @@ function addingListenersForDelBtns() {
   // attaching for each delete button click event listener with deleteItem function
   itemDelBtn.forEach(button => button.addEventListener('click', deleteItem));
 }
-
 
 
 // delete item from item list function
@@ -156,20 +231,22 @@ function deleteItem(e) {
 }
 
 
-
 // clear fields after generate new item
 function clearItemFieldset() {
   itemNameInp.value = '';
   itemQuantInp.value = '';
   itemPriceInp.value = '';
+  // target focus to item name field
+  itemNameInp.focus();
 }
 
 
 
 function updateItemsList() {
-  draftItemTable.innerHTML = '';
+  clearInnerHtml(draftItemTable);
+  // for each drafted item perform same action
   invoiceItems.forEach(item => {
-
+    // create newtable row
     const newRow = document.createElement('tr');
     newRow.classList.add('draft__position');
     newRow.id = `draft-item${item.id}`
@@ -180,181 +257,92 @@ function updateItemsList() {
       <td class="draft__item-unit">${item.unit}</td>
       <td class="draft__item-quantity">${item.quantity}</td>
       <td class="draft__item-price">${item.netPrice}</td>
-      <td class="draft__item-net-value">${item.netValue}</td>
+      <td class="draft__item-net-value">${item.netValue.toFixed(2)}</td>
       <td class="draft__item-tax-rate">${item.taxRate}</td>
-      <td class="draft__item-tax-value">${item.taxValue}</td>
-      <td class="draft__item-total-value">${item.total}</td>`;
+      <td class="draft__item-tax-value">${item.taxValue.toFixed(2)}</td>
+      <td class="draft__item-total-value">${item.total.toFixed(2)}</td>`;
     draftItemTable.appendChild(newRow);
 
-
   });
+  // add event listeners to delete buttons 
   addingListenersForDelBtns()
-
 }
 
+
+function clearInnerHtml(elem) {
+  elem.innerHTML = '';
+}
 
 
 function updateDraftSumValues() {
   // remove all content from summary draft table
-  drawtSumTable.innerHTML = '';
-
-  // draft items summaries
-  const sumaNet = invoiceItems.reduce(function (acc, item) {
+  clearInnerHtml(drawtSumTable)
+  //calculatinh draft items table summaries
+  const sumaNet = invoiceItems.reduce((acc, item) => {
     return acc + item.netValue;
-  }, 0).toFixed(2);
-  const sumaVat = invoiceItems.reduce(function (acc, item) {
+  }, 0);
+  const sumaVat = invoiceItems.reduce((acc, item) => {
     return acc + item.taxValue;
-  }, 0).toFixed(2);
-  const sumaTotal = invoiceItems.reduce(function (acc, item) {
+  }, 0);
+  const sumaTotal = invoiceItems.reduce((acc, item) => {
     return acc + item.total;
-  }, 0).toFixed(2);
+  }, 0);
 
   const draftSumRow = document.createElement('tr');
   draftSumRow.classList.add('draft__summary-row');
   draftSumRow.innerHTML = `<th colspan="5" class="draft__summary-legend">Razem:</th>
-                          <th class="draft__summary-net-value">${sumaNet}</th>
+                          <th class="draft__summary-net-value">${sumaNet.toFixed(2)}</th>
                           <th class=""></th>
-                          <th class="draft__summary-vat-value">${sumaVat}</th>
-                          <th class="draft__summary-total">${sumaTotal}</th>`
+                          <th class="draft__summary-vat-value">${sumaVat.toFixed(2)}</th>
+                          <th class="draft__summary-total">${sumaTotal.toFixed(2)}</th>`
   drawtSumTable.appendChild(draftSumRow);
   // total invoice value;
   invoiceTotal = sumaTotal;
   // print summary svat stakes in draft prewiev
-  checkVatRates(invoiceItems)
+  checkVatRates(invoiceItems);
 }
 
 
+function generateSumRow(boolie, checkingTaxRate) {
+  if (boolie) {
+    const vatRateItemsArr = invoiceItems.filter(item => item.taxRate === checkingTaxRate);
+    const vatRateNetValue = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.netValue;
+    }, 0);
+    const vatRateTax = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.taxValue;
+    }, 0);
+    const vatRateTotal = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.total;
+    }, 0);
+
+    const vatRatefinalrow = document.createElement('tr');
+    vatRatefinalrow.classList.add('draft__summary-row');
+    vatRatefinalrow.innerHTML = `
+                            <td colspan="5" class="draft__summary-legend">W tym:</td>
+                            <td class="draft__summary-net-value">${vatRateNetValue.toFixed(2)}</td>
+                            <td class="">${checkingTaxRate}%</td>
+                            <td class="draft__summary-vat-value">${vatRateTax.toFixed(2)}</td>
+                            <td class="draft__summary-total">${vatRateTotal.toFixed(2)}</td>`
+    drawtSumTable.appendChild(vatRatefinalrow);
+  }
+};
+
 // function for draft items summary - checking summary items values and calculating specific tax rate partial values
 function checkVatRates(arr) {
-  // boolean valuest for check it there are some products with specific tax rates
-  const areThere00 = arr.some((item) => item.taxRate === 0.00);
-  const areThere3 = arr.some((item) => item.taxRate === 0.03);
-  const areThere5 = arr.some((item) => item.taxRate === 0.05);
-  const areThere8 = arr.some((item) => item.taxRate === 0.08);
-  const areThere23 = arr.some((item) => item.taxRate === 0.23);
+  debugger;
+  // boolean values for check if there are some products with specific tax rates
+  const areThere00 = arr.some((item) => item.taxRate === 0);
+  const areThere3 = arr.some((item) => item.taxRate === 3);
+  const areThere5 = arr.some((item) => item.taxRate === 5);
+  const areThere8 = arr.some((item) => item.taxRate === 8);
+  const areThere23 = arr.some((item) => item.taxRate === 23);
 
-
-
-  // creating new table rows igf there are specific vat rate items
-  if (areThere00) {
-    const vat00ItemsArr = arr.filter(item => item.taxRate === 0.00);
-    const vat00net = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat00tax = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat00total = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat00finalrow = document.createElement('tr');
-    vat00finalrow.classList.add('draft__summary-row');
-    vat00finalrow.innerHTML = `
-                            <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vat00net}</td>
-                            <td class="">8%</td>
-                            <td class="draft__summary-vat-value">${vat00tax}</td>
-                            <td class="draft__summary-total">${vat00total}</td>`
-    drawtSumTable.appendChild(vat00finalrow);
-  };
-
-  if (areThere3) {
-    const vat03ItemsArr = arr.filter(item => item.taxRate === 0.03);
-
-    const vat03net = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat03tax = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat03total = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat03finalrow = document.createElement('tr');
-    vat03finalrow.classList.add('draft__summary-row');
-    vat03finalrow.innerHTML = `
-                            <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vat03net}</td>
-                            <td class="">3%</td>
-                            <td class="draft__summary-vat-value">${vat03tax}</td>
-                            <td class="draft__summary-total">${vat03total}</td>`
-    drawtSumTable.appendChild(vat03finalrow);
-
-  };
-
-  if (areThere5) {
-    const vat05ItemsArr = arr.filter(item => item.taxRate === 0.05);
-
-    const vat05net = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat05tax = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat05total = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat05finalrow = document.createElement('tr');
-    vat05finalrow.classList.add('draft__summary-row');
-    vat05finalrow.innerHTML = `
-                            <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vat05net}</td>
-                            <td class="">5%</td>
-                            <td class="draft__summary-vat-value">${vat05tax}</td>
-                            <td class="draft__summary-total">${vat05total}</td>`
-    drawtSumTable.appendChild(vat05finalrow);
-  };
-
-
-  if (areThere8) {
-    const vat08ItemsArr = arr.filter(item => item.taxRate === 0.08);
-    const vat08net = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat08tax = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat08total = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat08finalrow = document.createElement('tr');
-    vat08finalrow.classList.add('draft__summary-row');
-    vat08finalrow.innerHTML = `
-                            <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vat08net}</td>
-                            <td class="">8%</td>
-                            <td class="draft__summary-vat-value">${vat08tax}</td>
-                            <td class="draft__summary-total">${vat08total}</td>`
-    drawtSumTable.appendChild(vat08finalrow);
-  };
-
-  if (areThere23) {
-    const vat23ItemsArr = arr.filter(item => item.taxRate === 0.23);
-    const vat23net = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat23tax = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat23total = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat23finalrow = document.createElement('tr');
-    vat23finalrow.classList.add('draft__summary-row');
-    vat23finalrow.innerHTML = `
-                            <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vat23net}</td>
-                            <td class="">23%</td>
-                            <td class="draft__summary-vat-value">${vat23tax}</td>
-                            <td class="draft__summary-total">${vat23total}</td>`
-    drawtSumTable.appendChild(vat23finalrow);
-
-  };
+  generateSumRow(areThere23, 23);
+  generateSumRow(areThere8, 8);
+  generateSumRow(areThere5, 5);
+  generateSumRow(areThere3, 3);
+  generateSumRow(areThere00, 0);
 
 }
 
@@ -362,6 +350,31 @@ function checkVatRates(arr) {
 /*-------------------------------------------------------------------------------
 Generate invoice functions
 --------------------------------------------------------------------------------*/
+
+function generateInvoiceSumRow(boolie, checkingTaxRate) {
+  if (boolie) {
+    const vatRateItemsArr = invoiceItems.filter(item => item.taxRate === checkingTaxRate);
+    const vatRateNetValue = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.netValue;
+    }, 0);
+    const vatRateTax = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.taxValue;
+    }, 0);
+    const vatRateTotal = vatRateItemsArr.reduce((acc, obj) => {
+      return acc + obj.total;
+    }, 0);
+
+    const vatRatefinalrow = document.createElement('tr');
+    vatRatefinalrow.classList.add('invoice__summary-row');
+    vatRatefinalrow.innerHTML = `
+                            <td colspan="5" class="invoice__summary-legend">W tym:</td>
+                            <td class="invoice__summary-net-value">${vatRateNetValue.toFixed(2)}</td>
+                            <td class="">${checkingTaxRate}%</td>
+                            <td class="invoice__summary-vat-value">${vatRateTax.toFixed(2)}</td>
+                            <td class="invoice__summary-total">${vatRateTotal.toFixed(2)}</td>`
+    invoicePositionsTable.appendChild(vatRatefinalrow);
+  }
+};
 
 function generateInvoice() {
   const invoiceObj = {
@@ -414,10 +427,11 @@ function generateInvoice() {
 
 function generateInvoicePositions(arr) {
   // generate invoice positions 
-  invoicePositionsTable.innerHTML = '';
-  invoicePositionsTableSum.innerHTML = '';
-  arr.forEach(item => {
+  clearInnerHtml(invoicePositionsTable);
+  clearInnerHtml(invoicePositionsTableSum);
 
+
+  arr.forEach(item => {
     const newRow = document.createElement('tr');
     newRow.classList.add('invoice__position');
     newRow.id = `invoice-item${item.id}`
@@ -428,172 +442,47 @@ function generateInvoicePositions(arr) {
         <td class="invoice__item-unit">${item.unit}</td>
         <td class="invoice__item-quantity">${item.quantity}</td>
         <td class="invoice__item-price">${item.netPrice}</td>
-        <td class="invoice__item-net-value">${item.netValue}</td>
+        <td class="invoice__item-net-value">${item.netValue.toFixed(2)}</td>
         <td class="invoice__item-tax-rate">${item.taxRate}</td>
-        <td class="invoice__item-tax-value">${item.taxValue}</td>
-        <td class="invoice__item-total-value">${item.total}</td>`;
+        <td class="invoice__item-tax-value">${item.taxValue.toFixed(2)}</td>
+        <td class="invoice__item-total-value">${item.total.toFixed(2)}</td>`;
     invoicePositionsTable.appendChild(newRow);
-
-
   });
-  // generate summary table footer
-
-  // remove all content from summary draft table
 
 
-  // draft items summaries
+  // invoice items summaries
   const sumaNet = invoiceItems.reduce(function (acc, item) {
     return acc + item.netValue;
-  }, 0).toFixed(2);
+  }, 0);
   const sumaVat = invoiceItems.reduce(function (acc, item) {
     return acc + item.taxValue;
-  }, 0).toFixed(2);
+  }, 0);
   const sumaTotal = invoiceItems.reduce(function (acc, item) {
     return acc + item.total;
-  }, 0).toFixed(2);
+  }, 0);
 
   const invoiceSumRow = document.createElement('tr');
   invoiceSumRow.classList.add('invoice__summary-row');
   invoiceSumRow.innerHTML = `<th colspan="5" class="invoice__summary-legend">Razem:</th>
-                          <th class="invoice__summary-net-value">${sumaNet}</th>
+                          <th class="invoice__summary-net-value">${sumaNet.toFixed(2)}</th>
                           <th class=""></th>
-                          <th class="invoice__summary-vat-value">${sumaVat}</th>
-                          <th class="invoice__summary-total">${sumaTotal}</th>`
+                          <th class="invoice__summary-vat-value">${sumaVat.toFixed(2)}</th>
+                          <th class="invoice__summary-total">${sumaTotal.toFixed(2)}</th>`
   invoicePositionsTable.appendChild(invoiceSumRow);
 
 
-  //  generate dummaries by vat rate
+  // generate boolean values for check it there are some products with specific tax rates
+  const areThere23 = arr.some((item) => item.taxRate === 23);
+  const areThere8 = arr.some((item) => item.taxRate === 8);
+  const areThere5 = arr.some((item) => item.taxRate === 5);
+  const areThere3 = arr.some((item) => item.taxRate === 3);
+  const areThere00 = arr.some((item) => item.taxRate === 0);
 
-
-
-  // boolean valuest for check it there are some products with specific tax rates
-  const areThere00 = arr.some((item) => item.taxRate === 0.00);
-  const areThere3 = arr.some((item) => item.taxRate === 0.03);
-  const areThere5 = arr.some((item) => item.taxRate === 0.05);
-  const areThere8 = arr.some((item) => item.taxRate === 0.08);
-  const areThere23 = arr.some((item) => item.taxRate === 0.23);
-
-
-
-  // creating new table rows igf there are specific vat rate items
-  if (areThere00) {
-    const vat00ItemsArr = arr.filter(item => item.taxRate === 0.00);
-    const vat00net = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat00tax = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat00total = vat00ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat00finalrow = document.createElement('tr');
-    vat00finalrow.classList.add('invoice__summary-row');
-    vat00finalrow.innerHTML = `
-                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${vat00net}</td>
-                              <td class="">8%</td>
-                              <td class="invoice__summary-vat-value">${vat00tax}</td>
-                              <td class="invoice__summary-total">${vat00total}</td>`
-    invoicePositionsTableSum.appendChild(vat00finalrow);
-  };
-
-  if (areThere3) {
-    const vat03ItemsArr = arr.filter(item => item.taxRate === 0.03);
-
-    const vat03net = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat03tax = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat03total = vat03ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat03finalrow = document.createElement('tr');
-    vat03finalrow.classList.add('invoice__summary-row');
-    vat03finalrow.innerHTML = `
-                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${vat03net}</td>
-                              <td class="">3%</td>
-                              <td class="invoice__summary-vat-value">${vat03tax}</td>
-                              <td class="invoice__summary-total">${vat03total}</td>`
-    invoicePositionsTableSum.appendChild(vat03finalrow);
-
-  };
-
-  if (areThere5) {
-    const vat05ItemsArr = arr.filter(item => item.taxRate === 0.05);
-
-    const vat05net = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat05tax = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat05total = vat05ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat05finalrow = document.createElement('tr');
-    vat05finalrow.classList.add('invoice__summary-row');
-    vat05finalrow.innerHTML = `
-                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${vat05net}</td>
-                              <td class="">5%</td>
-                              <td class="invoice__summary-vat-value">${vat05tax}</td>
-                              <td class="invoice__summary-total">${vat05total}</td>`
-    invoicePositionsTableSum.appendChild(vat05finalrow);
-  };
-
-
-  if (areThere8) {
-    const vat08ItemsArr = arr.filter(item => item.taxRate === 0.08);
-    const vat08net = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat08tax = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat08total = vat08ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat08finalrow = document.createElement('tr');
-    vat08finalrow.classList.add('invoice__summary-row');
-    vat08finalrow.innerHTML = `
-                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${vat08net}</td>
-                              <td class="">8%</td>
-                              <td class="invoice__summary-vat-value">${vat08tax}</td>
-                              <td class="invoice__summary-total">${vat08total}</td>`;
-    invoicePositionsTableSum.appendChild(vat08finalrow);
-  };
-
-  if (areThere23) {
-    const vat23ItemsArr = arr.filter(item => item.taxRate === 0.23);
-    const vat23net = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vat23tax = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vat23total = vat23ItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vat23finalrow = document.createElement('tr');
-    vat23finalrow.classList.add('invoice__summary-row');
-    vat23finalrow.innerHTML = `
-                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${vat23net}</td>
-                              <td class="">23%</td>
-                              <td class="invoice__summary-vat-value">${vat23tax}</td>
-                              <td class="invoice__summary-total">${vat23total}</td>`;
-    invoicePositionsTableSum.appendChild(vat23finalrow);
-
-  };
+  //  generate summaries by vat rate
+  generateInvoiceSumRow(areThere23, 23);
+  generateInvoiceSumRow(areThere8, 8);
+  generateInvoiceSumRow(areThere5, 5);
+  generateInvoiceSumRow(areThere3, 3);
+  generateInvoiceSumRow(areThere00, 0);
 
 }

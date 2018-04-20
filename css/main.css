@@ -127,6 +127,12 @@ td {
   border: 1px solid #d4d4d4;
 }
 
+.invalid {
+  border-bottom: 1px solid #ec3e6a;
+  background-color: rgba(236, 62, 106, 0.1);
+  box-shadow: 0 0.2rem 0.25rem rgba(236, 62, 106, 0.75);
+}
+
 *:focus {
   outline: none;
 }

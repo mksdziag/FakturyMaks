@@ -62,3 +62,9 @@ td {
   padding: .5rem;
   border: 1px solid $color2;
 }
+
+.invalid {
+  border-bottom: 1px solid $color4;
+  background-color: rgba($color4, .1);
+  box-shadow: 0 .2rem .25rem rgba($color4, .75);
+}
