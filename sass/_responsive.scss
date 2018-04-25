@@ -1,22 +1,22 @@
 // ----- Responsive -----
 @mixin respond($breakpoint) {
   @if $breakpoint==phone {
-    @media screen and (max-width: 576px) {
+    @media screen and (min-width: 576px) {
       @content
     }
   }
   @if $breakpoint==tablet {
-    @media screen and (max-width: 768px) {
+    @media screen and (min-width: 768px) {
       @content
     }
   }
   @if $breakpoint==tablet-land {
-    @media screen and (max-width: 992px) {
+    @media screen and (min-width: 992px) {
       @content
     }
   }
   @if $breakpoint==desktop {
-    @media screen and (max-width: 1200px) {
+    @media screen and (min-width: 1200px) {
       @content
     }
   }

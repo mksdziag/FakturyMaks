@@ -1,288 +1,104 @@
-// DOM input elements
-// document data inputs
-const docTypeInp = document.querySelector('.data__doc-type');
-const docNumInp = document.querySelector('.data__doc-number');
-const docPlaceInp = document.querySelector('.data__doc-place');
-const docDateInp = document.querySelector('.data__doc-date');
-const docSellDateInp = document.querySelector('.data__doc-sell-date');
-// seller data inputs
-const sellerNameInp = document.querySelector('.data__seller-name');
-const sellerStreetInp = document.querySelector('.data__seller-street');
-const sellerCityInp = document.querySelector('.data__seller-city');
-const sellerPostCodeInp = document.querySelector('.data__seller-post-code');
-const sellerNipInp = document.querySelector('.data__seller-nip');
-// buyer data inputs
-const buyerNameInp = document.querySelector('.data__buyer-name');
-const buyerStreetInp = document.querySelector('.data__buyer-street');
-const buyerCityInp = document.querySelector('.data__buyer-city');
-const buyerPostCodeInp = document.querySelector('.data__buyer-post-code');
-const buyerNipInp = document.querySelector('.data__buyer-nip');
-// payment terms inputs
-const payMethodInp = document.querySelector('.payment__method');
-const payTermInp = document.querySelector('.payment__term');
-const payAccountInp = document.querySelector('.payment__account');
-// invoice position inputs
-const itemNameInp = document.querySelector('.draft-item__name');
-const itemUnitInp = document.querySelector('.draft-item__unit');
-const itemQuantInp = document.querySelector('.draft-item__quantity');
-const itemPriceInp = document.querySelector('.draft-item__price');
-const itemNetValInp = document.querySelector('.draft-item__net-value');
-const itemTaxRateInp = document.querySelector('.draft-item__tax-rate');
-const itemTaxValInp = document.querySelector('.draft-item__tax-value');
-const itemTotValInp = document.querySelector('.draft-item__total-value');
-const addBtn = document.querySelector('.btn--add-item');
+const uiController = (function() {
+  const DOMElements = {
+    // Invoice details input elements
+    dataInpufField: document.querySelector('.data-form'),
+    // document data inputs
+    docTypeInp: document.querySelector('.data__doc-type'),
+    docNumInp: document.querySelector('.data__doc-number'),
+    docPlaceInp: document.querySelector('.data__doc-place'),
+    docDateInp: document.querySelector('.data__doc-date'),
+    docSellDateInp: document.querySelector('.data__doc-sell-date'),
+    // seller data inputs
+    sellerNameInp: document.querySelector('.data__seller-name'),
+    sellerStreetInp: document.querySelector('.data__seller-street'),
+    sellerCityInp: document.querySelector('.data__seller-city'),
+    sellerPostCodeInp: document.querySelector('.data__seller-post-code'),
+    sellerNipInp: document.querySelector('.data__seller-nip'),
+    // buyer data inputs
+    buyerNameInp: document.querySelector('.data__buyer-name'),
+    buyerStreetInp: document.querySelector('.data__buyer-street'),
+    buyerCityInp: document.querySelector('.data__buyer-city'),
+    buyerPostCodeInp: document.querySelector('.data__buyer-post-code'),
+    buyerNipInp: document.querySelector('.data__buyer-nip'),
+    // payment terms inputs
+    payMethodInp: document.querySelector('.payment__method'),
+    payTermInp: document.querySelector('.payment__term'),
+    payAccountInp: document.querySelector('.payment__account'),
+    // draft positions inputs
+    itemNameInp: document.querySelector('.draft-item__name'),
+    itemUnitInp: document.querySelector('.draft-item__unit'),
+    itemQuantInp: document.querySelector('.draft-item__quantity'),
+    itemPriceInp: document.querySelector('.draft-item__price'),
+    itemNetValInp: document.querySelector('.draft-item__net-value'),
+    itemTaxRateInp: document.querySelector('.draft-item__tax-rate'),
+    itemTaxValInp: document.querySelector('.draft-item__tax-value'),
+    itemTotValInp: document.querySelector('.draft-item__total-value'),
+    // draft add button
+    addBtn: document.querySelector('.btn--add-item'),
+    // draft itens table
+    draftItemConstructor: document.querySelector('.draft-item__constructor'),
+    draftItemTable: document.querySelector('.draft-added-items'),
+    drawtSumTable: document.querySelector('.draft__summary'),
+    itemDelBtn: document.querySelectorAll('.btn--item-del'),
+    // --------------------------------------------------------------------
+    //output invoice elements ---------------------------------------------
+    invoice: document.querySelector('.invoice'),
+    // invoice heading
+    invType: document.querySelector('.invoice__type'),
+    invNum: document.querySelector('.invoice__number'),
+    invPlace: document.querySelector('.invoice__place'),
+    invSellDate: document.querySelector('.invoice__sell-date'),
+    invDate: document.querySelector('.invoice__place-date'),
+    // invoice seller details
+    invSellerName: document.querySelector('.invoice__seller-name'),
+    invSellerStr: document.querySelector('.invoice__seller-street'),
+    invSellerCity: document.querySelector('.invoice__seller-city'),
+    invSellerPostCode: document.querySelector('.seller__post-code'),
+    invSellerNip: document.querySelector('.invoice__seller-nip'),
+    // invoice buyer details
+    invBuyerName: document.querySelector('.invoice__buyer-name'),
+    invBuyerStr: document.querySelector('.invoice__buyer-street'),
+    invBuyerCity: document.querySelector('.invoice__buyer-city'),
+    invBuyerPostCode: document.querySelector('.buyer__post-code'),
+    invBuyerNip: document.querySelector('.invoice__buyer-nip'),
+    // Invoice positions items table
+    invoicePositionsTable: document.querySelector('.invoice__positions-place'),
+    invoicePositionsTableSum: document.querySelector('.invoice__positions-summary'),
+    // invoice final details
+    invFinalToPay: document.querySelector('.invoice__final-to-pay'),
+    invFinalPayMethod: document.querySelector('.invoice__final-payment-method'),
+    invFinalPayTerm: document.querySelector('.invoice__final-payment-term'),
+    invFinalAccount: document.querySelector('.invoice__final-payment__account'),
+    // button generate invoice
+    genBtn: document.querySelector('.btn--gen-inv'),
 
-const draftItemTable = document.querySelector('.draft-added-items');
-const drawtSumTable = document.querySelector('.draft__summary')
-const itemDelBtn = document.querySelectorAll('.btn--item-del');
+  };
 
-// DOM output/invoice elements
-const invoice = document.querySelector('.invoice');
-// invoice heading
-const invType = invoice.querySelector('.invoice__type');
-const invNum = invoice.querySelector('.invoice__number');
-const invPlace = invoice.querySelector('.invoice__place');
-const invSellDate = invoice.querySelector('.invoice__sell-date');
-const invDate = invoice.querySelector('.invoice__place-date');
-
-// invoice seller details
-const invSellerName = invoice.querySelector('.invoice__seller-name');
-const invSellerStr = invoice.querySelector('.invoice__seller-street');
-const invSellerCity = invoice.querySelector('.invoice__seller-city');
-const invSellerPostCode = invoice.querySelector('.seller__post-code');
-const invSellerNip = invoice.querySelector('.invoice__seller-nip');
-
-// invoice buyer details
-const invBuyerName = invoice.querySelector('.invoice__buyer-name');
-const invBuyerStr = invoice.querySelector('.invoice__buyer-street');
-const invBuyerCity = invoice.querySelector('.invoice__buyer-city');
-const invBuyerPostCode = invoice.querySelector('.buyer__post-code');
-const invBuyerNip = invoice.querySelector('.invoice__buyer-nip');
-
-// Invoice positions items table DOM
-const invoicePositionsTable = invoice.querySelector('.invoice__positions-place');
-const invoicePositionsTableSum = invoice.querySelector('.invoice__positions-summary');
-
-// invoice final details DOM
-const invFinalToPay = invoice.querySelector('.invoice__final-to-pay');
-const invFinalPayMethod = invoice.querySelector('.invoice__final-payment-method');
-const invFinalPayTerm = invoice.querySelector('.invoice__final-payment-term');
-const invFinalAccount = invoice.querySelector('.invoice__final-payment__account');
-
-// button generate invoice
-const genBtn = document.querySelector('.btn--gen-inv');
-
-
-// generate invoice event listener
-genBtn.addEventListener('click', generateInvoice);
-addBtn.addEventListener('click', addItem);
-
-itemQuantInp.addEventListener('change', calculateItemTaxes);
-itemPriceInp.addEventListener('change', calculateItemTaxes);
-itemNetValInp.addEventListener('change', calculateItemTaxes);
-itemTaxRateInp.addEventListener('change', calculateItemTaxes);
-
-function calculateItemTaxes() {
-  if (itemQuantInp.value !== '' && itemPriceInp.value !== '') {
-    itemNetValInp.value = itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber;
-    itemTaxValInp.value = (itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100)).toFixed(2);
-    itemTotValInp.value = (itemPriceInp.valueAsNumber * itemQuantInp.valueAsNumber + itemQuantInp.valueAsNumber * itemPriceInp.valueAsNumber * parseFloat(itemTaxRateInp.value / 100)).toFixed(2);
-  }
-}
-
-
-
-
-
-const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
-inputs.forEach((input) => input.addEventListener('blur', validateInputs));
-
-
-function validateInputs(e) {
-  if (e.target === sellerPostCodeInp || e.target === sellerPostCodeInp) {
-    validatePostCode(e)
-  } else if (e.target === sellerNipInp || e.target === buyerNipInp) {
-    validateNip(e);
-  } else if (e.target === payAccountInp) {
-    validateAccount(e);
-  } else {
-    if (e.target.value === '' || e.target.value === ' ') {
-      e.target.classList.add('invalid');
-    } else {
-      e.target.classList.remove('invalid');
+  const calculateItemTaxes = function() {
+    if (DOMElements.itemQuantInp.value !== '' && DOMElements.itemPriceInp.value !== '') {
+      DOMElements.itemNetValInp.value = (DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber).toFixed(2);
+      DOMElements.itemTaxValInp.value = (DOMElements.itemQuantInp.valueAsNumber * DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)).toFixed(2);
+      DOMElements.itemTotValInp.value = (DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber + DOMElements.itemQuantInp.valueAsNumber * DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)).toFixed(2);
     }
-  }
+  };
 
-}
+  const clearDraftItemFieds = function() {
+    DOMElements.itemNameInp.value = '';
+    DOMElements.itemQuantInp.value = '';
+    DOMElements.itemPriceInp.value = '';
+    DOMElements.itemNetValInp.value = '';
+    DOMElements.itemTaxValInp.value = '';
+    DOMElements.itemTotValInp.value = '';
+    // target focus to item name field
+    DOMElements.itemNameInp.focus();
+  };
 
-
-
-function validateCont(e) {
-  if (e.target.value === '' || e.target.value === ' ') {
-    e.target.classList.add('invalid');
-  } else {
-    e.target.classList.remove('invalid');
-  }
-}
-
-function validatePostCode(e) {
-  reg = /^\d\d-\d\d\d$/;
-  if (e.target.classList.contains('data__seller-post-code')) {
-    if (!reg.test(sellerPostCodeInp.value)) {
-      e.target.classList.add('invalid')
-    } else {
-      e.target.classList.remove('invalid')
-    }
-  } else if (e.target.classList.contains('data__buyer-post-code')) {
-    if (!reg.test(sellerPostCodeInp.value)) {
-      e.target.classList.add('invalid')
-    } else {
-      e.target.classList.remove('invalid')
-    }
-  }
-}
-
-function validateNip(e) {
-  reg = /^\d{3}[- ]?\d{3}[- ]?\d\d[- ]?\d\d\s?$/;
-  if (e.target.classList.contains('data__seller-nip')) {
-    if (!reg.test(sellerNipInp.value)) {
-      e.target.classList.add('invalid')
-    } else {
-      e.target.classList.remove('invalid')
-    }
-  } else if (e.target.classList.contains('data__buyer-nip')) {
-    if (!reg.test(buyerNipInp.value)) {
-      e.target.classList.add('invalid')
-    } else {
-      e.target.classList.remove('invalid')
-    }
-  }
-}
-
-
-
-function validateAccount(e) {
-  reg = /^([A-Za-z]{2})?[ ]?\d{2}([ ]?\d{4}){6}\s?$/;
-  if (!reg.test(payAccountInp.value)) {
-    e.target.classList.add('invalid')
-  } else {
-    e.target.classList.remove('invalid')
-  }
-}
-
-
-// input items validation
-itemNameInp.addEventListener('keyup', disableAddBtn);
-itemQuantInp.addEventListener('keyup', disableAddBtn);
-itemPriceInp.addEventListener('keyup', disableAddBtn);
-
-function disableAddBtn() {
-  if (itemNameInp.value !== '' &&
-    itemQuantInp.value !== '' &&
-    itemPriceInp.value !== '') {
-    addBtn.disabled = false;
-  } else {
-    addBtn.disabled = true;
-  }
-}
-
-
-// create empty array for all invoice items
-const invoiceItems = [];
-let invoiceTotal;
-
-
-class Item {
-  constructor() {
-    {}
-  }
-  sayID() {
-    console.log(`My id is ${this.id}`);
-  }
-}
-
-
-/*------------------------------------------------------------------------------------
-Input section Functions                              
------------------------------------------------------------------------------------*/
-
-// adding new items to array with item objects
-function addItem() {
-  // creating new draft item
-  const newItem = new Item;
-  // assigning input values to item
-  assignValuesToItem(newItem);
-  // pushing newly created item to items array
-  invoiceItems.push(newItem);
-  // clearing item input fieldset
-  clearItemFieldset();
-  // generating items list
-  updateItemsList()
-  // print summary vat totals in draft prewiev
-  updateDraftSumValues()
-
-  addBtn.disabled = true;
-}
-
-
-function assignValuesToItem(item) {
-  // asigning values to newitem
-  item.id = invoiceItems.length;
-  item.name = itemNameInp.value;
-  item.unit = itemUnitInp.value;
-  item.quantity = itemQuantInp.valueAsNumber;
-  item.netPrice = itemPriceInp.valueAsNumber;
-  item.netValue = itemNetValInp.valueAsNumber;
-  item.taxRate = parseFloat(itemTaxRateInp.value);
-  item.taxValue = itemTaxValInp.valueAsNumber;
-  item.total = itemTotValInp.valueAsNumber;
-}
-
-
-// adding event listeners to  items list delete buttons
-function addingListenersForDelBtns() {
-  // selecting all delete buttons
-  const itemDelBtn = document.querySelectorAll('.btn--item-del');
-  // attaching for each delete button click event listener with deleteItem function
-  itemDelBtn.forEach(button => button.addEventListener('click', deleteItem));
-}
-
-
-// delete item from item list function
-function deleteItem(e) {
-  // determine clicked row identifier which equals item object id from array
-  const deletingId = parseFloat(e.target.parentElement.parentElement.dataset.identifier);
-  // splice clicked item from invoiceItems array
-  invoiceItems.splice((invoiceItems.findIndex(item => item.id == deletingId)), 1);
-  // generating items working list again
-  updateItemsList()
-  // update draft sum values table
-  updateDraftSumValues()
-}
-
-
-// clear fields after generate new item
-function clearItemFieldset() {
-  itemNameInp.value = '';
-  itemQuantInp.value = '';
-  itemPriceInp.value = '';
-  itemNetValInp.value = '';
-  itemTaxValInp.value = '';
-  itemTotValInp.value = '';
-  // target focus to item name field
-  itemNameInp.focus();
-}
-
-
-
-function updateItemsList() {
-  clearInnerHtml(draftItemTable);
-  // for each drafted item perform same action
-  invoiceItems.forEach(item => {
+  const addItemToDraftItemsList = function() {
+    const item = storageController.draftItemsData.items[storageController.draftItemsData.items.length - 1]
     // create newtable row
     const newRow = document.createElement('tr');
     newRow.classList.add('draft__position');
-    newRow.id = `draft-item${item.id}`
+    newRow.id = `draft-item-${item.id}`
     newRow.dataset.identifier = `${item.id}`;
     newRow.innerHTML = `
       <td class="draft__item-delete"><button class="btn btn--item-del">usuń</button></td>
@@ -294,235 +110,543 @@ function updateItemsList() {
       <td class="draft__item-tax-rate">${item.taxRate}</td>
       <td class="draft__item-tax-value">${item.taxValue}</td>
       <td class="draft__item-total-value">${item.total}</td>`;
-    draftItemTable.appendChild(newRow);
+    DOMElements.draftItemTable.appendChild(newRow);
+  };
 
-  });
-  // add event listeners to delete buttons 
-  addingListenersForDelBtns()
-}
+  const clearInnerHtml = function(elem) {
+    elem.innerHTML = '';
+  };
 
+  const rebuildDraftItemsTable = function() {
+    clearInnerHtml(DOMElements.draftItemTable);
+    // for each drafted item perform same action
+    storageController.draftItemsData.items.forEach(item => {
+      const id = (storageController.draftItemsData.items.indexOf(item));
+      // create newtable row
+      const newRow = document.createElement('tr');
+      newRow.classList.add('draft__position');
+      newRow.id = `draft-item-${id}`
+      newRow.dataset.identifier = `${id}`;
+      newRow.innerHTML = `
+      <td class="draft__item-delete"><button class="btn btn--item-del">usuń</button></td>
+      <td class="draft__item-name">${item.name}</td>
+      <td class="draft__item-unit">${item.unit}</td>
+      <td class="draft__item-quantity">${item.quantity}</td>
+      <td class="draft__item-price">${item.netPrice}</td>
+      <td class="draft__item-net-value">${item.netValue}</td>
+      <td class="draft__item-tax-rate">${item.taxRate}</td>
+      <td class="draft__item-tax-value">${item.taxValue}</td>
+      <td class="draft__item-total-value">${item.total}</td>`;
+      DOMElements.draftItemTable.appendChild(newRow);
 
-function clearInnerHtml(elem) {
-  elem.innerHTML = '';
-}
+    });
+  };
 
+  const updateDraftSumValues = function() {
+    // remove all content from summary draft table
+    clearInnerHtml(DOMElements.drawtSumTable)
 
-function updateDraftSumValues() {
-  // remove all content from summary draft table
-  clearInnerHtml(drawtSumTable)
-  //calculatinh draft items table summaries
-  const sumaNet = invoiceItems.reduce((acc, item) => {
-    return acc + item.netValue;
-  }, 0);
-  const sumaVat = invoiceItems.reduce((acc, item) => {
-    return acc + item.taxValue;
-  }, 0);
-  const sumaTotal = invoiceItems.reduce((acc, item) => {
-    return acc + item.total;
-  }, 0);
-
-  const draftSumRow = document.createElement('tr');
-  draftSumRow.classList.add('draft__summary-row');
-  draftSumRow.innerHTML = `<th colspan="5" class="draft__summary-legend">Razem:</th>
-                          <th class="draft__summary-net-value">${sumaNet}</th>
+    const draftSumRow = document.createElement('tr');
+    draftSumRow.classList.add('draft__summary-row');
+    draftSumRow.innerHTML = `<th colspan="5" class="draft__summary-legend">Razem:</th>
+                          <th class="draft__summary-net-value">${storageController.draftItemsData.summaries.totalNetVal}</th>
                           <th class=""></th>
-                          <th class="draft__summary-vat-value">${sumaVat}</th>
-                          <th class="draft__summary-total">${sumaTotal}</th>`
-  drawtSumTable.appendChild(draftSumRow);
-  // total invoice value;
-  invoiceTotal = sumaTotal;
-  // print summary svat stakes in draft prewiev
-  checkVatRates(invoiceItems);
-}
+                          <th class="draft__summary-vat-value">${storageController.draftItemsData.summaries.totalTaxVal}</th>
+                          <th class="draft__summary-total">${storageController.draftItemsData.summaries.total}</th>`
+    DOMElements.drawtSumTable.appendChild(draftSumRow);
+    storageController.checkDraftVatRates();
+  };
 
 
-function generateSumRow(boolie, checkingTaxRate) {
-  if (boolie) {
-    const vatRateItemsArr = invoiceItems.filter(item => item.taxRate === checkingTaxRate);
-    const vatRateNetValue = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
-    }, 0);
-    const vatRateTax = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
-    }, 0);
-    const vatRateTotal = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
-    }, 0);
-
-    const vatRatefinalrow = document.createElement('tr');
-    vatRatefinalrow.classList.add('draft__summary-row');
-    vatRatefinalrow.innerHTML = `
+  const generateDrawSumRow = function(areTaxRateItems, checkingTaxRate) {
+    const checkedTaxRate = storageController.draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`];
+    if (areTaxRateItems) {
+      const taxRatefinalrow = document.createElement('tr');
+      taxRatefinalrow.classList.add('draft__summary-row');
+      taxRatefinalrow.innerHTML = `
                             <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${vatRateNetValue}</td>
+                            <td class="draft__summary-net-value">${checkedTaxRate.netValue}</td>
                             <td class="">${checkingTaxRate}%</td>
-                            <td class="draft__summary-vat-value">${vatRateTax}</td>
-                            <td class="draft__summary-total">${vatRateTotal}</td>`
-    drawtSumTable.appendChild(vatRatefinalrow);
-  }
-};
-
-// function for draft items summary - checking summary items values and calculating specific tax rate partial values
-function checkVatRates(arr) {
-  // boolean values for check if there are some products with specific tax rates
-  const areThere00 = arr.some((item) => item.taxRate === 0);
-  const areThere3 = arr.some((item) => item.taxRate === 3);
-  const areThere5 = arr.some((item) => item.taxRate === 5);
-  const areThere8 = arr.some((item) => item.taxRate === 8);
-  const areThere23 = arr.some((item) => item.taxRate === 23);
-
-  generateSumRow(areThere23, 23);
-  generateSumRow(areThere8, 8);
-  generateSumRow(areThere5, 5);
-  generateSumRow(areThere3, 3);
-  generateSumRow(areThere00, 0);
-
-}
+                            <td class="draft__summary-vat-value">${checkedTaxRate.taxValue}</td>
+                            <td class="draft__summary-total">${checkedTaxRate.taxTotal}</td>`
+      DOMElements.drawtSumTable.appendChild(taxRatefinalrow);
+    } else {
+      return;
+    }
+  };
 
 
-/*-------------------------------------------------------------------------------
-Generate invoice functions
---------------------------------------------------------------------------------*/
+  const generateInvoice = function() {
+    const invoiceObj = storageController.invoicesData.invoice.details;
+    // inserting details of the invoice
+    DOMElements.invType.textContent = `${invoiceObj.type}`;
+    DOMElements.invNum.textContent = `nr ${invoiceObj.number}`;
+    DOMElements.invPlace.textContent = `Miejsce wystawienia: ${invoiceObj.place}`;
+    DOMElements.invDate.textContent = `Data wystawienia: ${invoiceObj.date}`;
+    DOMElements.invSellDate.textContent = `Data sprzedaży: ${invoiceObj.sellDate}`;
+    DOMElements.invSellerName.textContent = `${invoiceObj.sellerName}`;
+    DOMElements.invSellerStr.textContent = `${invoiceObj.sellerStr}`;
+    DOMElements.invSellerCity.textContent = `${invoiceObj.sellerCity}`;
+    DOMElements.invSellerPostCode.textContent = `${invoiceObj.sellerPostCode}`;
+    DOMElements.invSellerNip.textContent = `NIP: ${invoiceObj.sellerNip}`;
+    DOMElements.invBuyerName.textContent = `${invoiceObj.buyerName}`;
+    DOMElements.invBuyerStr.textContent = `${invoiceObj.buyerStr}`;
+    DOMElements.invBuyerCity.textContent = `${invoiceObj.buyerCity}`;
+    DOMElements.invBuyerPostCode.textContent = `${invoiceObj.buyerPostCode}`;
+    DOMElements.invBuyerNip.textContent = `NIP: ${invoiceObj.buyerNip}`;
+    DOMElements.invFinalToPay.textContent = `Do zapłaty: ${invoiceObj.toPay} PLN`;
+    DOMElements.invFinalPayMethod.textContent = `Sposób płatności: ${invoiceObj.payMethod}`;
+    DOMElements.invFinalPayTerm.textContent = `Termin płatności: ${invoiceObj.payTerm}`;
+    DOMElements.invFinalAccount.textContent = `Konto: ${invoiceObj.account}`;
 
-function generateInvoiceSumRow(boolie, checkingTaxRate) {
-  if (boolie) {
-    const vatRateItemsArr = invoiceItems.filter(item => item.taxRate === checkingTaxRate);
-    const vatRateNetValue = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.netValue;
+  };
+
+  const generateInvoicePositions = function(positionsArray) {
+    clearInnerHtml(DOMElements.invoicePositionsTable);
+    clearInnerHtml(DOMElements.invoicePositionsTableSum);
+
+
+    positionsArray.forEach(item => {
+      const newRow = document.createElement('tr');
+      newRow.classList.add('invoice__position');
+      newRow.id = `invoice-item${item.id}`
+      newRow.dataset.identifier = `${item.id}`;
+      newRow.innerHTML = `
+          <td class="invoice__item-lp">${positionsArray.indexOf(item)+1}</td>
+          <td class="invoice__item-name">${item.name}</td>
+          <td class="invoice__item-unit">${item.unit}</td>
+          <td class="invoice__item-quantity">${item.quantity}</td>
+          <td class="invoice__item-price">${item.netPrice}</td>
+          <td class="invoice__item-net-value">${item.netValue}</td>
+          <td class="invoice__item-tax-rate">${item.taxRate}</td>
+          <td class="invoice__item-tax-value">${item.taxValue}</td>
+          <td class="invoice__item-total-value">${item.total}</td>`;
+      DOMElements.invoicePositionsTable.appendChild(newRow);
+    });
+
+
+    // invoice items summaries
+    const sumaNet = positionsArray.reduce(function(acc, item) {
+      return acc + item.netValue;
     }, 0);
-    const vatRateTax = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.taxValue;
+    const sumaVat = positionsArray.reduce(function(acc, item) {
+      return acc + item.taxValue;
     }, 0);
-    const vatRateTotal = vatRateItemsArr.reduce((acc, obj) => {
-      return acc + obj.total;
+    const sumaTotal = positionsArray.reduce(function(acc, item) {
+      return acc + item.total;
     }, 0);
 
-    const vatRatefinalrow = document.createElement('tr');
-    vatRatefinalrow.classList.add('invoice__summary-row');
-    vatRatefinalrow.innerHTML = `
-                            <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                            <td class="invoice__summary-net-value">${vatRateNetValue}</td>
-                            <td class="">${checkingTaxRate}%</td>
-                            <td class="invoice__summary-vat-value">${vatRateTax}</td>
-                            <td class="invoice__summary-total">${vatRateTotal}</td>`
-    invoicePositionsTable.appendChild(vatRatefinalrow);
+    const invoiceSumRow = document.createElement('tr');
+    invoiceSumRow.classList.add('invoice__summary-row');
+    invoiceSumRow.innerHTML = `<td colspan="5" class="invoice__summary-legend">Razem:</td>
+                            <td class="invoice__summary-net-value">${sumaNet}</td>
+                            <td class=""></td>
+                            <td class="invoice__summary-vat-value">${sumaVat}</td>
+                            <td class="invoice__summary-total">${sumaTotal}</td>`
+    DOMElements.invoicePositionsTable.appendChild(invoiceSumRow);
+
+
+    // generate boolean values for check it there are some products with specific tax rates
+    const areThere23 = positionsArray.some((item) => item.taxRate === 23);
+    const areThere8 = positionsArray.some((item) => item.taxRate === 8);
+    const areThere5 = positionsArray.some((item) => item.taxRate === 5);
+    const areThere3 = positionsArray.some((item) => item.taxRate === 3);
+    const areThere00 = positionsArray.some((item) => item.taxRate === 0);
+
+    //  generate summaries by vat rate
+    generateInvoiceSumRow(areThere23, 23);
+    generateInvoiceSumRow(areThere8, 8);
+    generateInvoiceSumRow(areThere5, 5);
+    generateInvoiceSumRow(areThere3, 3);
+    generateInvoiceSumRow(areThere00, 0);
+  };
+
+
+  const generateInvoiceSumRow = function(areTaxRateItems, checkingTaxRate) {
+    const checkedTaxRate = storageController.draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`];
+    if (areTaxRateItems) {
+      const vatRatefinalrow = document.createElement('tr');
+      vatRatefinalrow.classList.add('invoice__summary-row');
+      vatRatefinalrow.innerHTML = `
+                              <td colspan="5" class="invoice__summary-legend">W tym:</td>
+                              <td class="invoice__summary-net-value">${checkedTaxRate.netValue}</td>
+                              <td class="">${checkingTaxRate}%</td>
+                              <td class="invoice__summary-vat-value">${checkedTaxRate.taxValue}</td>
+                              <td class="invoice__summary-total">${checkedTaxRate.taxTotal}</td>`
+      DOMElements.invoicePositionsTable.appendChild(vatRatefinalrow);
+    }
+  };
+
+  /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Revealed methods 
+  ----------------------------------------------------*/
+  return {
+    DOMElements,
+    clearDraftItemFieds,
+    generateInvoice,
+    calculateItemTaxes,
+    addItemToDraftItemsList,
+    rebuildDraftItemsTable,
+    generateDrawSumRow,
+    updateDraftSumValues,
+    generateInvoicePositions
   }
-};
+
+}())
 
 
-function generateInvoice() {
 
-  const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
-  if (inputs.some((input) => input.value === '' || input.value === ' ')) {
-    inputs.filter(input => input.value === '' || input.value === ' ').forEach(input => input.classList.add('invalid'));
-    return;
+
+const storageController = (function() {
+  const draftItemsData = {
+    items: [],
+    summaries: {
+      total: 0,
+      totalNetVal: 0,
+      totalTaxVal: 0,
+      taxRates: {
+        tax23: {
+          netValue: 0,
+          taxValue: 0,
+          taxTotal: 0
+        },
+        tax8: {
+          netValue: 0,
+          taxValue: 0,
+          taxTotal: 0
+        },
+        tax5: {
+          netValue: 0,
+          taxValue: 0,
+          taxTotal: 0
+        },
+        tax3: {
+          netValue: 0,
+          taxValue: 0,
+          taxTotal: 0
+        },
+        tax0: {
+          netValue: 0,
+          taxValue: 0,
+          taxTotal: 0
+        }
+      }
+    }
+  };
+
+
+  const invoicesData = {
+    invoice: {}
+  };
+
+  const DOM = uiController.DOMElements;
+
+
+  const createInvoiceObj = function() {
+    const invoice = {
+      details: {
+        type: DOM.docTypeInp.value,
+        number: DOM.docNumInp.value,
+        place: DOM.docPlaceInp.value,
+        date: DOM.docDateInp.value,
+        sellDate: DOM.docSellDateInp.value,
+        sellerName: DOM.sellerNameInp.value,
+        sellerStr: DOM.sellerStreetInp.value,
+        sellerCity: DOM.sellerCityInp.value,
+        sellerPostCode: DOM.sellerPostCodeInp.value,
+        sellerNip: DOM.sellerNipInp.value,
+        buyerName: DOM.buyerNameInp.value,
+        buyerStr: DOM.buyerStreetInp.value,
+        buyerCity: DOM.buyerCityInp.value,
+        buyerPostCode: DOM.buyerPostCodeInp.value,
+        buyerNip: DOM.buyerNipInp.value,
+        toPay: DOM.drawtSumTable.querySelector('.draft__summary-total').textContent,
+        payMethod: DOM.payMethodInp.value,
+        payTerm: DOM.payTermInp.value,
+        account: DOM.payAccountInp.value,
+      },
+      positions: draftItemsData.items
+
+    }
+    invoicesData.invoice = invoice;
+
   }
 
-  const invoiceObj = {
-    invoiceType: docTypeInp.value,
-    invoiceNumber: docNumInp.value,
-    invoicePlace: docPlaceInp.value,
-    InvoiceDate: docDateInp.value,
-    invoiceSellDate: docSellDateInp.value,
-    invoiceSellerName: sellerNameInp.value,
-    invoiceSellerStr: sellerStreetInp.value,
-    invoiceSellerCity: sellerCityInp.value,
-    invoiceSellerPostCode: sellerPostCodeInp.value,
-    invoicesSellerNip: sellerNipInp.value,
-    invoiceBuyerName: buyerNameInp.value,
-    invoiceBuyerStr: buyerStreetInp.value,
-    invoiceBuyerCity: buyerCityInp.value,
-    invoiceBuyerPostCode: buyerPostCodeInp.value,
-    invoiceBuyerNip: buyerNipInp.value,
-    invoiceToPay: invoiceTotal,
-    invoicePayMethod: payMethodInp.value,
-    invoicePayTerm: payTermInp.value,
-    invoiceAccount: payAccountInp.value,
+  const deleteDraftItem = function(delID) {
+    // draftItemsData.items.splice((id - 1), 1);
+    draftItemsData.items = draftItemsData.items.filter((item) => {
+      return draftItemsData.items.indexOf(item) != delID;
+    });
+    console.table(draftItemsData.items);
+
   }
 
-  // inserting details of the invoice
-  invType.textContent = `${invoiceObj.invoiceType}`;
-  invNum.textContent = `nr ${invoiceObj.invoiceNumber}`;
-  invPlace.textContent = `Miejsce wystawienia: ${invoiceObj.invoicePlace}`;
-  invDate.textContent = `Data wystawienia: ${invoiceObj.InvoiceDate}`;
-  invSellDate.textContent = `Data sprzedaży: ${invoiceObj.invoiceSellDate}`;
-  invSellerName.textContent = `${invoiceObj.invoiceSellerName}`;
-  invSellerStr.textContent = `${invoiceObj.invoiceSellerStr}`;
-  invSellerCity.textContent = `${invoiceObj.invoiceSellerCity}`;
-  invSellerPostCode.textContent = `${invoiceObj.invoiceSellerPostCode}`;
-  invSellerNip.textContent = `NIP: ${invoiceObj.invoicesSellerNip}`;
-  invBuyerName.textContent = `${invoiceObj.invoiceBuyerName}`;
-  invBuyerStr.textContent = `${invoiceObj.invoiceBuyerStr}`;
-  invBuyerCity.textContent = `${invoiceObj.invoiceBuyerCity}`;
-  invBuyerPostCode.textContent = `${invoiceObj.invoiceBuyerPostCode}`;
-  invBuyerNip.textContent = `NIP: ${invoiceObj.invoiceBuyerNip}`;
-  invFinalToPay.textContent = `Do zapłaty: ${invoiceTotal} PLN`;
-  invFinalPayMethod.textContent = `Sposób płatności: ${invoiceObj.invoicePayMethod}`;
-  invFinalPayTerm.textContent = `Termin płatności: ${invoiceObj.invoicePayTerm}`;
-  invFinalAccount.textContent = `Konto: ${invoiceObj.invoiceAccount}`;
-
-  // generating invoice positions
-  generateInvoicePositions(invoiceItems)
-
-}
-
-function generateInvoicePositions(arr) {
-  // generate invoice positions 
-  clearInnerHtml(invoicePositionsTable);
-  clearInnerHtml(invoicePositionsTableSum);
+  const generateNewItemId = function() {
+    let newId = 0;
+    if (draftItemsData.items.length === 0) {
+      return newId;
+    } else if (draftItemsData.items.length > 0) {
+      const idsArray = draftItemsData.items.map(item => item.id).sort().reverse();
+      return newId = idsArray[0] + 1;
+    }
+  }
 
 
-  arr.forEach(item => {
-    const newRow = document.createElement('tr');
-    newRow.classList.add('invoice__position');
-    newRow.id = `invoice-item${item.id}`
-    newRow.dataset.identifier = `${item.id}`;
-    newRow.innerHTML = `
-        <td class="invoice__item-lp">${item.id+1}</td>
-        <td class="invoice__item-name">${item.name}</td>
-        <td class="invoice__item-unit">${item.unit}</td>
-        <td class="invoice__item-quantity">${item.quantity}</td>
-        <td class="invoice__item-price">${item.netPrice}</td>
-        <td class="invoice__item-net-value">${item.netValue}</td>
-        <td class="invoice__item-tax-rate">${item.taxRate}</td>
-        <td class="invoice__item-tax-value">${item.taxValue}</td>
-        <td class="invoice__item-total-value">${item.total}</td>`;
-    invoicePositionsTable.appendChild(newRow);
-  });
+  const createNewItem = function() {
+    const newItem = {
+      // asigning values to newitem
+      id: generateNewItemId(),
+      name: DOM.itemNameInp.value,
+      unit: DOM.itemUnitInp.value,
+      quantity: DOM.itemQuantInp.valueAsNumber,
+      netPrice: DOM.itemPriceInp.valueAsNumber,
+      netValue: DOM.itemNetValInp.valueAsNumber,
+      taxRate: parseFloat(DOM.itemTaxRateInp.value),
+      taxValue: DOM.itemTaxValInp.valueAsNumber,
+      total: DOM.itemTotValInp.valueAsNumber
+    }
+
+    draftItemsData.items.push(newItem);
+  };
 
 
-  // invoice items summaries
-  const sumaNet = invoiceItems.reduce(function (acc, item) {
-    return acc + item.netValue;
-  }, 0);
-  const sumaVat = invoiceItems.reduce(function (acc, item) {
-    return acc + item.taxValue;
-  }, 0);
-  const sumaTotal = invoiceItems.reduce(function (acc, item) {
-    return acc + item.total;
-  }, 0);
+  const calculateInvoiceTotal = function() {
+    const draftItemsTotal = draftItemsData.items.reduce((acc, item) => {
+      return acc + item.total;
+    }, 0);
+    const draftItemsTotalNetValue = draftItemsData.items.reduce((acc, item) => {
+      return acc + item.netValue;
+    }, 0);
+    const draftItemsTotalTaxValue = draftItemsData.items.reduce((acc, item) => {
+      return acc + item.taxValue;
+    }, 0);
 
-  const invoiceSumRow = document.createElement('tr');
-  invoiceSumRow.classList.add('invoice__summary-row');
-  invoiceSumRow.innerHTML = `<th colspan="5" class="invoice__summary-legend">Razem:</th>
-                          <th class="invoice__summary-net-value">${sumaNet}</th>
-                          <th class=""></th>
-                          <th class="invoice__summary-vat-value">${sumaVat}</th>
-                          <th class="invoice__summary-total">${sumaTotal}</th>`
-  invoicePositionsTable.appendChild(invoiceSumRow);
+    draftItemsData.summaries.total = draftItemsTotal;
+    draftItemsData.summaries.totalNetVal = draftItemsTotalNetValue;
+    draftItemsData.summaries.totalTaxVal = draftItemsTotalTaxValue;
+    console.log(draftItemsData.summaries)
+  }
 
 
-  // generate boolean values for check it there are some products with specific tax rates
-  const areThere23 = arr.some((item) => item.taxRate === 23);
-  const areThere8 = arr.some((item) => item.taxRate === 8);
-  const areThere5 = arr.some((item) => item.taxRate === 5);
-  const areThere3 = arr.some((item) => item.taxRate === 3);
-  const areThere00 = arr.some((item) => item.taxRate === 0);
+  const claculateDraftTaxRatesValues = function(areTaxRateItems, checkingTaxRate) {
+    if (areTaxRateItems) {
+      const taxRateItemsArr = draftItemsData.items.filter(item => item.taxRate === checkingTaxRate);
+      const taxRateNetValue = taxRateItemsArr.reduce((acc, item) => {
+        return acc + item.netValue;
+      }, 0);
+      const taxRateTax = taxRateItemsArr.reduce((acc, item) => {
+        return acc + item.taxValue;
+      }, 0);
+      const taxRateTotal = taxRateItemsArr.reduce((acc, item) => {
+        return acc + item.total;
+      }, 0);
 
-  //  generate summaries by vat rate
-  generateInvoiceSumRow(areThere23, 23);
-  generateInvoiceSumRow(areThere8, 8);
-  generateInvoiceSumRow(areThere5, 5);
-  generateInvoiceSumRow(areThere3, 3);
-  generateInvoiceSumRow(areThere00, 0);
+      draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].taxValue = taxRateTax;
+      draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].taxTotal = taxRateTotal;
+      draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].netValue = taxRateNetValue;
+      console.log(draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`]);
+    } else {
+      return;
+    }
+  }
 
-}
+
+  const checkDraftVatRates = function() {
+    // boolean values for check if there are some products with specific tax rates
+    const areThere00 = draftItemsData.items.some((item) => item.taxRate === 0);
+    const areThere3 = draftItemsData.items.some((item) => item.taxRate === 3);
+    const areThere5 = draftItemsData.items.some((item) => item.taxRate === 5);
+    const areThere8 = draftItemsData.items.some((item) => item.taxRate === 8);
+    const areThere23 = draftItemsData.items.some((item) => item.taxRate === 23);
+
+    claculateDraftTaxRatesValues(areThere23, 23);
+    claculateDraftTaxRatesValues(areThere8, 8);
+    claculateDraftTaxRatesValues(areThere5, 5);
+    claculateDraftTaxRatesValues(areThere3, 3);
+    claculateDraftTaxRatesValues(areThere00, 0);
+
+
+
+    uiController.generateDrawSumRow(areThere23, 23);
+    uiController.generateDrawSumRow(areThere8, 8);
+    uiController.generateDrawSumRow(areThere5, 5);
+    uiController.generateDrawSumRow(areThere3, 3);
+    uiController.generateDrawSumRow(areThere00, 0);
+
+  }
+
+
+  /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Revealed methods 
+  ----------------------------------------------------*/
+  return {
+    createNewItem,
+    draftItemsData,
+    createInvoiceObj,
+    invoicesData,
+    deleteDraftItem,
+    checkDraftVatRates,
+    calculateInvoiceTotal
+  }
+
+}())
+
+
+const appController = (function(StorageCtrl, UiCtrl) {
+  const DOM = UiCtrl.DOMElements;
+
+  const loadEventListeners = function() {
+    // generate invoice event listener
+    DOM.genBtn.addEventListener('click', generateInvoice);
+    // event listeners for draft section
+    DOM.addBtn.addEventListener('click', addItem);
+    DOM.itemQuantInp.addEventListener('change', calculateDraftItem);
+    DOM.itemPriceInp.addEventListener('change', calculateDraftItem);
+    DOM.itemNetValInp.addEventListener('change', calculateDraftItem);
+    DOM.itemTaxRateInp.addEventListener('change', calculateDraftItem);
+    DOM.draftItemTable.addEventListener('click', deleteDraftItem);
+
+    DOM.dataInpufField.addEventListener('keyup', verifyInputField);
+    DOM.dataInpufField.addEventListener('change', verifyInputField);
+    DOM.draftItemConstructor.addEventListener('keyup', verifyDraftItemInput);
+
+  }
+
+  const verifyInputField = function(e) {
+    if (e.target === DOM.sellerPostCodeInp ||
+      e.target === DOM.buyerPostCodeInp) {
+      validationFunctions.validatePostCode(e);
+    } else if (e.target === DOM.sellerNipInp ||
+      e.target === DOM.buyerNipInp) {
+      validationFunctions.validateNip(e);
+    } else if (e.target === DOM.payAccountInp) {
+      validationFunctions.validateAccount(e);
+    } else {
+      validationFunctions.validateFillInFormInput(e);
+    }
+  };
+
+
+  const verifyDraftItemInput = function(e) {
+    validationFunctions.validateDraftItemInputs(e)
+  };
+
+
+  const verifyCompletedForm = function() {
+    const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
+    if (inputs.some((input) => input.value === '' || input.value === ' ')) {
+      inputs.filter(input => input.value === '' || input.value === ' ').forEach(input => input.classList.add('invalid'));
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+
+  const validationFunctions = {
+    validatePostCode: function(e) {
+      const reg = /^\d\d-\d\d\d$/;
+      if (!reg.test(e.target.value)) {
+        e.target.classList.add('invalid')
+      } else {
+        e.target.classList.remove('invalid')
+      }
+    },
+    validateNip: function(e) {
+      const reg = /^\d{3}[- ]?\d{3}[- ]?\d\d[- ]?\d\d\s?$/;
+      if (!reg.test(e.target.value)) {
+        e.target.classList.add('invalid')
+      } else {
+        e.target.classList.remove('invalid')
+      }
+    },
+    validateAccount: function(e) {
+      const reg = /^([A-Za-z]{2})?[ ]?\d{2}([ ]?\d{4}){6}\s?$/;
+      if (!reg.test(e.target.value)) {
+        e.target.classList.add('invalid')
+      } else {
+        e.target.classList.remove('invalid')
+      }
+    },
+    validateFillInFormInput: function(e) {
+      reg = /[A-Za-z\d]+/;
+      if (!reg.test(e.target.value)) {
+        e.target.classList.add('invalid');
+      } else {
+        e.target.classList.remove('invalid');
+      }
+    },
+    validateDraftItemInputs: function(e) {
+      if (DOM.itemNameInp.value !== '' &&
+        DOM.itemNameInp.value !== ' ' &&
+        DOM.itemQuantInp.value !== '' &&
+        DOM.itemPriceInp.value !== '') {
+        DOM.addBtn.disabled = false;
+      } else {
+        DOM.addBtn.disabled = true;
+      }
+    }
+  };
+
+
+  const init = function() {
+    console.log('Starting app...');
+    loadEventListeners();
+  };
+
+
+  const addItem = function() {
+    storageController.createNewItem();
+    storageController.calculateInvoiceTotal();
+    UiCtrl.clearDraftItemFieds();
+    UiCtrl.addItemToDraftItemsList();
+    console.table(StorageCtrl.draftItemsData.items);
+    StorageCtrl.checkDraftVatRates();
+    UiCtrl.updateDraftSumValues();
+    DOM.addBtn.disabled = true;
+  };
+
+
+  const calculateDraftItem = function() {
+    UiCtrl.calculateItemTaxes();
+  };
+
+
+  const deleteDraftItem = function(e) {
+    if (e.target.classList.contains('btn--item-del')) {
+      const delID = (e.target.parentElement.parentElement.dataset.identifier);
+      console.log(delID);
+      StorageCtrl.deleteDraftItem(delID);
+      storageController.calculateInvoiceTotal();
+      UiCtrl.rebuildDraftItemsTable();
+      StorageCtrl.checkDraftVatRates();
+      UiCtrl.updateDraftSumValues();
+    } else {
+      return;
+    };
+  };
+
+
+  const generateInvoice = function() {
+    const verified = verifyCompletedForm();
+    if (!verified) {
+      StorageCtrl.createInvoiceObj();
+      UiCtrl.generateInvoice();
+      UiCtrl.generateInvoicePositions(StorageCtrl.invoicesData.invoice.positions);
+    } else {
+      return;
+    }
+  };
+
+
+  /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Revealed methods 
+  ----------------------------------------------------*/
+  return {
+    init
+
+  }
+
+}(storageController, uiController))
+
+appController.init();

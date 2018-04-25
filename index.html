@@ -22,7 +22,9 @@
     <section class="input-section">
       <form class="data-form data">
         <fieldset class="fieldset data__document-details">
-          <p class="fieldset__name">Dane dokumentu:</p>
+          <div class="fieldset__name">
+            <p class="fieldset__name-para">Dane Eweliny:</p>
+          </div>
 
           <div class="input-wrapper">
             <label class="label" for="document-type">Wystawiany dokument:</label>
@@ -56,7 +58,9 @@
 
         <div class="data__sides">
           <fieldset class="fieldset data__seller">
-            <p class="fieldset__name">Dane sprzedawcy:</p>
+            <div class="fieldset__name">
+              <p class="fieldset__name-para">Dane sprzedawcy:</p>
+            </div>
             <div class="input-wrapper">
               <label class="label" for="data__seller-name">Nazwa:</label>
               <input type="text" id="data__seller-name" class="input data__seller-name">
@@ -80,7 +84,9 @@
           </fieldset>
 
           <fieldset class="fieldset data__buyer">
-            <p class="fieldset__name">Dane nabywcy:</p>
+            <div class="fieldset__name">
+              <p class="fieldset__name-para">Dane nabywcy:</p>
+            </div>
             <div class="input-wrapper">
               <label class="label" for="data__buyer-name">Nazwa:</label>
               <input type="text" id="data__buyer-name" class="input data__buyer-name">
@@ -105,7 +111,9 @@
         </div>
 
         <fieldset class="fieldset payment">
-          <p class="fieldset__name">Szczegóły płatności:</p>
+          <div class="fieldset__name">
+            <p class="fieldset__name-para">Szczegóły płatności:</p>
+          </div>
           <div class="input-wrapper">
             <label for="payment__method" class="label">Metoda Płatnosci</label>
             <select name="payment__method" id="payment__method" class="select payment__method">
@@ -126,30 +134,36 @@
         </fieldset>
       </form>
       <fieldset class="fieldset draft-items">
-        <p class="fieldset__name">Pozycje do dodania na fakturę:</p>
-        <div class="draft-constructor">
-          <input placeholder="nazwa towaru" type="text" id="draft-item__name" class="input draft-item__name">
-          <select placeholder="jednosta miary" type="text" id="draft-item__unit" class="input draft-item__unit">
-            <option value="szt." selected>szt.</option>
-            <option value="usł.">usł.</option>
-            <option value="kg">kg</option>
-            <option value="litr">litr</option>
-            <option value="m3">m3</option>
-          </select>
-          <input placeholder="ilość" type="number" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity"
-            min="0">
-          <input placeholder="cena netto" type="number" name="draft-item__price" id="draft-item__price" class="input draft-item__price"
-            min="0">
-          <input placeholder="wartość" type="number" id="draft-item__net-value" class="input draft-item__net-value" disabled>
-          <select name="draft-item__tax-rate" id="draft-item__tax-rate" class="input select draft-item__tax-rate">
-            <option value="23" selected>23%</option>
-            <option value="8">8%</option>
-            <option value="3">3%</option>
-            <option value="5">5%</option>
-            <option value="0">0%</option>
-          </select>
-          <input placeholder="wartość VAT" type="number" id="draft-item__tax-value" class="input draft-item__tax-value" disabled>
-          <input placeholder="cena brutto" type="number" id="draft-item__total-value" class="input draft-item__total-value" disabled>
+        <div class="fieldset__name">
+          <p class="fieldset__name-para">Pozycje do dodania na fakturę:</p>
+        </div>
+        <div class="draft-item__constructor">
+          <div class="draft-item__constructor-section">
+            <input placeholder="nazwa towaru" type="text" id="draft-item__name" class="input draft-item__name">
+            <input placeholder="ilość" type="number" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity" min="0">
+            <select placeholder="jednosta miary" type="text" id="draft-item__unit" class="input draft-item__unit">
+              <option value="szt." selected>szt.</option>
+              <option value="usł.">usł.</option>
+              <option value="kg">kg</option>
+              <option value="litr">litr</option>
+              <option value="m3">m3</option>
+            </select>
+            <select name="draft-item__tax-rate" id="draft-item__tax-rate" class="input select draft-item__tax-rate">
+              <option value="23" selected>23%</option>
+              <option value="8">8%</option>
+              <option value="3">3%</option>
+              <option value="5">5%</option>
+              <option value="0">0%</option>
+            </select>
+          </div>
+          <div class="draft-item__constructor-section">
+            <input placeholder="cena netto" type="number" name="draft-item__price" id="draft-item__price" class="input draft-item__price" min="0">
+            <input placeholder="wartość" type="number" id="draft-item__net-value" class="input draft-item__net-value" disabled>
+
+            </select>
+            <input placeholder="wartość VAT" type="number" id="draft-item__tax-value" class="input draft-item__tax-value" disabled>
+            <input placeholder="cena brutto" type="number" id="draft-item__total-value" class="input draft-item__total-value" disabled>
+          </div>
           <button class="btn btn--add-item" disabled>Dodaj</button>
         </div>
 
@@ -174,6 +188,7 @@
             <!-- draft items summary place -->
           </tfoot>
         </table>
+        <!-- <button class="btn btn--confirm-drafts">Zatwierdź pozycje na fakturę</button> -->
 
       </fieldset>
       </input>

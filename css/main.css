@@ -71,25 +71,47 @@ body {
   border-radius: 3px;
   color: #fdfdfd;
   transition: 150ms;
+  cursor: pointer;
+}
+
+.btn--confirm-drafts, .btn--gen-inv {
+  display: block;
+  width: 80%;
+  margin: 0 auto 2rem;
+  background-color: #ec3e6a;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
+}
+
+@media screen and (min-width: 768px) {
+  .btn--confirm-drafts, .btn--gen-inv {
+    width: 50%;
+    padding: 1rem 2rem;
+  }
 }
 
 .btn--gen-inv {
-  width: 50%;
   margin: 0 auto 5rem;
-  background-color: #39a195;
-  font-weight: 700;
-  letter-spacing: 3px;
-  padding: 1rem 2rem;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 
 .btn--add-item {
   font-weight: 700;
-  background-color: #39a195;
+  background-color: #ec3e6a;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 2rem;
 }
 
-.btn--add-item:disabled {
-  background-color: #bee8e3;
+@media screen and (min-width: 768px) {
+  .btn--add-item {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.btn--add-item[disabled] {
+  background-color: #f7b2c4;
 }
 
 .btn--item-del {
@@ -111,7 +133,7 @@ body {
   border-bottom: 1px solid #d4d4d4;
   background-color: #f8f8f8;
   transition: all 150ms ease-out;
-  flex: 1;
+  flex: 1.5;
 }
 
 .select:focus,
@@ -155,7 +177,7 @@ td {
   margin-bottom: 3rem;
   border: 1px solid #d4d4d4;
   border-radius: 3px;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
   flex: 1;
 }
 
@@ -170,20 +192,39 @@ td {
   color: #ffffff;
   background: #39a195;
   border-radius: 3px;
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.2);
+  transform: skewX(-10deg);
 }
 
-.draft-constructor {
+.fieldset__name-para {
+  transform: skewX(10deg);
+}
+
+.draft-item__constructor {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
-.draft-constructor > * {
+.draft-item__constructor-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   flex: 1;
   margin: .5rem;
+}
+
+@media screen and (min-width: 768px) {
+  .draft-item__constructor-section {
+    flex-direction: row;
+  }
+}
+
+.draft-item__name, .draft-item__quantity, .draft-item__unit, .draft-item__tax-rate, .draft-item__price, .draft-item__net-value, .draft-item__tax-value, .draft-item__total-value {
+  width: 100%;
 }
 
 .input-wrapper {
@@ -195,10 +236,23 @@ td {
 
 .data__sides {
   display: flex;
+  flex-direction: column;
 }
 
-.data__seller {
-  margin-right: 1rem;
+@media screen and (min-width: 768px) {
+  .data__sides {
+    flex-direction: row;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .data__seller {
+    margin-right: 1rem;
+  }
+}
+
+table {
+  width: 100%;
 }
 
 .draft__legend {
@@ -208,13 +262,10 @@ td {
 }
 
 .draft__positions {
-  width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
   margin-bottom: 10rem;
   text-align: right;
-  font-weight: 700;
-  border: 1px solid #d4d4d4;
 }
 
 .draft__item-delete {

@@ -16,7 +16,7 @@
   margin-bottom: 3rem;
   border: 1px solid $color2;
   border-radius: 3px;
-  box-shadow: 0 .5rem 1rem rgba($color-black, 0.20);
+  box-shadow: 0 .5rem 2rem rgba($color-black, 0.20);
   flex: 1;
   &__name {
     position: absolute;
@@ -29,21 +29,46 @@
     color: $color-pure-white;
     background: $color1;
     border-radius: 3px;
-    box-shadow: 0 .25rem .75rem rgba($color-black, 0.20);
+    box-shadow: 0 .5rem .75rem rgba($color-black, 0.20);
+    transform: skewX(-10deg);
+    &-para {
+      transform: skewX(10deg);
+    }
   }
 }
 
-.draft-constructor {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-  &>* {
-    flex: 1;
-    margin: .5rem;
+.draft {
+  &-item__constructor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    &-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      margin: .5rem;
+      @include respond(tablet) {
+        flex-direction: row;
+
+      }
+    }
+  }
+  &-item__name,
+  &-item__quantity,
+  &-item__unit,
+  &-item__tax-rate,
+  &-item__price,
+  &-item__net-value,
+  &-item__tax-value,
+  &-item__total-value {
+    width: 100%;
   }
 }
+
 
 .input-wrapper {
   width: 100%;
@@ -54,10 +79,21 @@
 
 .data__sides {
   display: flex;
+  flex-direction: column;
+  @include respond(tablet) {
+    flex-direction: row;
+  }
 }
 
 .data__seller {
-  margin-right: 1rem;
+  @include respond(tablet) {
+    margin-right: 1rem;
+  }
+
+}
+
+table {
+  width: 100%;
 }
 
 .draft {
@@ -67,16 +103,15 @@
     text-align: center;
   }
   &__positions {
-    width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
     margin-bottom: 10rem;
     text-align: right;
-    font-weight: 700;
-    border: 1px solid $color2;
+
   }
   &__item-delete {
     text-align: center;
     font-weight: 700;
   }
+
 }

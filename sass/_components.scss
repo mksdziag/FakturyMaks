@@ -10,20 +10,37 @@
   border-radius: 3px;
   color: $color-white;
   transition: 150ms;
+  cursor: pointer;
+  &--confirm-drafts,
   &--gen-inv {
-    width: 50%;
-    margin: 0 auto 5rem;
-    background-color: $color1;
+    display: block;
+    width: 80%;
+    margin: 0 auto 2rem;
+    background-color: $color4;
     font-weight: 700;
     letter-spacing: 3px;
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem;
     box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.25);
+    @include respond(tablet) {
+      width: 50%;
+      padding: 1rem 2rem;
+    }
+  }
+  &--gen-inv {
+    margin: 0 auto 5rem;
   }
   &--add-item {
     font-weight: 700;
-    background-color: $color1;
-    &:disabled {
-      background-color: lighten($color1, 40%);
+    background-color: $color4;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    @include respond(tablet) {
+      padding: 1.5rem 2rem;
+
+    }
+    &[disabled] {
+      background-color: lighten($color4, 25%);
     }
   }
   &--item-del {
@@ -45,7 +62,7 @@
   border-bottom: 1px solid $color-border;
   background-color: $color-inputs-bg;
   transition: all 150ms ease-out;
-  flex: 1;
+  flex: 1.5;
   &:focus {
     border-bottom: 1px solid $color1;
     box-shadow: 0 .2rem .25rem rgba($color1, .75);
