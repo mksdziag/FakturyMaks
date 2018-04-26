@@ -1,4 +1,5 @@
 const uiController = (function() {
+  // defining DOM elements
   const DOMElements = {
     // Invoice details input elements
     dataInpufField: document.querySelector('.data-form'),
@@ -40,6 +41,8 @@ const uiController = (function() {
     draftItemTable: document.querySelector('.draft-added-items'),
     drawtSumTable: document.querySelector('.draft__summary'),
     itemDelBtn: document.querySelectorAll('.btn--item-del'),
+    // button generate invoice
+    genBtn: document.querySelector('.btn--gen-inv'),
     // --------------------------------------------------------------------
     //output invoice elements ---------------------------------------------
     invoice: document.querySelector('.invoice'),
@@ -69,19 +72,25 @@ const uiController = (function() {
     invFinalPayMethod: document.querySelector('.invoice__final-payment-method'),
     invFinalPayTerm: document.querySelector('.invoice__final-payment-term'),
     invFinalAccount: document.querySelector('.invoice__final-payment__account'),
-    // button generate invoice
-    genBtn: document.querySelector('.btn--gen-inv'),
 
   };
 
-  const calculateItemTaxes = function() {
+  // calculating draft item taxes in draft item constructor form
+  const calculateDraftItemNotFilledInputs = function() {
+    // if there is fullfilled draft item quantity and net price can calculate:
     if (DOMElements.itemQuantInp.value !== '' && DOMElements.itemPriceInp.value !== '') {
+      // net value ptoduct price * quantity
       DOMElements.itemNetValInp.value = (DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber).toFixed(2);
+      // tax value
       DOMElements.itemTaxValInp.value = (DOMElements.itemQuantInp.valueAsNumber * DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)).toFixed(2);
+      // item total final price
       DOMElements.itemTotValInp.value = (DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber + DOMElements.itemQuantInp.valueAsNumber * DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)).toFixed(2);
+    } else {
+      return;
     }
   };
 
+  // clearing draft item input fields
   const clearDraftItemFieds = function() {
     DOMElements.itemNameInp.value = '';
     DOMElements.itemQuantInp.value = '';
@@ -93,6 +102,7 @@ const uiController = (function() {
     DOMElements.itemNameInp.focus();
   };
 
+  // add item to drafr table
   const addItemToDraftItemsList = function() {
     const item = storageController.draftItemsData.items[storageController.draftItemsData.items.length - 1]
     // create newtable row
@@ -104,71 +114,73 @@ const uiController = (function() {
       <td class="draft__item-delete"><button class="btn btn--item-del">usuń</button></td>
       <td class="draft__item-name">${item.name}</td>
       <td class="draft__item-unit">${item.unit}</td>
-      <td class="draft__item-quantity">${item.quantity}</td>
-      <td class="draft__item-price">${item.netPrice}</td>
-      <td class="draft__item-net-value">${item.netValue}</td>
-      <td class="draft__item-tax-rate">${item.taxRate}</td>
-      <td class="draft__item-tax-value">${item.taxValue}</td>
-      <td class="draft__item-total-value">${item.total}</td>`;
+      <td class="draft__item-quantity">${item.quantity.toFixed(2)}</td>
+      <td class="draft__item-price">${item.netPrice.toFixed(2)}</td>
+      <td class="draft__item-net-value">${item.netValue.toFixed(2)}</td>
+      <td class="draft__item-tax-rate">${item.taxRate}%</td>
+      <td class="draft__item-tax-value">${item.taxValue.toFixed(2)}</td>
+      <td class="draft__item-total-value">${item.total.toFixed(2)}</td>`;
     DOMElements.draftItemTable.appendChild(newRow);
   };
 
+  // function for cleat innner HTML in given element
   const clearInnerHtml = function(elem) {
     elem.innerHTML = '';
   };
 
+  // building draft items table from start
   const rebuildDraftItemsTable = function() {
     clearInnerHtml(DOMElements.draftItemTable);
     // for each drafted item perform same action
     storageController.draftItemsData.items.forEach(item => {
-      const id = (storageController.draftItemsData.items.indexOf(item));
+      const itemNewId = (storageController.draftItemsData.items.indexOf(item));
       // create newtable row
       const newRow = document.createElement('tr');
       newRow.classList.add('draft__position');
-      newRow.id = `draft-item-${id}`
-      newRow.dataset.identifier = `${id}`;
+      newRow.id = `draft-item-${itemNewId}`
+      newRow.dataset.identifier = `${itemNewId}`;
       newRow.innerHTML = `
       <td class="draft__item-delete"><button class="btn btn--item-del">usuń</button></td>
       <td class="draft__item-name">${item.name}</td>
       <td class="draft__item-unit">${item.unit}</td>
-      <td class="draft__item-quantity">${item.quantity}</td>
-      <td class="draft__item-price">${item.netPrice}</td>
-      <td class="draft__item-net-value">${item.netValue}</td>
-      <td class="draft__item-tax-rate">${item.taxRate}</td>
-      <td class="draft__item-tax-value">${item.taxValue}</td>
-      <td class="draft__item-total-value">${item.total}</td>`;
+      <td class="draft__item-quantity">${item.quantity.toFixed(2)}</td>
+      <td class="draft__item-price">${item.netPrice.toFixed(2)}</td>
+      <td class="draft__item-net-value">${item.netValue.toFixed(2)}</td>
+      <td class="draft__item-tax-rate">${item.taxRate}%</td>
+      <td class="draft__item-tax-value">${item.taxValue.toFixed(2)}</td>
+      <td class="draft__item-total-value">${item.total.toFixed(2)}</td>`;
       DOMElements.draftItemTable.appendChild(newRow);
 
     });
   };
 
-  const updateDraftSumValues = function() {
+  // building draft sum values in draft table
+  const buildDraftSumValues = function() {
     // remove all content from summary draft table
     clearInnerHtml(DOMElements.drawtSumTable)
 
     const draftSumRow = document.createElement('tr');
     draftSumRow.classList.add('draft__summary-row');
     draftSumRow.innerHTML = `<th colspan="5" class="draft__summary-legend">Razem:</th>
-                          <th class="draft__summary-net-value">${storageController.draftItemsData.summaries.totalNetVal}</th>
+                          <th class="draft__summary-net-value">${storageController.draftItemsData.summaries.totalNetVal.toFixed(2)}</th>
                           <th class=""></th>
-                          <th class="draft__summary-vat-value">${storageController.draftItemsData.summaries.totalTaxVal}</th>
-                          <th class="draft__summary-total">${storageController.draftItemsData.summaries.total}</th>`
+                          <th class="draft__summary-vat-value">${storageController.draftItemsData.summaries.totalTaxVal.toFixed(2)}</th>
+                          <th class="draft__summary-total">${storageController.draftItemsData.summaries.total.toFixed(2)}</th>`
     DOMElements.drawtSumTable.appendChild(draftSumRow);
-    storageController.checkDraftVatRates();
   };
 
 
-  const generateDrawSumRow = function(areTaxRateItems, checkingTaxRate) {
+  const generateDraftSumRow = function(areTaxRateItems, checkingTaxRate) {
     const checkedTaxRate = storageController.draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`];
     if (areTaxRateItems) {
       const taxRatefinalrow = document.createElement('tr');
       taxRatefinalrow.classList.add('draft__summary-row');
       taxRatefinalrow.innerHTML = `
                             <td colspan="5" class="draft__summary-legend">W tym:</td>
-                            <td class="draft__summary-net-value">${checkedTaxRate.netValue}</td>
+                            <td class="draft__summary-net-value">${checkedTaxRate.netValue.toFixed(2)}</td>
                             <td class="">${checkingTaxRate}%</td>
-                            <td class="draft__summary-vat-value">${checkedTaxRate.taxValue}</td>
-                            <td class="draft__summary-total">${checkedTaxRate.taxTotal}</td>`
+                            <td class="draft__summary-vat-value">${checkedTaxRate.taxValue.toFixed(2)}</td>
+                            <td class="draft__summary-total">${checkedTaxRate.taxTotal.toFixed(2)}</td>`
       DOMElements.drawtSumTable.appendChild(taxRatefinalrow);
     } else {
       return;
@@ -179,25 +191,25 @@ const uiController = (function() {
   const generateInvoice = function() {
     const invoiceObj = storageController.invoicesData.invoice.details;
     // inserting details of the invoice
-    DOMElements.invType.textContent = `${invoiceObj.type}`;
-    DOMElements.invNum.textContent = `nr ${invoiceObj.number}`;
-    DOMElements.invPlace.textContent = `Miejsce wystawienia: ${invoiceObj.place}`;
-    DOMElements.invDate.textContent = `Data wystawienia: ${invoiceObj.date}`;
-    DOMElements.invSellDate.textContent = `Data sprzedaży: ${invoiceObj.sellDate}`;
-    DOMElements.invSellerName.textContent = `${invoiceObj.sellerName}`;
-    DOMElements.invSellerStr.textContent = `${invoiceObj.sellerStr}`;
-    DOMElements.invSellerCity.textContent = `${invoiceObj.sellerCity}`;
-    DOMElements.invSellerPostCode.textContent = `${invoiceObj.sellerPostCode}`;
-    DOMElements.invSellerNip.textContent = `NIP: ${invoiceObj.sellerNip}`;
-    DOMElements.invBuyerName.textContent = `${invoiceObj.buyerName}`;
-    DOMElements.invBuyerStr.textContent = `${invoiceObj.buyerStr}`;
-    DOMElements.invBuyerCity.textContent = `${invoiceObj.buyerCity}`;
-    DOMElements.invBuyerPostCode.textContent = `${invoiceObj.buyerPostCode}`;
-    DOMElements.invBuyerNip.textContent = `NIP: ${invoiceObj.buyerNip}`;
-    DOMElements.invFinalToPay.textContent = `Do zapłaty: ${invoiceObj.toPay} PLN`;
-    DOMElements.invFinalPayMethod.textContent = `Sposób płatności: ${invoiceObj.payMethod}`;
-    DOMElements.invFinalPayTerm.textContent = `Termin płatności: ${invoiceObj.payTerm}`;
-    DOMElements.invFinalAccount.textContent = `Konto: ${invoiceObj.account}`;
+    DOMElements.invType.textContent = `${invoiceObj.document.type}`;
+    DOMElements.invNum.textContent = `nr ${invoiceObj.document.number}`;
+    DOMElements.invPlace.textContent = `Miejsce wystawienia: ${invoiceObj.document.place}`;
+    DOMElements.invDate.textContent = `Data wystawienia: ${invoiceObj.document.date}`;
+    DOMElements.invSellDate.textContent = `Data sprzedaży: ${invoiceObj.document.sellDate}`;
+    DOMElements.invSellerName.textContent = `${invoiceObj.seller.name}`;
+    DOMElements.invSellerStr.textContent = `${invoiceObj.seller.street}`;
+    DOMElements.invSellerCity.textContent = `${invoiceObj.seller.city}`;
+    DOMElements.invSellerPostCode.textContent = `${invoiceObj.seller.postCode}`;
+    DOMElements.invSellerNip.textContent = `NIP: ${invoiceObj.seller.nip}`;
+    DOMElements.invBuyerName.textContent = `${invoiceObj.buyer.name}`;
+    DOMElements.invBuyerStr.textContent = `${invoiceObj.buyer.street}`;
+    DOMElements.invBuyerCity.textContent = `${invoiceObj.buyer.city}`;
+    DOMElements.invBuyerPostCode.textContent = `${invoiceObj.buyer.postCode}`;
+    DOMElements.invBuyerNip.textContent = `NIP: ${invoiceObj.buyer.nip}`;
+    DOMElements.invFinalToPay.textContent = `Do zapłaty: ${invoiceObj.payment.toPay} PLN`;
+    DOMElements.invFinalPayMethod.textContent = `Sposób płatności: ${invoiceObj.payment.method}`;
+    DOMElements.invFinalPayTerm.textContent = `Termin płatności: ${invoiceObj.payment.term}`;
+    DOMElements.invFinalAccount.textContent = `Konto: ${invoiceObj.payment.account}`;
 
   };
 
@@ -215,34 +227,29 @@ const uiController = (function() {
           <td class="invoice__item-lp">${positionsArray.indexOf(item)+1}</td>
           <td class="invoice__item-name">${item.name}</td>
           <td class="invoice__item-unit">${item.unit}</td>
-          <td class="invoice__item-quantity">${item.quantity}</td>
-          <td class="invoice__item-price">${item.netPrice}</td>
-          <td class="invoice__item-net-value">${item.netValue}</td>
-          <td class="invoice__item-tax-rate">${item.taxRate}</td>
-          <td class="invoice__item-tax-value">${item.taxValue}</td>
-          <td class="invoice__item-total-value">${item.total}</td>`;
+          <td class="invoice__item-quantity">${item.quantity.toFixed(2)}</td>
+          <td class="invoice__item-price">${item.netPrice.toFixed(2)}</td>
+          <td class="invoice__item-net-value">${item.netValue.toFixed(2)}</td>
+          <td class="invoice__item-tax-rate">${item.taxRate.toFixed(2)}</td>
+          <td class="invoice__item-tax-value">${item.taxValue.toFixed(2)}</td>
+          <td class="invoice__item-total-value">${item.total.toFixed(2)}</td>`;
       DOMElements.invoicePositionsTable.appendChild(newRow);
     });
 
 
-    // invoice items summaries
-    const sumaNet = positionsArray.reduce(function(acc, item) {
-      return acc + item.netValue;
-    }, 0);
-    const sumaVat = positionsArray.reduce(function(acc, item) {
-      return acc + item.taxValue;
-    }, 0);
-    const sumaTotal = positionsArray.reduce(function(acc, item) {
-      return acc + item.total;
-    }, 0);
+    // invoice items summaries from draft items summaries section
+    const sumaNet = storageController.draftItemsData.summaries.totalNetVal;
+    const sumaVat = storageController.draftItemsData.summaries.totalTaxVal;
+    const sumaTotal = storageController.draftItemsData.summaries.total;
+
 
     const invoiceSumRow = document.createElement('tr');
     invoiceSumRow.classList.add('invoice__summary-row');
-    invoiceSumRow.innerHTML = `<td colspan="5" class="invoice__summary-legend">Razem:</td>
-                            <td class="invoice__summary-net-value">${sumaNet}</td>
-                            <td class=""></td>
-                            <td class="invoice__summary-vat-value">${sumaVat}</td>
-                            <td class="invoice__summary-total">${sumaTotal}</td>`
+    invoiceSumRow.innerHTML = `<th colspan="5" class="invoice__summary-legend">Razem:</th>
+                            <th class="invoice__summary-net-value">${sumaNet.toFixed(2)}</th>
+                            <th class=""></th>
+                            <th class="invoice__summary-vat-value">${sumaVat.toFixed(2)}</th>
+                            <th class="invoice__summary-total">${sumaTotal.toFixed(2)}</th>`
     DOMElements.invoicePositionsTable.appendChild(invoiceSumRow);
 
 
@@ -261,7 +268,7 @@ const uiController = (function() {
     generateInvoiceSumRow(areThere00, 0);
   };
 
-
+  // generate invoice positions sum row for each existing in draft items tavle tax rate determined by first argument the boolean value
   const generateInvoiceSumRow = function(areTaxRateItems, checkingTaxRate) {
     const checkedTaxRate = storageController.draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`];
     if (areTaxRateItems) {
@@ -269,26 +276,27 @@ const uiController = (function() {
       vatRatefinalrow.classList.add('invoice__summary-row');
       vatRatefinalrow.innerHTML = `
                               <td colspan="5" class="invoice__summary-legend">W tym:</td>
-                              <td class="invoice__summary-net-value">${checkedTaxRate.netValue}</td>
+                              <td class="invoice__summary-net-value">${checkedTaxRate.netValue.toFixed(2)}</td>
                               <td class="">${checkingTaxRate}%</td>
-                              <td class="invoice__summary-vat-value">${checkedTaxRate.taxValue}</td>
-                              <td class="invoice__summary-total">${checkedTaxRate.taxTotal}</td>`
+                              <td class="invoice__summary-vat-value">${checkedTaxRate.taxValue.toFixed(2)}</td>
+                              <td class="invoice__summary-total">${checkedTaxRate.taxTotal.toFixed(2)}</td>`
       DOMElements.invoicePositionsTable.appendChild(vatRatefinalrow);
     }
   };
+
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
   return {
     DOMElements,
+    calculateDraftItemNotFilledInputs,
     clearDraftItemFieds,
-    generateInvoice,
-    calculateItemTaxes,
-    addItemToDraftItemsList,
     rebuildDraftItemsTable,
-    generateDrawSumRow,
-    updateDraftSumValues,
+    addItemToDraftItemsList,
+    generateDraftSumRow,
+    buildDraftSumValues,
+    generateInvoice,
     generateInvoicePositions
   }
 
@@ -339,47 +347,55 @@ const storageController = (function() {
     invoice: {}
   };
 
+
   const DOM = uiController.DOMElements;
 
 
   const createInvoiceObj = function() {
     const invoice = {
       details: {
-        type: DOM.docTypeInp.value,
-        number: DOM.docNumInp.value,
-        place: DOM.docPlaceInp.value,
-        date: DOM.docDateInp.value,
-        sellDate: DOM.docSellDateInp.value,
-        sellerName: DOM.sellerNameInp.value,
-        sellerStr: DOM.sellerStreetInp.value,
-        sellerCity: DOM.sellerCityInp.value,
-        sellerPostCode: DOM.sellerPostCodeInp.value,
-        sellerNip: DOM.sellerNipInp.value,
-        buyerName: DOM.buyerNameInp.value,
-        buyerStr: DOM.buyerStreetInp.value,
-        buyerCity: DOM.buyerCityInp.value,
-        buyerPostCode: DOM.buyerPostCodeInp.value,
-        buyerNip: DOM.buyerNipInp.value,
-        toPay: DOM.drawtSumTable.querySelector('.draft__summary-total').textContent,
-        payMethod: DOM.payMethodInp.value,
-        payTerm: DOM.payTermInp.value,
-        account: DOM.payAccountInp.value,
+        document: {
+          type: DOM.docTypeInp.value,
+          number: DOM.docNumInp.value,
+          place: DOM.docPlaceInp.value,
+          date: DOM.docDateInp.value,
+          sellDate: DOM.docSellDateInp.value
+        },
+        seller: {
+          name: DOM.sellerNameInp.value,
+          street: DOM.sellerStreetInp.value,
+          city: DOM.sellerCityInp.value,
+          postCode: DOM.sellerPostCodeInp.value,
+          nip: DOM.sellerNipInp.value,
+        },
+        buyer: {
+          name: DOM.buyerNameInp.value,
+          street: DOM.buyerStreetInp.value,
+          city: DOM.buyerCityInp.value,
+          postCode: DOM.buyerPostCodeInp.value,
+          nip: DOM.buyerNipInp.value
+        },
+        payment: {
+          toPay: draftItemsData.summaries.total,
+          method: DOM.payMethodInp.value,
+          term: DOM.payTermInp.value,
+          account: DOM.payAccountInp.value,
+        }
+
       },
       positions: draftItemsData.items
 
     }
     invoicesData.invoice = invoice;
 
-  }
+  };
 
   const deleteDraftItem = function(delID) {
-    // draftItemsData.items.splice((id - 1), 1);
     draftItemsData.items = draftItemsData.items.filter((item) => {
       return draftItemsData.items.indexOf(item) != delID;
     });
     console.table(draftItemsData.items);
-
-  }
+  };
 
   const generateNewItemId = function() {
     let newId = 0;
@@ -410,7 +426,7 @@ const storageController = (function() {
   };
 
 
-  const calculateInvoiceTotal = function() {
+  const calculateDraftItemsTotals = function() {
     const draftItemsTotal = draftItemsData.items.reduce((acc, item) => {
       return acc + item.total;
     }, 0);
@@ -444,14 +460,13 @@ const storageController = (function() {
       draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].taxValue = taxRateTax;
       draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].taxTotal = taxRateTotal;
       draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`].netValue = taxRateNetValue;
-      console.log(draftItemsData.summaries.taxRates[`tax${checkingTaxRate}`]);
     } else {
       return;
     }
   }
 
-
-  const checkDraftVatRates = function() {
+  // creating vat rates summaries in storage controller and building summaries rows in draft items table
+  const createDraftVatRatesValues = function() {
     // boolean values for check if there are some products with specific tax rates
     const areThere00 = draftItemsData.items.some((item) => item.taxRate === 0);
     const areThere3 = draftItemsData.items.some((item) => item.taxRate === 3);
@@ -459,19 +474,19 @@ const storageController = (function() {
     const areThere8 = draftItemsData.items.some((item) => item.taxRate === 8);
     const areThere23 = draftItemsData.items.some((item) => item.taxRate === 23);
 
+    // calculate summary valuest for each vat rate
     claculateDraftTaxRatesValues(areThere23, 23);
     claculateDraftTaxRatesValues(areThere8, 8);
     claculateDraftTaxRatesValues(areThere5, 5);
     claculateDraftTaxRatesValues(areThere3, 3);
     claculateDraftTaxRatesValues(areThere00, 0);
 
-
-
-    uiController.generateDrawSumRow(areThere23, 23);
-    uiController.generateDrawSumRow(areThere8, 8);
-    uiController.generateDrawSumRow(areThere5, 5);
-    uiController.generateDrawSumRow(areThere3, 3);
-    uiController.generateDrawSumRow(areThere00, 0);
+    // create summary row for each existing vat rate
+    uiController.generateDraftSumRow(areThere23, 23);
+    uiController.generateDraftSumRow(areThere8, 8);
+    uiController.generateDraftSumRow(areThere5, 5);
+    uiController.generateDraftSumRow(areThere3, 3);
+    uiController.generateDraftSumRow(areThere00, 0);
 
   }
 
@@ -480,13 +495,13 @@ const storageController = (function() {
   Revealed methods 
   ----------------------------------------------------*/
   return {
-    createNewItem,
-    draftItemsData,
-    createInvoiceObj,
     invoicesData,
+    draftItemsData,
+    createNewItem,
     deleteDraftItem,
-    checkDraftVatRates,
-    calculateInvoiceTotal
+    createDraftVatRatesValues,
+    createInvoiceObj,
+    calculateDraftItemsTotals
   }
 
 }())
@@ -506,11 +521,18 @@ const appController = (function(StorageCtrl, UiCtrl) {
     DOM.itemTaxRateInp.addEventListener('change', calculateDraftItem);
     DOM.draftItemTable.addEventListener('click', deleteDraftItem);
 
+    // event listeners for verification for inputs section
     DOM.dataInpufField.addEventListener('keyup', verifyInputField);
     DOM.dataInpufField.addEventListener('change', verifyInputField);
     DOM.draftItemConstructor.addEventListener('keyup', verifyDraftItemInput);
 
   }
+
+  // initialization function
+  const init = function() {
+    loadEventListeners();
+  };
+
 
   const verifyInputField = function(e) {
     if (e.target === DOM.sellerPostCodeInp ||
@@ -542,7 +564,7 @@ const appController = (function(StorageCtrl, UiCtrl) {
     }
   };
 
-
+  // validation functions object
   const validationFunctions = {
     validatePostCode: function(e) {
       const reg = /^\d\d-\d\d\d$/;
@@ -589,49 +611,55 @@ const appController = (function(StorageCtrl, UiCtrl) {
   };
 
 
-  const init = function() {
-    console.log('Starting app...');
-    loadEventListeners();
-  };
 
 
   const addItem = function() {
     storageController.createNewItem();
-    storageController.calculateInvoiceTotal();
+    storageController.calculateDraftItemsTotals();
     UiCtrl.clearDraftItemFieds();
     UiCtrl.addItemToDraftItemsList();
     console.table(StorageCtrl.draftItemsData.items);
-    StorageCtrl.checkDraftVatRates();
-    UiCtrl.updateDraftSumValues();
+    StorageCtrl.createDraftVatRatesValues();
+    UiCtrl.buildDraftSumValues();
+    storageController.createDraftVatRatesValues();
     DOM.addBtn.disabled = true;
   };
 
 
   const calculateDraftItem = function() {
-    UiCtrl.calculateItemTaxes();
+    // calculate not filled draft input values and placing its values in input
+    UiCtrl.calculateDraftItemNotFilledInputs();
   };
 
 
   const deleteDraftItem = function(e) {
     if (e.target.classList.contains('btn--item-del')) {
+      // determine id of target item 
       const delID = (e.target.parentElement.parentElement.dataset.identifier);
-      console.log(delID);
+      // delete item from storage array by given id
       StorageCtrl.deleteDraftItem(delID);
-      storageController.calculateInvoiceTotal();
+      // recalculate invoice totals
+      storageController.calculateDraftItemsTotals();
+      // rebuild draft items table
       UiCtrl.rebuildDraftItemsTable();
-      StorageCtrl.checkDraftVatRates();
-      UiCtrl.updateDraftSumValues();
+      // check existing on draft items vat rates
+      StorageCtrl.createDraftVatRatesValues();
+      // rebuild vat summareis table by vat rate for draft items
+      UiCtrl.buildDraftSumValues();
     } else {
       return;
     };
   };
 
-
+  // function for generate new invoice object
   const generateInvoice = function() {
     const verified = verifyCompletedForm();
     if (!verified) {
+      // create invoice object in storage
       StorageCtrl.createInvoiceObj();
+      // generating invoice document
       UiCtrl.generateInvoice();
+      // generate invoice positions from draft items
       UiCtrl.generateInvoicePositions(StorageCtrl.invoicesData.invoice.positions);
     } else {
       return;
