@@ -192,7 +192,14 @@
 
       </fieldset>
       </input>
-      <button class="btn btn--gen-inv">Generuj fakturę</button>
+      <div class="generate-inv-section">
+        <button class="btn btn--gen-inv">Generuj fakturę</button>
+        <button class="btn btn--print-inv">Wydrukuj fakturę</button>
+        <div class="not-completed-form-modal">
+          <p>Proszę wypełnić prawidłowo wszystkie zaznmaczone kolorem czerwonym pola...</p>
+        </div>
+      </div>
+
     </section>
     <section class="invoice">
       <div class="invoice__heading">
@@ -295,14 +302,21 @@
         </div>
       </div>
     </section>
-
   </main>
 
 
 
 
 
-  <script src="js/main.js"></script>
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- printThis -->
+
+  <script type="text/javascript" src="printThis.js"></script>
+
+
+  <script type="text/javascript" src="js/main.js"></script>
 </body>
 
 </html>

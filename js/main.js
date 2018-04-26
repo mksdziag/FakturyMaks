@@ -284,6 +284,14 @@ const uiController = (function() {
     }
   };
 
+  const showCompleteInfo = function() {
+    document.querySelector('.not-completed-form-modal').classList.add("visible");
+    setTimeout(hidemodal, 2500)
+
+    function hidemodal() {
+      document.querySelector('.not-completed-form-modal').classList.remove("visible");
+    }
+  };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
@@ -297,7 +305,8 @@ const uiController = (function() {
     generateDraftSumRow,
     buildDraftSumValues,
     generateInvoice,
-    generateInvoicePositions
+    generateInvoicePositions,
+    showCompleteInfo
   }
 
 }())
@@ -654,7 +663,7 @@ const appController = (function(StorageCtrl, UiCtrl) {
   // function for generate new invoice object
   const generateInvoice = function() {
     const verified = verifyCompletedForm();
-    if (!verified) {
+    if (verified) {
       // create invoice object in storage
       StorageCtrl.createInvoiceObj();
       // generating invoice document
@@ -662,7 +671,7 @@ const appController = (function(StorageCtrl, UiCtrl) {
       // generate invoice positions from draft items
       UiCtrl.generateInvoicePositions(StorageCtrl.invoicesData.invoice.positions);
     } else {
-      return;
+      uiController.showCompleteInfo();
     }
   };
 
@@ -678,3 +687,8 @@ const appController = (function(StorageCtrl, UiCtrl) {
 }(storageController, uiController))
 
 appController.init();
+
+// print js script for printing
+$('.btn--print-inv').on("click", function() {
+  $('.invoice').printThis();
+});

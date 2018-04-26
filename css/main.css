@@ -74,10 +74,10 @@ body {
   cursor: pointer;
 }
 
-.btn--confirm-drafts, .btn--gen-inv {
+.btn--print-inv, .btn--gen-inv {
   display: block;
   width: 80%;
-  margin: 0 auto 2rem;
+  margin: 0 auto 1rem;
   background-color: #ec3e6a;
   font-weight: 700;
   letter-spacing: 3px;
@@ -86,14 +86,10 @@ body {
 }
 
 @media screen and (min-width: 768px) {
-  .btn--confirm-drafts, .btn--gen-inv {
+  .btn--print-inv, .btn--gen-inv {
     width: 50%;
     padding: 1rem 2rem;
   }
-}
-
-.btn--gen-inv {
-  margin: 0 auto 5rem;
 }
 
 .btn--add-item {
@@ -157,6 +153,36 @@ td {
   border-bottom: 1px solid #ec3e6a;
   background-color: rgba(236, 62, 106, 0.055);
   box-shadow: 0 0.2rem 0.25rem rgba(236, 62, 106, 0.75);
+}
+
+.generate-inv-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.not-completed-form-modal {
+  position: absolute;
+  width: 75%;
+  top: -5rem;
+  left: -100%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  border: 1px solid #d4d4d4;
+  font-weight: 700;
+  font-size: 1.75rem;
+  text-align: center;
+  box-shadow: 0 4rem 14rem rgba(0, 0, 0, 0.95);
+  opacity: .25;
+  transition: all 250ms cubic-bezier(0.42, 0, 0.69, 1.15);
+}
+
+.visible {
+  left: 50%;
+  opacity: 1;
 }
 
 *:focus {
