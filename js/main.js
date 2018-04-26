@@ -43,6 +43,7 @@ const uiController = (function() {
     itemDelBtn: document.querySelectorAll('.btn--item-del'),
     // button generate invoice
     genBtn: document.querySelector('.btn--gen-inv'),
+    printBtn: document.querySelector('.btn--print-inv'),
     // --------------------------------------------------------------------
     //output invoice elements ---------------------------------------------
     invoice: document.querySelector('.invoice'),
@@ -206,11 +207,16 @@ const uiController = (function() {
     DOMElements.invBuyerCity.textContent = `${invoiceObj.buyer.city}`;
     DOMElements.invBuyerPostCode.textContent = `${invoiceObj.buyer.postCode}`;
     DOMElements.invBuyerNip.textContent = `NIP: ${invoiceObj.buyer.nip}`;
-    DOMElements.invFinalToPay.textContent = `Do zapłaty: ${invoiceObj.payment.toPay} PLN`;
+    DOMElements.invFinalToPay.textContent = `Do zapłaty: ${invoiceObj.payment.toPay.toFixed(2)} PLN`;
     DOMElements.invFinalPayMethod.textContent = `Sposób płatności: ${invoiceObj.payment.method}`;
     DOMElements.invFinalPayTerm.textContent = `Termin płatności: ${invoiceObj.payment.term}`;
-    DOMElements.invFinalAccount.textContent = `Konto: ${invoiceObj.payment.account}`;
+    // print account number if choosen method is different than cash
+    if (invoiceObj.payment.method !== 'gotówka') {
+      DOMElements.invFinalAccount.textContent = `Konto: ${invoiceObj.payment.account}`;
+    } else {
+      DOMElements.invFinalAccount.textContent = ``;
 
+    }
   };
 
   const generateInvoicePositions = function(positionsArray) {
@@ -293,6 +299,10 @@ const uiController = (function() {
     }
   };
 
+  const activatePrintInvoice = function() {
+    DOMElements.printBtn.removeAttribute('disabled');
+  }
+
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -306,7 +316,8 @@ const uiController = (function() {
     buildDraftSumValues,
     generateInvoice,
     generateInvoicePositions,
-    showCompleteInfo
+    showCompleteInfo,
+    activatePrintInvoice
   }
 
 }())
@@ -535,13 +546,25 @@ const appController = (function(StorageCtrl, UiCtrl) {
     DOM.dataInpufField.addEventListener('change', verifyInputField);
     DOM.draftItemConstructor.addEventListener('keyup', verifyDraftItemInput);
 
+    DOM.payMethodInp.addEventListener('change', willBeAccount);
+
   }
 
   // initialization function
   const init = function() {
     loadEventListeners();
   };
+  const willBeAccount = function(e) {
+    if (e.target.value === 'gotówka') {
+      DOM.payAccountInp.parentElement.style.display = 'none';
+      DOM.payAccountInp.setAttribute('disabled', true);
+      DOM.payAccountInp.value = '';
+    } else {
+      DOM.payAccountInp.parentElement.style.display = 'flex';
+      DOM.payAccountInp.removeAttribute('disabled');
 
+    }
+  }
 
   const verifyInputField = function(e) {
     if (e.target === DOM.sellerPostCodeInp ||
@@ -551,7 +574,12 @@ const appController = (function(StorageCtrl, UiCtrl) {
       e.target === DOM.buyerNipInp) {
       validationFunctions.validateNip(e);
     } else if (e.target === DOM.payAccountInp) {
-      validationFunctions.validateAccount(e);
+      if (DOM.payMethodInp.value === 'gotówka' ||
+        DOM.payMethodInp.value === 'pobranie') {
+        return;
+      } else {
+        validationFunctions.validateAccount(e);
+      }
     } else {
       validationFunctions.validateFillInFormInput(e);
     }
@@ -670,6 +698,8 @@ const appController = (function(StorageCtrl, UiCtrl) {
       UiCtrl.generateInvoice();
       // generate invoice positions from draft items
       UiCtrl.generateInvoicePositions(StorageCtrl.invoicesData.invoice.positions);
+      // Activate print invoice button
+      UiCtrl.activatePrintInvoice();
     } else {
       uiController.showCompleteInfo();
     }

@@ -273,7 +273,7 @@
     loadCSS: "", // load an additional css file - load multiple stylesheets with an array []
     pageTitle: "", // add title to print page
     removeInline: false, // remove all inline styles
-    printDelay: 200, // variable print delay
+    printDelay: 150, // variable print delay
     header: null, // prefix to html
     footer: null, // postfix to html
     formValues: true, // preserve input/form values
