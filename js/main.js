@@ -592,7 +592,14 @@ const appController = (function(StorageCtrl, UiCtrl) {
 
 
   const verifyCompletedForm = function() {
-    const inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
+    let inputs = Array.from(document.querySelector('.data-form').getElementsByClassName('input'));
+
+    // opisać że moijamy payment account gdy wybrana forma płatności to gotówka
+    if (DOM.payMethodInp.value === 'gotówka') {
+      inputs = inputs.filter((item) => {
+        return item.classList.contains('payment__account') === false;
+      });
+    }
     if (inputs.some((input) => input.value === '' || input.value === ' ')) {
       inputs.filter(input => input.value === '' || input.value === ' ').forEach(input => input.classList.add('invalid'));
       return false;
