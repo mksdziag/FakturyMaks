@@ -8,9 +8,9 @@
   <title>FakturyMaks</title>
 
   <!-- styleshets -->
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="/main.81b893f9.css">
 
-</head>
+<script src="/main.81b893f9.js"></script></head>
 
 <body>
   <div class="main-header">
@@ -29,7 +29,7 @@
           <div class="input-wrapper">
             <label class="label" for="document-type">Wystawiany dokument:</label>
             <select name="document-type" id="document-type" class="select data__doc-type">
-              <option value="Faktura VAT" selected>Faktura VAT</option>
+              <option value="Faktura VAT" selected="">Faktura VAT</option>
               <option value="Faktura Pro-forma">Faktura pro-forma</option>
             </select>
           </div>
@@ -117,7 +117,7 @@
           <div class="input-wrapper">
             <label for="payment__method" class="label">Metoda Płatnosci</label>
             <select name="payment__method" id="payment__method" class="select payment__method">
-              <option value="przelew" selected>przelew</option>
+              <option value="przelew" selected="">przelew</option>
               <option value="gotówka">gotówka</option>
               <option value="pobranie">pobranie</option>
               <option value="czek">czek</option>
@@ -140,17 +140,16 @@
         <form class="draft-item__constructor">
           <div class="draft-item__constructor-section">
             <input placeholder="nazwa towaru" type="text" id="draft-item__name" class="input draft-item__name">
-            <input placeholder="ilość" type="number" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity"
-              min="0">
+            <input placeholder="ilość" type="number" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity" min="0">
             <select placeholder="jednosta miary" type="text" id="draft-item__unit" class="input draft-item__unit">
-              <option value="szt." selected>szt.</option>
+              <option value="szt." selected="">szt.</option>
               <option value="usł.">usł.</option>
               <option value="kg">kg</option>
               <option value="litr">litr</option>
               <option value="m3">m3</option>
             </select>
             <select name="draft-item__tax-rate" id="draft-item__tax-rate" class="input select draft-item__tax-rate">
-              <option value="23" selected>23%</option>
+              <option value="23" selected="">23%</option>
               <option value="8">8%</option>
               <option value="3">3%</option>
               <option value="5">5%</option>
@@ -158,15 +157,14 @@
             </select>
           </div>
           <div class="draft-item__constructor-section">
-            <input placeholder="cena netto" type="number" name="draft-item__price" id="draft-item__price" class="input draft-item__price"
-              min="0">
-            <input placeholder="wartość" type="number" id="draft-item__net-value" class="input draft-item__net-value" disabled>
+            <input placeholder="cena netto" type="number" name="draft-item__price" id="draft-item__price" class="input draft-item__price" min="0">
+            <input placeholder="wartość" type="number" id="draft-item__net-value" class="input draft-item__net-value" disabled="">
 
-            </select>
-            <input placeholder="wartość VAT" type="number" id="draft-item__tax-value" class="input draft-item__tax-value" disabled>
-            <input placeholder="cena brutto" type="number" id="draft-item__total-value" class="input draft-item__total-value" disabled>
+            
+            <input placeholder="wartość VAT" type="number" id="draft-item__tax-value" class="input draft-item__tax-value" disabled="">
+            <input placeholder="cena brutto" type="number" id="draft-item__total-value" class="input draft-item__total-value" disabled="">
           </div>
-          <button class="btn btn--add-item" disabled>Dodaj</button>
+          <button class="btn btn--add-item" disabled="">Dodaj</button>
         </form>
 
         <table class="draft__positions">
@@ -193,10 +191,10 @@
         <!-- <button class="btn btn--confirm-drafts">Zatwierdź pozycje na fakturę</button> -->
 
       </fieldset>
-      </input>
+      
       <div class="generate-inv-section">
         <button class="btn btn--gen-inv">Generuj fakturę</button>
-        <button class="btn btn--print-inv" disabled>Wydrukuj fakturę</button>
+        <button class="btn btn--print-inv" disabled="">Wydrukuj fakturę</button>
         <div class="not-completed-form-modal">
           <p>Proszę wypełnić prawidłowo wszystkie zaznmaczone kolorem czerwonym pola...</p>
         </div>
@@ -315,10 +313,10 @@
 
   <!-- printThis -->
 
-  <script type="text/javascript" src="printThis.js"></script>
+  <script type="text/javascript" src="/printThis.3cc512f6.js"></script>
 
 
-  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="/main.b27368ef.js"></script>
 </body>
 
 </html>

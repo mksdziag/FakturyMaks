@@ -1,0 +1,23 @@
+{
+  "name": "FakturyMaks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "old.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mksdziag/FakturyMaks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mksdziag/FakturyMaks/issues"
+  },
+  "homepage": "https://github.com/mksdziag/FakturyMaks#readme",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  }
+}
