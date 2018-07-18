@@ -8,7 +8,7 @@
   <title>FakturyMaks</title>
 
   <!-- styleshets -->
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="./css/main.css">
 
 </head>
 
@@ -61,6 +61,10 @@
             <div class="fieldset__name">
               <p class="fieldset__name-para">Dane sprzedawcy:</p>
             </div>
+            <div class="fieldset__actions">
+              <button class="btn btn--form btn--seller-save">Zapisz</button>
+              <button class="btn btn--form btn--seller-load">Wczytaj moje dane</button>
+            </div>
             <div class="input-wrapper">
               <label class="label" for="data__seller-name">Nazwa:</label>
               <input type="text" id="data__seller-name" class="input data__seller-name">
@@ -86,6 +90,10 @@
           <fieldset class="fieldset data__buyer">
             <div class="fieldset__name">
               <p class="fieldset__name-para">Dane nabywcy:</p>
+            </div>
+            <div class="fieldset__actions">
+              <button class="btn btn--form btn--buyer-save">Zapisz</button>
+              <button class="btn btn--form btn--buyer-load">Przeglądaj zapisanych kontrahentów</button>
             </div>
             <div class="input-wrapper">
               <label class="label" for="data__buyer-name">Nazwa:</label>
@@ -114,6 +122,10 @@
           <div class="fieldset__name">
             <p class="fieldset__name-para">Szczegóły płatności:</p>
           </div>
+          <div class="fieldset__actions">
+            <button class="btn btn--form btn--account-save">Zapisz</button>
+            <button class="btn btn--form btn--account-load">Wczytaj numer konta</button>
+          </div>
           <div class="input-wrapper">
             <label for="payment__method" class="label">Metoda Płatnosci</label>
             <select name="payment__method" id="payment__method" class="select payment__method">
@@ -137,10 +149,14 @@
         <div class="fieldset__name">
           <p class="fieldset__name-para">Pozycje do dodania na fakturę:</p>
         </div>
+        <div class="fieldset__actions">
+          <button class="btn btn--form btn--item-save">Zapisz</button>
+          <button class="btn btn--form btn--item-load">Przeglądaj zapisane produkty</button>
+        </div>
         <form class="draft-item__constructor">
           <div class="draft-item__constructor-section">
             <input placeholder="nazwa towaru" type="text" id="draft-item__name" class="input draft-item__name">
-            <input placeholder="ilość" type="number" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity"
+            <input placeholder="ilość" type="number" step="0.01" name="draft-item__quantity" id="draft-item__quantity" class="input draft-item__quantity"
               min="0">
             <select placeholder="jednosta miary" type="text" id="draft-item__unit" class="input draft-item__unit">
               <option value="szt." selected>szt.</option>
@@ -158,13 +174,15 @@
             </select>
           </div>
           <div class="draft-item__constructor-section">
-            <input placeholder="cena netto" type="number" name="draft-item__price" id="draft-item__price" class="input draft-item__price"
+            <input placeholder="cena netto" type="number" step="0.01" name="draft-item__price" id="draft-item__price" class="input draft-item__price"
               min="0">
-            <input placeholder="wartość" type="number" id="draft-item__net-value" class="input draft-item__net-value" disabled>
+            <input placeholder="wartość" type="number" step="0.01" id="draft-item__net-value" class="input draft-item__net-value" disabled>
 
             </select>
-            <input placeholder="wartość VAT" type="number" id="draft-item__tax-value" class="input draft-item__tax-value" disabled>
-            <input placeholder="cena brutto" type="number" id="draft-item__total-value" class="input draft-item__total-value" disabled>
+            <input placeholder="wartość VAT" type="number" step="0.01" id="draft-item__tax-value" class="input draft-item__tax-value"
+              disabled>
+            <input placeholder="cena brutto" type="number" step="0.01" id="draft-item__total-value" class="input draft-item__total-value"
+              disabled>
           </div>
           <button class="btn btn--add-item" disabled>Dodaj</button>
         </form>
@@ -191,7 +209,11 @@
           </tfoot>
         </table>
         <!-- <button class="btn btn--confirm-drafts">Zatwierdź pozycje na fakturę</button> -->
-
+        <div class="items-load__modal">
+          <span class="btn btn--close btn--close-items-modal">Close</span>
+          <ul class="items-load__list">
+          </ul>
+        </div>
       </fieldset>
       </input>
       <div class="generate-inv-section">
@@ -315,10 +337,10 @@
 
   <!-- printThis -->
 
-  <script type="text/javascript" src="printThis.js"></script>
+  <script type="text/javascript" src="./printThis.js"></script>
 
 
-  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="./js/main.js"></script>
 </body>
 
 </html>

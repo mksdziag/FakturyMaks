@@ -18,6 +18,12 @@
   },
   "homepage": "https://github.com/mksdziag/FakturyMaks#readme",
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "cssnano": "^4.0.3",
+    "node-sass": "^4.9.2"
   }
 }
