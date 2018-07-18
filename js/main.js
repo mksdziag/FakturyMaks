@@ -1,5 +1,5 @@
-import { v4 } from "uuid";
-import "../sass/main.scss";
+// import { v4 } from "uuid";
+// import "../sass/main.scss";
 
 const uiController = (function() {
   // defining DOM elements
