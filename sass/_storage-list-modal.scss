@@ -48,6 +48,7 @@
     margin-bottom: 1rem;
     border-bottom: 1px solid $color-border;
     box-shadow: 0 0.5rem 0.75rem rgba($color-black, 0.2);
+    transition: all 150ms ease-in;
     @include respond(tablet-land) {
       flex-direction: row;
       align-items: center;

@@ -20,6 +20,10 @@ img {
   display: inline-block;
   width: 100%; }
 
+.fade-up {
+  transform: translateY(-15%);
+  opacity: 0; }
+
 .wrapper {
   margin: 0 auto;
   width: 100%;
@@ -256,7 +260,8 @@ td {
   .fieldset__actions {
     position: absolute;
     bottom: -1.5rem;
-    left: 1rem; }
+    left: 1rem;
+    height: 3.5rem; }
     @media screen and (min-width: 768px) {
       .fieldset__actions {
         top: -1.5rem;
@@ -452,7 +457,8 @@ table {
     padding: 1rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid #d4d4d4;
-    box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.2); }
+    box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.2);
+    transition: all 150ms ease-in; }
     @media screen and (min-width: 992px) {
       .storage-list__item {
         flex-direction: row;

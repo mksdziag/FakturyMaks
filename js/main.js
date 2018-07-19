@@ -266,7 +266,7 @@ const uiController = (function() {
           <td class="invoice__item-quantity">${item.quantity.toFixed(2)}</td>
           <td class="invoice__item-price">${item.netPrice.toFixed(2)}</td>
           <td class="invoice__item-net-value">${item.netValue.toFixed(2)}</td>
-          <td class="invoice__item-tax-rate">${item.taxRate.toFixed(2)}</td>
+          <td class="invoice__item-tax-rate">${item.taxRate}%</td>
           <td class="invoice__item-tax-value">${item.taxValue.toFixed(2)}</td>
           <td class="invoice__item-total-value">${item.total.toFixed(2)}</td>`;
       DOMElements.invoicePositionsTable.appendChild(newRow);
@@ -401,16 +401,16 @@ const uiController = (function() {
       closeStorageModal();
     }
     if (e.target.classList.contains("btn--load-account")) {
-      const sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
-      const account = sellerAccounts[e.target.dataset.accountNumber];
-      DOMElements.payAccountInp.value = account.accountNumber;
+      const accounts = JSON.parse(localStorage.getItem("accounts"));
+      const account = accounts[e.target.dataset.accountNumber];
+      DOMElements.payAccountInp.value = account.number;
       closeStorageModal();
     }
   };
 
   const buildStorageSellersList = function() {
-    if (localStorage.getItem("sellers")) {
-      const localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+    const localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+    if (Object.keys(localStorageBuyers).length > 0) {
       const sellers = Object.entries(localStorageBuyers);
       sellers.forEach(seller => {
         const li = document.createElement("li");
@@ -461,8 +461,8 @@ const uiController = (function() {
   };
 
   const buildStorageBuyersList = function() {
-    if (localStorage.getItem("buyers")) {
-      const localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+    const localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+    if (Object.keys(localStorageBuyers).length > 0) {
       const buyers = Object.entries(localStorageBuyers);
       buyers.forEach(buyer => {
         const li = document.createElement("li");
@@ -512,11 +512,11 @@ const uiController = (function() {
     }
   };
 
-  const buildStorageSellerAccountsList = function(sellerAccounts) {
-    if (localStorage.getItem("sellerAccounts")) {
-      const localStorageAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
-      const sellerAccounts = Object.entries(localStorageAccounts);
-      sellerAccounts.forEach(account => {
+  const buildStorageSellerAccountsList = function(accounts) {
+    if (localStorage.getItem("accounts")) {
+      const localStorageAccounts = JSON.parse(localStorage.getItem("accounts"));
+      const accounts = Object.entries(localStorageAccounts);
+      accounts.forEach(account => {
         const li = document.createElement("li");
         li.classList.add("storage-list__item");
 
@@ -524,19 +524,19 @@ const uiController = (function() {
         loadButton.classList.add("btn");
         loadButton.classList.add("btn--choose");
         loadButton.classList.add("btn--load-account");
-        loadButton.dataset.accountNumber = account[1].accountNumber;
+        loadButton.dataset.accountNumber = account[1].number;
         loadButton.textContent = "Wybierz";
 
         const deleteButton = document.createElement("button");
         deleteButton.classList.add("btn");
         deleteButton.classList.add("btn--choose");
         deleteButton.classList.add("btn--delete-account");
-        deleteButton.dataset.accountNumber = account[1].accountNumber;
+        deleteButton.dataset.accountNumber = account[1].number;
         deleteButton.textContent = "Usuń";
 
         const accountNumberSpan = document.createElement("span");
         accountNumberSpan.classList.add("storage-list__account-number");
-        accountNumberSpan.textContent = "Numer Konta: " + account[1].accountNumber;
+        accountNumberSpan.textContent = "Numer Konta: " + account[1].number;
 
         li.appendChild(loadButton);
         li.appendChild(deleteButton);
@@ -607,6 +607,13 @@ const uiController = (function() {
 
     DOMElements.storageList.appendChild(noDataInfo);
   };
+
+  const hideListItem = function(element) {
+    element.classList.add("fade-up");
+    setTimeout(() => {
+      element.style.display = "none";
+    }, 150);
+  };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -632,6 +639,7 @@ const uiController = (function() {
     buildStorageBuyersList,
     buildStorageSellersList,
     noLocalStorageDataInfo,
+    hideListItem,
   };
 })();
 
@@ -835,15 +843,41 @@ const storageController = (function() {
 
     localStorage.setItem("items", JSON.stringify(items));
   };
-  const saveAccountToLocal = function(sellerAccount) {
-    let sellerAccounts = {};
-    if (localStorage.getItem("sellerAccounts")) {
-      sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+  const saveAccountToLocal = function(account) {
+    let accounts = {};
+    if (localStorage.getItem("accounts")) {
+      accounts = JSON.parse(localStorage.getItem("accounts"));
     }
 
-    sellerAccounts[sellerAccount.accountNumber] = sellerAccount;
+    accounts[account.number] = account;
 
-    localStorage.setItem("sellerAccounts", JSON.stringify(sellerAccounts));
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+  };
+
+  const deleteSeller = function(sellerName) {
+    const sellers = JSON.parse(localStorage.getItem("sellers"));
+    delete sellers[sellerName];
+    localStorage.setItem("sellers", JSON.stringify(sellers));
+  };
+
+  const deleteBuyer = function(buyerName) {
+    const buyers = JSON.parse(localStorage.getItem("buyers"));
+    delete buyers[buyerName];
+    localStorage.setItem("buyers", JSON.stringify(buyers));
+  };
+
+  const deleteAccount = function(account) {
+    const accounts = JSON.parse(localStorage.getItem("accounts"));
+    delete accounts[account];
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+  };
+
+  const deleteItem = function(name) {
+    const items = JSON.parse(localStorage.getItem("items"));
+    console.log(items[name]);
+    delete items[name];
+    console.log(items);
+    localStorage.setItem("items", JSON.stringify(items));
   };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -861,6 +895,10 @@ const storageController = (function() {
     saveBuyerToLocal,
     saveItemToLocal,
     saveAccountToLocal,
+    deleteSeller,
+    deleteBuyer,
+    deleteAccount,
+    deleteItem,
   };
 })();
 
@@ -1097,10 +1135,10 @@ const appController = (function(StorageCtrl, UiCtrl) {
   const saveAccount = function(e) {
     e.preventDefault();
 
-    const sellerAccount = {
-      accountNumber: DOMElements.payAccountInp.value,
+    const account = {
+      number: DOMElements.payAccountInp.value,
     };
-    StorageCtrl.saveAccountToLocal(sellerAccount);
+    StorageCtrl.saveAccountToLocal(account);
   };
 
   const retrieveAccounts = function(e) {
@@ -1138,20 +1176,21 @@ const appController = (function(StorageCtrl, UiCtrl) {
     e.preventDefault();
     const targetClasses = e.target.classList;
     if (targetClasses.contains("btn--delete-seller")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteSeller(e.target.dataset.sellerName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-buyer")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteBuyer(e.target.dataset.buyerName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-account")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteAccount(e.target.dataset.accountNumber);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-item")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      console.log(e.target.dataset.itemName);
+      StorageCtrl.deleteItem(e.target.dataset.itemName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
   };
 

@@ -605,7 +605,7 @@ var uiController = function () {
       newRow.classList.add("invoice__position");
       newRow.id = "invoice-item" + item.id;
       newRow.dataset.identifier = "" + item.id;
-      newRow.innerHTML = "\n          <td class=\"invoice__item-lp\">" + (positionsArray.indexOf(item) + 1) + "</td>\n          <td class=\"invoice__item-name\">" + item.name + "</td>\n          <td class=\"invoice__item-unit\">" + item.unit + "</td>\n          <td class=\"invoice__item-quantity\">" + item.quantity.toFixed(2) + "</td>\n          <td class=\"invoice__item-price\">" + item.netPrice.toFixed(2) + "</td>\n          <td class=\"invoice__item-net-value\">" + item.netValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-tax-rate\">" + item.taxRate.toFixed(2) + "</td>\n          <td class=\"invoice__item-tax-value\">" + item.taxValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-total-value\">" + item.total.toFixed(2) + "</td>";
+      newRow.innerHTML = "\n          <td class=\"invoice__item-lp\">" + (positionsArray.indexOf(item) + 1) + "</td>\n          <td class=\"invoice__item-name\">" + item.name + "</td>\n          <td class=\"invoice__item-unit\">" + item.unit + "</td>\n          <td class=\"invoice__item-quantity\">" + item.quantity.toFixed(2) + "</td>\n          <td class=\"invoice__item-price\">" + item.netPrice.toFixed(2) + "</td>\n          <td class=\"invoice__item-net-value\">" + item.netValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-tax-rate\">" + item.taxRate + "%</td>\n          <td class=\"invoice__item-tax-value\">" + item.taxValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-total-value\">" + item.total.toFixed(2) + "</td>";
       DOMElements.invoicePositionsTable.appendChild(newRow);
     });
 
@@ -741,16 +741,16 @@ var uiController = function () {
       closeStorageModal();
     }
     if (e.target.classList.contains("btn--load-account")) {
-      var sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
-      var account = sellerAccounts[e.target.dataset.accountNumber];
-      DOMElements.payAccountInp.value = account.accountNumber;
+      var accounts = JSON.parse(localStorage.getItem("accounts"));
+      var account = accounts[e.target.dataset.accountNumber];
+      DOMElements.payAccountInp.value = account.number;
       closeStorageModal();
     }
   };
 
   var buildStorageSellersList = function buildStorageSellersList() {
-    if (localStorage.getItem("sellers")) {
-      var localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+    var localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+    if (Object.keys(localStorageBuyers).length > 0) {
       var sellers = Object.entries(localStorageBuyers);
       sellers.forEach(function (seller) {
         var li = document.createElement("li");
@@ -801,8 +801,8 @@ var uiController = function () {
   };
 
   var buildStorageBuyersList = function buildStorageBuyersList() {
-    if (localStorage.getItem("buyers")) {
-      var localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+    var localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+    if (Object.keys(localStorageBuyers).length > 0) {
       var buyers = Object.entries(localStorageBuyers);
       buyers.forEach(function (buyer) {
         var li = document.createElement("li");
@@ -852,11 +852,11 @@ var uiController = function () {
     }
   };
 
-  var buildStorageSellerAccountsList = function buildStorageSellerAccountsList(sellerAccounts) {
-    if (localStorage.getItem("sellerAccounts")) {
-      var localStorageAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
-      var _sellerAccounts = Object.entries(localStorageAccounts);
-      _sellerAccounts.forEach(function (account) {
+  var buildStorageSellerAccountsList = function buildStorageSellerAccountsList(accounts) {
+    if (localStorage.getItem("accounts")) {
+      var localStorageAccounts = JSON.parse(localStorage.getItem("accounts"));
+      var _accounts = Object.entries(localStorageAccounts);
+      _accounts.forEach(function (account) {
         var li = document.createElement("li");
         li.classList.add("storage-list__item");
 
@@ -864,19 +864,19 @@ var uiController = function () {
         loadButton.classList.add("btn");
         loadButton.classList.add("btn--choose");
         loadButton.classList.add("btn--load-account");
-        loadButton.dataset.accountNumber = account[1].accountNumber;
+        loadButton.dataset.accountNumber = account[1].number;
         loadButton.textContent = "Wybierz";
 
         var deleteButton = document.createElement("button");
         deleteButton.classList.add("btn");
         deleteButton.classList.add("btn--choose");
         deleteButton.classList.add("btn--delete-account");
-        deleteButton.dataset.accountNumber = account[1].accountNumber;
+        deleteButton.dataset.accountNumber = account[1].number;
         deleteButton.textContent = "Usuń";
 
         var accountNumberSpan = document.createElement("span");
         accountNumberSpan.classList.add("storage-list__account-number");
-        accountNumberSpan.textContent = "Numer Konta: " + account[1].accountNumber;
+        accountNumberSpan.textContent = "Numer Konta: " + account[1].number;
 
         li.appendChild(loadButton);
         li.appendChild(deleteButton);
@@ -947,6 +947,13 @@ var uiController = function () {
 
     DOMElements.storageList.appendChild(noDataInfo);
   };
+
+  var hideListItem = function hideListItem(element) {
+    element.classList.add("fade-up");
+    setTimeout(function () {
+      element.style.display = "none";
+    }, 150);
+  };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -971,7 +978,8 @@ var uiController = function () {
     buildStorageSellerAccountsList: buildStorageSellerAccountsList,
     buildStorageBuyersList: buildStorageBuyersList,
     buildStorageSellersList: buildStorageSellersList,
-    noLocalStorageDataInfo: noLocalStorageDataInfo
+    noLocalStorageDataInfo: noLocalStorageDataInfo,
+    hideListItem: hideListItem
   };
 }();
 
@@ -1189,15 +1197,41 @@ var storageController = function () {
 
     localStorage.setItem("items", JSON.stringify(items));
   };
-  var saveAccountToLocal = function saveAccountToLocal(sellerAccount) {
-    var sellerAccounts = {};
-    if (localStorage.getItem("sellerAccounts")) {
-      sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+  var saveAccountToLocal = function saveAccountToLocal(account) {
+    var accounts = {};
+    if (localStorage.getItem("accounts")) {
+      accounts = JSON.parse(localStorage.getItem("accounts"));
     }
 
-    sellerAccounts[sellerAccount.accountNumber] = sellerAccount;
+    accounts[account.number] = account;
 
-    localStorage.setItem("sellerAccounts", JSON.stringify(sellerAccounts));
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+  };
+
+  var deleteSeller = function deleteSeller(sellerName) {
+    var sellers = JSON.parse(localStorage.getItem("sellers"));
+    delete sellers[sellerName];
+    localStorage.setItem("sellers", JSON.stringify(sellers));
+  };
+
+  var deleteBuyer = function deleteBuyer(buyerName) {
+    var buyers = JSON.parse(localStorage.getItem("buyers"));
+    delete buyers[buyerName];
+    localStorage.setItem("buyers", JSON.stringify(buyers));
+  };
+
+  var deleteAccount = function deleteAccount(account) {
+    var accounts = JSON.parse(localStorage.getItem("accounts"));
+    delete accounts[account];
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+  };
+
+  var deleteItem = function deleteItem(name) {
+    var items = JSON.parse(localStorage.getItem("items"));
+    console.log(items[name]);
+    delete items[name];
+    console.log(items);
+    localStorage.setItem("items", JSON.stringify(items));
   };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1214,7 +1248,11 @@ var storageController = function () {
     saveSellerToLocal: saveSellerToLocal,
     saveBuyerToLocal: saveBuyerToLocal,
     saveItemToLocal: saveItemToLocal,
-    saveAccountToLocal: saveAccountToLocal
+    saveAccountToLocal: saveAccountToLocal,
+    deleteSeller: deleteSeller,
+    deleteBuyer: deleteBuyer,
+    deleteAccount: deleteAccount,
+    deleteItem: deleteItem
   };
 }();
 
@@ -1449,10 +1487,10 @@ var appController = function (StorageCtrl, UiCtrl) {
   var saveAccount = function saveAccount(e) {
     e.preventDefault();
 
-    var sellerAccount = {
-      accountNumber: DOMElements.payAccountInp.value
+    var account = {
+      number: DOMElements.payAccountInp.value
     };
-    StorageCtrl.saveAccountToLocal(sellerAccount);
+    StorageCtrl.saveAccountToLocal(account);
   };
 
   var retrieveAccounts = function retrieveAccounts(e) {
@@ -1489,20 +1527,21 @@ var appController = function (StorageCtrl, UiCtrl) {
     e.preventDefault();
     var targetClasses = e.target.classList;
     if (targetClasses.contains("btn--delete-seller")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteSeller(e.target.dataset.sellerName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-buyer")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteBuyer(e.target.dataset.buyerName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-account")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      StorageCtrl.deleteAccount(e.target.dataset.accountNumber);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
     if (targetClasses.contains("btn--delete-item")) {
-      // StorageCtrl.deleteSeller();
-      // UiCtrl.removeSeller();
+      console.log(e.target.dataset.itemName);
+      StorageCtrl.deleteItem(e.target.dataset.itemName);
+      UiCtrl.hideListItem(e.target.parentElement);
     }
   };
 
@@ -1549,7 +1588,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '44019' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '44643' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
