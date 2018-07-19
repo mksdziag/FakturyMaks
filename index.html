@@ -8,7 +8,7 @@
   <title>FakturyMaks</title>
 
   <!-- styleshets -->
-  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="css/main.css">
 
 </head>
 
@@ -63,14 +63,14 @@
             </div>
             <div class="fieldset__actions">
               <button class="btn btn--form btn--seller-save">Zapisz</button>
-              <button class="btn btn--form btn--seller-load">Wczytaj moje dane</button>
+              <button class="btn btn--form btn--seller-load">Zapisani Sprzedawcy</button>
             </div>
             <div class="input-wrapper">
               <label class="label" for="data__seller-name">Nazwa:</label>
               <input type="text" id="data__seller-name" class="input data__seller-name">
             </div>
             <div class="input-wrapper">
-              <label class="label" for="data__seller-street">Ulica:</label>
+              <label class="label" for="data__seller-street">Ulica i nr:</label>
               <input type="text" id="data__seller-street" class="input data__seller-street">
             </div>
             <div class="input-wrapper">
@@ -93,14 +93,14 @@
             </div>
             <div class="fieldset__actions">
               <button class="btn btn--form btn--buyer-save">Zapisz</button>
-              <button class="btn btn--form btn--buyer-load">Przeglądaj zapisanych kontrahentów</button>
+              <button class="btn btn--form btn--buyer-load">Zapisani Kupujący</button>
             </div>
             <div class="input-wrapper">
               <label class="label" for="data__buyer-name">Nazwa:</label>
               <input type="text" id="data__buyer-name" class="input data__buyer-name">
             </div>
             <div class="input-wrapper">
-              <label class="label" for="data__buyer-street">Ulica:</label>
+              <label class="label" for="data__buyer-street">Ulica i nr:</label>
               <input type="text" id="data__buyer-street" class="input data__buyer-street">
             </div>
             <div class="input-wrapper">
@@ -124,7 +124,7 @@
           </div>
           <div class="fieldset__actions">
             <button class="btn btn--form btn--account-save">Zapisz</button>
-            <button class="btn btn--form btn--account-load">Wczytaj numer konta</button>
+            <button class="btn btn--form btn--account-load">Zapisane Konta</button>
           </div>
           <div class="input-wrapper">
             <label for="payment__method" class="label">Metoda Płatnosci</label>
@@ -151,7 +151,7 @@
         </div>
         <div class="fieldset__actions">
           <button class="btn btn--form btn--item-save">Zapisz</button>
-          <button class="btn btn--form btn--item-load">Przeglądaj zapisane produkty</button>
+          <button class="btn btn--form btn--item-load">Zapisane produkty</button>
         </div>
         <form class="draft-item__constructor">
           <div class="draft-item__constructor-section">
@@ -209,18 +209,23 @@
           </tfoot>
         </table>
         <!-- <button class="btn btn--confirm-drafts">Zatwierdź pozycje na fakturę</button> -->
-        <div class="items-load__modal">
-          <span class="btn btn--close btn--close-items-modal">Close</span>
-          <ul class="items-load__list">
-          </ul>
-        </div>
+
       </fieldset>
-      </input>
+
       <div class="generate-inv-section">
         <button class="btn btn--gen-inv">Generuj fakturę</button>
         <button class="btn btn--print-inv" disabled>Wydrukuj fakturę</button>
         <div class="not-completed-form-modal">
-          <p>Proszę wypełnić prawidłowo wszystkie zaznmaczone kolorem czerwonym pola...</p>
+          <p class="not-completed-form-modal__content">Proszę wypełnić prawidłowo wszystkie zaznmaczone kolorem czerwonym pola...</p>
+        </div>
+      </div>
+      <div class="storage-list__backdrop">
+        <div class="storage-list__modal">
+          <button class="btn btn--close btn--close-storage-list">
+            close
+          </button>
+          <ul class="storage-list">
+          </ul>
         </div>
       </div>
 
@@ -337,10 +342,10 @@
 
   <!-- printThis -->
 
-  <script type="text/javascript" src="./printThis.js"></script>
+  <script type="text/javascript" src="printThis.js"></script>
 
 
-  <script type="text/javascript" src="./js/main.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
-// import { v4 } from "uuid";
-// import "../sass/main.scss";
+import { v4 } from "uuid";
+import "../sass/main.scss";
 
 const uiController = (function() {
   // defining DOM elements
@@ -52,9 +52,7 @@ const uiController = (function() {
     itemTotValInp: document.querySelector(".draft-item__total-value"),
     itemSaveBtn: document.querySelector(".btn--item-save"),
     itemLoadTrigger: document.querySelector(".btn--item-load"),
-    itemsListModal: document.querySelector(".items-load__modal"),
-    itemsListModalClose: document.querySelector(".btn--close-items-modal"),
-    itemsLoadList: document.querySelector(".items-load__list"),
+    storageListModalClose: document.querySelector(".btn--close-storage-list"),
 
     // draft add button
     addBtn: document.querySelector(".btn--add-item"),
@@ -64,6 +62,11 @@ const uiController = (function() {
     draftItemTable: document.querySelector(".draft-added-items"),
     drawtSumTable: document.querySelector(".draft__summary"),
     itemDelBtn: document.querySelectorAll(".btn--item-del"),
+
+    // storage list modal
+    storageList: document.querySelector(".storage-list"),
+    storageListModal: document.querySelector(".storage-list__modal"),
+    storageListBackdrop: document.querySelector(".storage-list__backdrop"),
 
     // button generate invoice
     genBtn: document.querySelector(".btn--gen-inv"),
@@ -131,7 +134,6 @@ const uiController = (function() {
   // add item to draft table
   const addItemToDraftItemsList = function(id) {
     const item = storageController.draftItemsData.items.find(item => item.id === id);
-    console.table(item);
     // create newtable row
     const newRow = document.createElement("tr");
     newRow.classList.add("draft__position");
@@ -319,11 +321,15 @@ const uiController = (function() {
 
   // showing modal complete
   const showCompleteInfo = function() {
-    document.querySelector(".not-completed-form-modal").classList.add("visible");
-    setTimeout(hidemodal, 2500);
+    const competionModal = document.querySelector(".not-completed-form-modal");
+    competionModal.style.display = "block";
+    setTimeout(() => competionModal.classList.add("completion-modal-active"), 10);
 
-    function hidemodal() {
-      document.querySelector(".not-completed-form-modal").classList.remove("visible");
+    setTimeout(hideCompletionModal, 3000);
+
+    function hideCompletionModal() {
+      competionModal.classList.remove("completion-modal-active");
+      setTimeout(() => (competionModal.style.display = "none"), 250);
     }
   };
 
@@ -331,6 +337,276 @@ const uiController = (function() {
     DOMElements.printBtn.removeAttribute("disabled");
   };
 
+  const closeStorageModal = function() {
+    DOMElements.storageListModal.classList.remove("modal-active");
+    setTimeout(() => {
+      DOMElements.storageListModal.style.display = "none";
+    }, 250);
+    hideBackdropModal();
+    DOMElements.storageList.innerHTML = "";
+  };
+
+  const openStorageModal = function() {
+    displayBackdropModal();
+    DOMElements.storageListModal.style.display = "block";
+    setTimeout(() => {
+      DOMElements.storageListModal.classList.add("modal-active");
+    }, 10);
+  };
+
+  const hideBackdropModal = function() {
+    DOMElements.storageListBackdrop.classList.remove("backdrop-active");
+    setTimeout(() => {
+      DOMElements.storageListBackdrop.style = "display: none";
+    }, 250);
+  };
+
+  const displayBackdropModal = function() {
+    DOMElements.storageListBackdrop.style = "display: block";
+    setTimeout(() => {
+      DOMElements.storageListBackdrop.classList.add("backdrop-active");
+    }, 10);
+  };
+
+  const fillInputForm = function(e) {
+    if (e.target.classList.contains("btn--load-item")) {
+      console.log(e.target.dataset.itemName);
+      const items = JSON.parse(localStorage.getItem("items"));
+      const item = items[e.target.dataset.itemName];
+      DOMElements.itemNameInp.value = item.name;
+      DOMElements.itemUnitInp.value = item.unit;
+      DOMElements.itemPriceInp.value = item.netPrice;
+      DOMElements.itemTaxRateInp.value = item.taxRate;
+      closeStorageModal();
+      DOMElements.itemQuantInp.focus();
+    }
+    if (e.target.classList.contains("btn--load-seller")) {
+      const sellers = JSON.parse(localStorage.getItem("sellers"));
+      const seller = sellers[e.target.dataset.sellerName];
+      DOMElements.sellerNameInp.value = seller.name;
+      DOMElements.sellerStreetInp.value = seller.street;
+      DOMElements.sellerCityInp.value = seller.city;
+      DOMElements.sellerPostCodeInp.value = seller.postCode;
+      DOMElements.sellerNipInp.value = seller.nip;
+      closeStorageModal();
+    }
+    if (e.target.classList.contains("btn--load-buyer")) {
+      const buyers = JSON.parse(localStorage.getItem("buyers"));
+      const buyer = buyers[e.target.dataset.buyerName];
+      DOMElements.buyerNameInp.value = buyer.name;
+      DOMElements.buyerStreetInp.value = buyer.street;
+      DOMElements.buyerCityInp.value = buyer.city;
+      DOMElements.buyerPostCodeInp.value = buyer.postCode;
+      DOMElements.buyerNipInp.value = buyer.nip;
+      closeStorageModal();
+    }
+    if (e.target.classList.contains("btn--load-account")) {
+      const sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+      const account = sellerAccounts[e.target.dataset.accountNumber];
+      DOMElements.payAccountInp.value = account.accountNumber;
+      closeStorageModal();
+    }
+  };
+
+  const buildStorageSellersList = function() {
+    if (localStorage.getItem("sellers")) {
+      const localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+      const sellers = Object.entries(localStorageBuyers);
+      sellers.forEach(seller => {
+        const li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        const loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-seller");
+        loadButton.dataset.sellerName = seller[1].name;
+        loadButton.textContent = "Wybierz";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-seller");
+        deleteButton.dataset.sellerName = seller[1].name;
+        deleteButton.textContent = "Usuń";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__seller-name");
+        nameSpan.textContent = seller[1].name;
+
+        const streetSpan = document.createElement("span");
+        streetSpan.classList.add("storage-list__seller-street");
+        streetSpan.textContent = seller[1].street;
+
+        const citySpan = document.createElement("span");
+        citySpan.classList.add("storage-list__seller-city");
+        citySpan.textContent = seller[1].city;
+
+        const nipSpan = document.createElement("span");
+        nipSpan.classList.add("storage-list__seller-nip");
+        nipSpan.textContent = seller[1].nip;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(streetSpan);
+        li.appendChild(citySpan);
+        li.appendChild(nipSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych sprzedawców zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  const buildStorageBuyersList = function() {
+    if (localStorage.getItem("buyers")) {
+      const localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+      const buyers = Object.entries(localStorageBuyers);
+      buyers.forEach(buyer => {
+        const li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        const loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-buyer");
+        loadButton.dataset.buyerName = buyer[1].name;
+        loadButton.textContent = "Wybierz";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-buyer");
+        deleteButton.dataset.buyerName = buyer[1].name;
+        deleteButton.textContent = "Usuń";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__buyer-name");
+        nameSpan.textContent = buyer[1].name;
+
+        const streetSpan = document.createElement("span");
+        streetSpan.classList.add("storage-list__buyer-street");
+        streetSpan.textContent = buyer[1].street;
+
+        const citySpan = document.createElement("span");
+        citySpan.classList.add("storage-list__buyer-city");
+        citySpan.textContent = buyer[1].city;
+
+        const nipSpan = document.createElement("span");
+        nipSpan.classList.add("storage-list__buyer-nip");
+        nipSpan.textContent = buyer[1].nip;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(streetSpan);
+        li.appendChild(citySpan);
+        li.appendChild(nipSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych kontrahentów zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  const buildStorageSellerAccountsList = function(sellerAccounts) {
+    if (localStorage.getItem("sellerAccounts")) {
+      const localStorageAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+      const sellerAccounts = Object.entries(localStorageAccounts);
+      sellerAccounts.forEach(account => {
+        const li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        const loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-account");
+        loadButton.dataset.accountNumber = account[1].accountNumber;
+        loadButton.textContent = "Wybierz";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-account");
+        deleteButton.dataset.accountNumber = account[1].accountNumber;
+        deleteButton.textContent = "Usuń";
+
+        const accountNumberSpan = document.createElement("span");
+        accountNumberSpan.classList.add("storage-list__account-number");
+        accountNumberSpan.textContent = "Numer Konta: " + account[1].accountNumber;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(accountNumberSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych numerów kont zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  const buildStorageItemsList = function() {
+    if (localStorage.getItem("items")) {
+      const localStorageItems = JSON.parse(localStorage.getItem("items"));
+      const items = Object.entries(localStorageItems);
+      items.forEach(item => {
+        const li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        const loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-item");
+        loadButton.dataset.itemName = item[1].name;
+        loadButton.textContent = "Wybierz";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-item");
+        deleteButton.dataset.itemName = item[1].name;
+        deleteButton.textContent = "Usuń";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__item-name");
+        nameSpan.textContent = item[1].name;
+
+        const priceSpan = document.createElement("span");
+        priceSpan.classList.add("storage-list__item-price");
+        priceSpan.textContent = item[1].netPrice + "PLN/" + item[1].unit;
+
+        const taxSpan = document.createElement("span");
+        taxSpan.classList.add("storage-list__item-tax");
+        taxSpan.textContent = item[1].taxRate + "%";
+
+        const dateSpan = document.createElement("span");
+        dateSpan.classList.add("storage-list__item-date");
+        dateSpan.textContent = "(zapisano: " + item[1].date + ")";
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(priceSpan);
+        li.appendChild(taxSpan);
+        li.appendChild(dateSpan);
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych produktów zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  const noLocalStorageDataInfo = function(message) {
+    const noDataInfo = document.createElement("h3");
+    noDataInfo.classList.add("storage-list__no-data-info");
+    noDataInfo.textContent = message;
+
+    DOMElements.storageList.appendChild(noDataInfo);
+  };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -346,6 +622,16 @@ const uiController = (function() {
     generateInvoicePositions,
     showCompleteInfo,
     activatePrintInvoice,
+    closeStorageModal,
+    openStorageModal,
+    hideBackdropModal,
+    displayBackdropModal,
+    fillInputForm,
+    buildStorageItemsList,
+    buildStorageSellerAccountsList,
+    buildStorageBuyersList,
+    buildStorageSellersList,
+    noLocalStorageDataInfo,
   };
 })();
 
@@ -517,6 +803,49 @@ const storageController = (function() {
     uiController.generateDraftSumRow(isTax23, 23);
   };
 
+  const saveSellerToLocal = function(seller) {
+    let sellers = {};
+    if (localStorage.getItem("sellers")) {
+      sellers = JSON.parse(localStorage.getItem("sellers"));
+    }
+
+    sellers[seller.name] = seller;
+
+    localStorage.setItem("sellers", JSON.stringify(sellers));
+  };
+
+  const saveBuyerToLocal = function(buyer) {
+    let buyers = {};
+    if (localStorage.getItem("buyers")) {
+      buyers = JSON.parse(localStorage.getItem("buyers"));
+    }
+
+    buyers[buyer.name] = buyer;
+
+    localStorage.setItem("buyers", JSON.stringify(buyers));
+  };
+
+  const saveItemToLocal = function(item) {
+    let items = {};
+    if (localStorage.getItem("items")) {
+      items = JSON.parse(localStorage.getItem("items"));
+    }
+
+    items[item.name] = item;
+
+    localStorage.setItem("items", JSON.stringify(items));
+  };
+  const saveAccountToLocal = function(sellerAccount) {
+    let sellerAccounts = {};
+    if (localStorage.getItem("sellerAccounts")) {
+      sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+    }
+
+    sellerAccounts[sellerAccount.accountNumber] = sellerAccount;
+
+    localStorage.setItem("sellerAccounts", JSON.stringify(sellerAccounts));
+  };
+
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -528,6 +857,10 @@ const storageController = (function() {
     createDraftVatRatesValues,
     createInvoiceObj,
     calculateDraftItemsTotals,
+    saveSellerToLocal,
+    saveBuyerToLocal,
+    saveItemToLocal,
+    saveAccountToLocal,
   };
 })();
 
@@ -562,11 +895,12 @@ const appController = (function(StorageCtrl, UiCtrl) {
     DOMElements.buyerSaveBtn.addEventListener("click", saveBuyer);
     DOMElements.buyerLoadTrigger.addEventListener("click", retrieveBuyers);
     DOMElements.accountSaveBtn.addEventListener("click", saveAccount);
-    DOMElements.accountLoadBtn.addEventListener("click", loadAccount);
+    DOMElements.accountLoadBtn.addEventListener("click", retrieveAccounts);
     DOMElements.itemSaveBtn.addEventListener("click", saveItem);
     DOMElements.itemLoadTrigger.addEventListener("click", retrieveItems);
-    DOMElements.itemsListModalClose.addEventListener("click", closeItemsModal);
-    DOMElements.itemsLoadList.addEventListener("click", fillDraftInput);
+    DOMElements.storageListModalClose.addEventListener("click", UiCtrl.closeStorageModal);
+    DOMElements.storageList.addEventListener("click", UiCtrl.fillInputForm);
+    DOMElements.storageList.addEventListener("click", deleteLocalStorageEntry);
   };
 
   // initialization function
@@ -731,20 +1065,14 @@ const appController = (function(StorageCtrl, UiCtrl) {
       postCode: DOMElements.sellerPostCodeInp.value,
       nip: DOMElements.sellerNipInp.value,
     };
-
-    localStorage.setItem("seller", JSON.stringify(seller));
+    StorageCtrl.saveSellerToLocal(seller);
   };
 
   const loadSeller = function(e) {
     e.preventDefault();
 
-    const seller = JSON.parse(localStorage.getItem("seller"));
-
-    DOMElements.sellerNameInp.value = seller.name;
-    DOMElements.sellerStreetInp.value = seller.street;
-    DOMElements.sellerCityInp.value = seller.city;
-    DOMElements.sellerPostCodeInp.value = seller.postCode;
-    DOMElements.sellerNipInp.value = seller.nip;
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageSellersList();
   };
 
   const saveBuyer = function(e) {
@@ -757,19 +1085,13 @@ const appController = (function(StorageCtrl, UiCtrl) {
       postCode: DOMElements.buyerPostCodeInp.value,
       nip: DOMElements.buyerNipInp.value,
     };
-
-    let buyers = {};
-    if (localStorage.getItem("buyers")) {
-      buyers = JSON.parse(localStorage.getItem("buyers"));
-    }
-
-    buyers[buyer.name] = buyer;
-
-    localStorage.setItem("buyers", JSON.stringify(buyers));
+    StorageCtrl.saveBuyerToLocal(buyer);
   };
 
   const retrieveBuyers = function(e) {
-    console.log("not yet baby");
+    e.preventDefault();
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageBuyersList();
   };
 
   const saveAccount = function(e) {
@@ -778,106 +1100,59 @@ const appController = (function(StorageCtrl, UiCtrl) {
     const sellerAccount = {
       accountNumber: DOMElements.payAccountInp.value,
     };
-
-    localStorage.setItem("sellerAccount", JSON.stringify(sellerAccount));
+    StorageCtrl.saveAccountToLocal(sellerAccount);
   };
 
-  const loadAccount = function(e) {
+  const retrieveAccounts = function(e) {
     e.preventDefault();
 
-    const sellerAccount = JSON.parse(localStorage.getItem("sellerAccount"));
-
-    DOMElements.payAccountInp.value = sellerAccount.accountNumber;
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageSellerAccountsList();
   };
 
   const saveItem = function(e) {
     e.preventDefault();
+
+    const now = new Date();
+    const createdDate =
+      now.getUTCFullYear() + "/" + (now.getUTCMonth() + 1) + "/" + now.getUTCDate();
 
     const item = {
       name: DOMElements.itemNameInp.value,
       unit: DOMElements.itemUnitInp.value,
       netPrice: DOMElements.itemPriceInp.valueAsNumber,
       taxRate: parseFloat(DOMElements.itemTaxRateInp.value),
+      date: createdDate,
     };
-
-    let items = {};
-    if (localStorage.getItem("items")) {
-      items = JSON.parse(localStorage.getItem("items"));
-    }
-
-    items[item.name] = item;
-
-    localStorage.setItem("items", JSON.stringify(items));
+    StorageCtrl.saveItemToLocal(item);
   };
 
   const retrieveItems = function(e) {
     e.preventDefault();
-    // modal classlist add active
-    DOMElements.itemsListModal.style = "display: block";
-    setTimeout(() => {
-      DOMElements.itemsListModal.classList.add("modal-active");
-    }, 10);
-    // localstorage list items
-    let items = [];
-    if (localStorage.getItem("items")) {
-      let htmlOutput = "";
-      const localStorageItems = JSON.parse(localStorage.getItem("items"));
-      items = Object.entries(localStorageItems);
-      console.log(items);
-      items.forEach(item => {
-        const li = document.createElement("li");
-        li.classList.add("items-load__item");
 
-        const loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--load");
-        loadButton.dataset.itemName = item[1].name;
-        loadButton.textContent = "Wybierz";
-
-        const nameSpan = document.createElement("span");
-        nameSpan.classList.add("items-load__item-name");
-        nameSpan.textContent = item[1].name;
-
-        const priceSpan = document.createElement("span");
-        priceSpan.classList.add("items-load__item-price");
-        priceSpan.textContent = item[1].netPrice;
-
-        const taxSpan = document.createElement("span");
-        taxSpan.classList.add("items-load__item-tax");
-        taxSpan.textContent = item[1].taxRate;
-
-        li.appendChild(loadButton);
-        li.appendChild(nameSpan);
-        li.appendChild(priceSpan);
-        li.appendChild(taxSpan);
-        console.log(li);
-        DOMElements.itemsLoadList.appendChild(li);
-      });
-    } else {
-      DOMElements.itemsLoadList.textContent =
-        "Nie ma żadnych produków zapisanych w twojej przeglądarce.";
-    }
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageItemsList();
   };
 
-  const fillDraftInput = function(e) {
-    if (e.target.classList.contains("btn--load")) {
-      console.log(e.target.dataset.itemName);
-      const items = JSON.parse(localStorage.getItem("items"));
-      const item = items[e.target.dataset.itemName];
-      DOMElements.itemNameInp.value = item.name;
-      DOMElements.itemUnitInp.value = item.unit;
-      DOMElements.itemPriceInp.value = item.netPrice;
-      DOMElements.itemTaxRateInp.value = item.taxRate;
-      closeItemsModal();
+  const deleteLocalStorageEntry = function(e) {
+    e.preventDefault();
+    const targetClasses = e.target.classList;
+    if (targetClasses.contains("btn--delete-seller")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
     }
-  };
-
-  const closeItemsModal = function() {
-    DOMElements.itemsListModal.classList.remove("modal-active");
-    setTimeout(() => {
-      DOMElements.itemsListModal.style = "display: none";
-    }, 250);
-    DOMElements.itemsLoadList.innerHTML = "";
+    if (targetClasses.contains("btn--delete-buyer")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
+    if (targetClasses.contains("btn--delete-account")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
+    if (targetClasses.contains("btn--delete-item")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
   };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -890,7 +1165,7 @@ const appController = (function(StorageCtrl, UiCtrl) {
 
 appController.init();
 
-// print js script for printing
+// print js script for printing - dependiency - jquery
 $(".btn--print-inv").on("click", function() {
   $(".invoice").printThis();
 });

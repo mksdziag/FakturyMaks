@@ -1,0 +1,122 @@
+.storage-list__backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color-black, 0.6);
+  z-index: 9;
+  opacity: 0;
+  transition: all 250ms cubic-bezier(0.42, 0, 0.69, 1.15);
+}
+
+.storage-list {
+  height: 100%;
+  padding: 2rem;
+  overflow: hidden;
+  overflow-y: scroll;
+
+  &__modal {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 450px;
+    margin: 0 auto;
+    border-radius: 3px;
+    background-color: $color-white;
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.35);
+    transition: all 250ms cubic-bezier(0.42, 0, 0.69, 1.15);
+    z-index: 10;
+    opacity: 0;
+    overflow: hidden;
+    @include respond(small-desktop) {
+      width: 70%;
+    }
+    @include respond(desktop) {
+      width: 55%;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $color-border;
+    box-shadow: 0 0.5rem 0.75rem rgba($color-black, 0.2);
+    @include respond(tablet-land) {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__seller-name,
+  &__buyer-name,
+  &__seller-street,
+  &__buyer-street,
+  &__seller-city,
+  &__buyer-city,
+  &__seller-nip,
+  &__buyer-nip,
+  &__account-number,
+  &__item-name,
+  &__item-price,
+  &__item-tax,
+  &__item-date {
+    margin: 0.5rem;
+    font-size: 1.5rem;
+  }
+  &__seller-name,
+  &__account-number,
+  &__item-name {
+    font-weight: 700;
+  }
+
+  &__item-date {
+    font-size: 1.25rem;
+    color: $color3;
+    font-style: italic;
+  }
+
+  &__no-data-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    font-size: 2rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+}
+
+.backdrop-active {
+  opacity: 1;
+}
+
+.modal-active {
+  top: 50%;
+  opacity: 1;
+}
+
+.btn--close-storage-list {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.btn--delete-seller {
+  background-color: $color4;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: darken($color4, 7%);
+  }
+  &:active {
+    transform: translateY(2px);
+  }
+}

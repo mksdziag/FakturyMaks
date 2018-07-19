@@ -441,9 +441,7 @@ var uiController = function () {
     itemTotValInp: document.querySelector(".draft-item__total-value"),
     itemSaveBtn: document.querySelector(".btn--item-save"),
     itemLoadTrigger: document.querySelector(".btn--item-load"),
-    itemsListModal: document.querySelector(".items-load__modal"),
-    itemsListModalClose: document.querySelector(".btn--close-items-modal"),
-    itemsLoadList: document.querySelector(".items-load__list"),
+    storageListModalClose: document.querySelector(".btn--close-storage-list"),
 
     // draft add button
     addBtn: document.querySelector(".btn--add-item"),
@@ -453,6 +451,11 @@ var uiController = function () {
     draftItemTable: document.querySelector(".draft-added-items"),
     drawtSumTable: document.querySelector(".draft__summary"),
     itemDelBtn: document.querySelectorAll(".btn--item-del"),
+
+    // storage list modal
+    storageList: document.querySelector(".storage-list"),
+    storageListModal: document.querySelector(".storage-list__modal"),
+    storageListBackdrop: document.querySelector(".storage-list__backdrop"),
 
     // button generate invoice
     genBtn: document.querySelector(".btn--gen-inv"),
@@ -514,7 +517,6 @@ var uiController = function () {
     var item = storageController.draftItemsData.items.find(function (item) {
       return item.id === id;
     });
-    console.table(item);
     // create newtable row
     var newRow = document.createElement("tr");
     newRow.classList.add("draft__position");
@@ -655,11 +657,19 @@ var uiController = function () {
 
   // showing modal complete
   var showCompleteInfo = function showCompleteInfo() {
-    document.querySelector(".not-completed-form-modal").classList.add("visible");
-    setTimeout(hidemodal, 2500);
+    var competionModal = document.querySelector(".not-completed-form-modal");
+    competionModal.style.display = "block";
+    setTimeout(function () {
+      return competionModal.classList.add("completion-modal-active");
+    }, 10);
 
-    function hidemodal() {
-      document.querySelector(".not-completed-form-modal").classList.remove("visible");
+    setTimeout(hideCompletionModal, 3000);
+
+    function hideCompletionModal() {
+      competionModal.classList.remove("completion-modal-active");
+      setTimeout(function () {
+        return competionModal.style.display = "none";
+      }, 250);
     }
   };
 
@@ -667,6 +677,276 @@ var uiController = function () {
     DOMElements.printBtn.removeAttribute("disabled");
   };
 
+  var closeStorageModal = function closeStorageModal() {
+    DOMElements.storageListModal.classList.remove("modal-active");
+    setTimeout(function () {
+      DOMElements.storageListModal.style.display = "none";
+    }, 250);
+    hideBackdropModal();
+    DOMElements.storageList.innerHTML = "";
+  };
+
+  var openStorageModal = function openStorageModal() {
+    displayBackdropModal();
+    DOMElements.storageListModal.style.display = "block";
+    setTimeout(function () {
+      DOMElements.storageListModal.classList.add("modal-active");
+    }, 10);
+  };
+
+  var hideBackdropModal = function hideBackdropModal() {
+    DOMElements.storageListBackdrop.classList.remove("backdrop-active");
+    setTimeout(function () {
+      DOMElements.storageListBackdrop.style = "display: none";
+    }, 250);
+  };
+
+  var displayBackdropModal = function displayBackdropModal() {
+    DOMElements.storageListBackdrop.style = "display: block";
+    setTimeout(function () {
+      DOMElements.storageListBackdrop.classList.add("backdrop-active");
+    }, 10);
+  };
+
+  var fillInputForm = function fillInputForm(e) {
+    if (e.target.classList.contains("btn--load-item")) {
+      console.log(e.target.dataset.itemName);
+      var items = JSON.parse(localStorage.getItem("items"));
+      var item = items[e.target.dataset.itemName];
+      DOMElements.itemNameInp.value = item.name;
+      DOMElements.itemUnitInp.value = item.unit;
+      DOMElements.itemPriceInp.value = item.netPrice;
+      DOMElements.itemTaxRateInp.value = item.taxRate;
+      closeStorageModal();
+      DOMElements.itemQuantInp.focus();
+    }
+    if (e.target.classList.contains("btn--load-seller")) {
+      var sellers = JSON.parse(localStorage.getItem("sellers"));
+      var seller = sellers[e.target.dataset.sellerName];
+      DOMElements.sellerNameInp.value = seller.name;
+      DOMElements.sellerStreetInp.value = seller.street;
+      DOMElements.sellerCityInp.value = seller.city;
+      DOMElements.sellerPostCodeInp.value = seller.postCode;
+      DOMElements.sellerNipInp.value = seller.nip;
+      closeStorageModal();
+    }
+    if (e.target.classList.contains("btn--load-buyer")) {
+      var buyers = JSON.parse(localStorage.getItem("buyers"));
+      var buyer = buyers[e.target.dataset.buyerName];
+      DOMElements.buyerNameInp.value = buyer.name;
+      DOMElements.buyerStreetInp.value = buyer.street;
+      DOMElements.buyerCityInp.value = buyer.city;
+      DOMElements.buyerPostCodeInp.value = buyer.postCode;
+      DOMElements.buyerNipInp.value = buyer.nip;
+      closeStorageModal();
+    }
+    if (e.target.classList.contains("btn--load-account")) {
+      var sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+      var account = sellerAccounts[e.target.dataset.accountNumber];
+      DOMElements.payAccountInp.value = account.accountNumber;
+      closeStorageModal();
+    }
+  };
+
+  var buildStorageSellersList = function buildStorageSellersList() {
+    if (localStorage.getItem("sellers")) {
+      var localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+      var sellers = Object.entries(localStorageBuyers);
+      sellers.forEach(function (seller) {
+        var li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        var loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-seller");
+        loadButton.dataset.sellerName = seller[1].name;
+        loadButton.textContent = "Wybierz";
+
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-seller");
+        deleteButton.dataset.sellerName = seller[1].name;
+        deleteButton.textContent = "Usuń";
+
+        var nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__seller-name");
+        nameSpan.textContent = seller[1].name;
+
+        var streetSpan = document.createElement("span");
+        streetSpan.classList.add("storage-list__seller-street");
+        streetSpan.textContent = seller[1].street;
+
+        var citySpan = document.createElement("span");
+        citySpan.classList.add("storage-list__seller-city");
+        citySpan.textContent = seller[1].city;
+
+        var nipSpan = document.createElement("span");
+        nipSpan.classList.add("storage-list__seller-nip");
+        nipSpan.textContent = seller[1].nip;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(streetSpan);
+        li.appendChild(citySpan);
+        li.appendChild(nipSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych sprzedawców zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  var buildStorageBuyersList = function buildStorageBuyersList() {
+    if (localStorage.getItem("buyers")) {
+      var localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+      var buyers = Object.entries(localStorageBuyers);
+      buyers.forEach(function (buyer) {
+        var li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        var loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-buyer");
+        loadButton.dataset.buyerName = buyer[1].name;
+        loadButton.textContent = "Wybierz";
+
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-buyer");
+        deleteButton.dataset.buyerName = buyer[1].name;
+        deleteButton.textContent = "Usuń";
+
+        var nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__buyer-name");
+        nameSpan.textContent = buyer[1].name;
+
+        var streetSpan = document.createElement("span");
+        streetSpan.classList.add("storage-list__buyer-street");
+        streetSpan.textContent = buyer[1].street;
+
+        var citySpan = document.createElement("span");
+        citySpan.classList.add("storage-list__buyer-city");
+        citySpan.textContent = buyer[1].city;
+
+        var nipSpan = document.createElement("span");
+        nipSpan.classList.add("storage-list__buyer-nip");
+        nipSpan.textContent = buyer[1].nip;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(streetSpan);
+        li.appendChild(citySpan);
+        li.appendChild(nipSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych kontrahentów zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  var buildStorageSellerAccountsList = function buildStorageSellerAccountsList(sellerAccounts) {
+    if (localStorage.getItem("sellerAccounts")) {
+      var localStorageAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+      var _sellerAccounts = Object.entries(localStorageAccounts);
+      _sellerAccounts.forEach(function (account) {
+        var li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        var loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-account");
+        loadButton.dataset.accountNumber = account[1].accountNumber;
+        loadButton.textContent = "Wybierz";
+
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-account");
+        deleteButton.dataset.accountNumber = account[1].accountNumber;
+        deleteButton.textContent = "Usuń";
+
+        var accountNumberSpan = document.createElement("span");
+        accountNumberSpan.classList.add("storage-list__account-number");
+        accountNumberSpan.textContent = "Numer Konta: " + account[1].accountNumber;
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(accountNumberSpan);
+
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych numerów kont zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  var buildStorageItemsList = function buildStorageItemsList() {
+    if (localStorage.getItem("items")) {
+      var localStorageItems = JSON.parse(localStorage.getItem("items"));
+      var items = Object.entries(localStorageItems);
+      items.forEach(function (item) {
+        var li = document.createElement("li");
+        li.classList.add("storage-list__item");
+
+        var loadButton = document.createElement("button");
+        loadButton.classList.add("btn");
+        loadButton.classList.add("btn--choose");
+        loadButton.classList.add("btn--load-item");
+        loadButton.dataset.itemName = item[1].name;
+        loadButton.textContent = "Wybierz";
+
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("btn");
+        deleteButton.classList.add("btn--choose");
+        deleteButton.classList.add("btn--delete-item");
+        deleteButton.dataset.itemName = item[1].name;
+        deleteButton.textContent = "Usuń";
+
+        var nameSpan = document.createElement("span");
+        nameSpan.classList.add("storage-list__item-name");
+        nameSpan.textContent = item[1].name;
+
+        var priceSpan = document.createElement("span");
+        priceSpan.classList.add("storage-list__item-price");
+        priceSpan.textContent = item[1].netPrice + "PLN/" + item[1].unit;
+
+        var taxSpan = document.createElement("span");
+        taxSpan.classList.add("storage-list__item-tax");
+        taxSpan.textContent = item[1].taxRate + "%";
+
+        var dateSpan = document.createElement("span");
+        dateSpan.classList.add("storage-list__item-date");
+        dateSpan.textContent = "(zapisano: " + item[1].date + ")";
+
+        li.appendChild(loadButton);
+        li.appendChild(deleteButton);
+        li.appendChild(nameSpan);
+        li.appendChild(priceSpan);
+        li.appendChild(taxSpan);
+        li.appendChild(dateSpan);
+        DOMElements.storageList.appendChild(li);
+      });
+    } else {
+      noLocalStorageDataInfo("Nie ma żadnych produktów zapisanych w twojej przeglądarce.");
+    }
+  };
+
+  var noLocalStorageDataInfo = function noLocalStorageDataInfo(message) {
+    var noDataInfo = document.createElement("h3");
+    noDataInfo.classList.add("storage-list__no-data-info");
+    noDataInfo.textContent = message;
+
+    DOMElements.storageList.appendChild(noDataInfo);
+  };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -681,7 +961,17 @@ var uiController = function () {
     generateInvoice: generateInvoice,
     generateInvoicePositions: generateInvoicePositions,
     showCompleteInfo: showCompleteInfo,
-    activatePrintInvoice: activatePrintInvoice
+    activatePrintInvoice: activatePrintInvoice,
+    closeStorageModal: closeStorageModal,
+    openStorageModal: openStorageModal,
+    hideBackdropModal: hideBackdropModal,
+    displayBackdropModal: displayBackdropModal,
+    fillInputForm: fillInputForm,
+    buildStorageItemsList: buildStorageItemsList,
+    buildStorageSellerAccountsList: buildStorageSellerAccountsList,
+    buildStorageBuyersList: buildStorageBuyersList,
+    buildStorageSellersList: buildStorageSellersList,
+    noLocalStorageDataInfo: noLocalStorageDataInfo
   };
 }();
 
@@ -867,6 +1157,49 @@ var storageController = function () {
     uiController.generateDraftSumRow(isTax23, 23);
   };
 
+  var saveSellerToLocal = function saveSellerToLocal(seller) {
+    var sellers = {};
+    if (localStorage.getItem("sellers")) {
+      sellers = JSON.parse(localStorage.getItem("sellers"));
+    }
+
+    sellers[seller.name] = seller;
+
+    localStorage.setItem("sellers", JSON.stringify(sellers));
+  };
+
+  var saveBuyerToLocal = function saveBuyerToLocal(buyer) {
+    var buyers = {};
+    if (localStorage.getItem("buyers")) {
+      buyers = JSON.parse(localStorage.getItem("buyers"));
+    }
+
+    buyers[buyer.name] = buyer;
+
+    localStorage.setItem("buyers", JSON.stringify(buyers));
+  };
+
+  var saveItemToLocal = function saveItemToLocal(item) {
+    var items = {};
+    if (localStorage.getItem("items")) {
+      items = JSON.parse(localStorage.getItem("items"));
+    }
+
+    items[item.name] = item;
+
+    localStorage.setItem("items", JSON.stringify(items));
+  };
+  var saveAccountToLocal = function saveAccountToLocal(sellerAccount) {
+    var sellerAccounts = {};
+    if (localStorage.getItem("sellerAccounts")) {
+      sellerAccounts = JSON.parse(localStorage.getItem("sellerAccounts"));
+    }
+
+    sellerAccounts[sellerAccount.accountNumber] = sellerAccount;
+
+    localStorage.setItem("sellerAccounts", JSON.stringify(sellerAccounts));
+  };
+
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
   ----------------------------------------------------*/
@@ -877,7 +1210,11 @@ var storageController = function () {
     deleteDraftItem: deleteDraftItem,
     createDraftVatRatesValues: createDraftVatRatesValues,
     createInvoiceObj: createInvoiceObj,
-    calculateDraftItemsTotals: calculateDraftItemsTotals
+    calculateDraftItemsTotals: calculateDraftItemsTotals,
+    saveSellerToLocal: saveSellerToLocal,
+    saveBuyerToLocal: saveBuyerToLocal,
+    saveItemToLocal: saveItemToLocal,
+    saveAccountToLocal: saveAccountToLocal
   };
 }();
 
@@ -912,11 +1249,12 @@ var appController = function (StorageCtrl, UiCtrl) {
     DOMElements.buyerSaveBtn.addEventListener("click", saveBuyer);
     DOMElements.buyerLoadTrigger.addEventListener("click", retrieveBuyers);
     DOMElements.accountSaveBtn.addEventListener("click", saveAccount);
-    DOMElements.accountLoadBtn.addEventListener("click", loadAccount);
+    DOMElements.accountLoadBtn.addEventListener("click", retrieveAccounts);
     DOMElements.itemSaveBtn.addEventListener("click", saveItem);
     DOMElements.itemLoadTrigger.addEventListener("click", retrieveItems);
-    DOMElements.itemsListModalClose.addEventListener("click", closeItemsModal);
-    DOMElements.itemsLoadList.addEventListener("click", fillDraftInput);
+    DOMElements.storageListModalClose.addEventListener("click", UiCtrl.closeStorageModal);
+    DOMElements.storageList.addEventListener("click", UiCtrl.fillInputForm);
+    DOMElements.storageList.addEventListener("click", deleteLocalStorageEntry);
   };
 
   // initialization function
@@ -1079,20 +1417,14 @@ var appController = function (StorageCtrl, UiCtrl) {
       postCode: DOMElements.sellerPostCodeInp.value,
       nip: DOMElements.sellerNipInp.value
     };
-
-    localStorage.setItem("seller", JSON.stringify(seller));
+    StorageCtrl.saveSellerToLocal(seller);
   };
 
   var loadSeller = function loadSeller(e) {
     e.preventDefault();
 
-    var seller = JSON.parse(localStorage.getItem("seller"));
-
-    DOMElements.sellerNameInp.value = seller.name;
-    DOMElements.sellerStreetInp.value = seller.street;
-    DOMElements.sellerCityInp.value = seller.city;
-    DOMElements.sellerPostCodeInp.value = seller.postCode;
-    DOMElements.sellerNipInp.value = seller.nip;
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageSellersList();
   };
 
   var saveBuyer = function saveBuyer(e) {
@@ -1105,19 +1437,13 @@ var appController = function (StorageCtrl, UiCtrl) {
       postCode: DOMElements.buyerPostCodeInp.value,
       nip: DOMElements.buyerNipInp.value
     };
-
-    var buyers = {};
-    if (localStorage.getItem("buyers")) {
-      buyers = JSON.parse(localStorage.getItem("buyers"));
-    }
-
-    buyers[buyer.name] = buyer;
-
-    localStorage.setItem("buyers", JSON.stringify(buyers));
+    StorageCtrl.saveBuyerToLocal(buyer);
   };
 
   var retrieveBuyers = function retrieveBuyers(e) {
-    console.log("not yet baby");
+    e.preventDefault();
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageBuyersList();
   };
 
   var saveAccount = function saveAccount(e) {
@@ -1126,105 +1452,58 @@ var appController = function (StorageCtrl, UiCtrl) {
     var sellerAccount = {
       accountNumber: DOMElements.payAccountInp.value
     };
-
-    localStorage.setItem("sellerAccount", JSON.stringify(sellerAccount));
+    StorageCtrl.saveAccountToLocal(sellerAccount);
   };
 
-  var loadAccount = function loadAccount(e) {
+  var retrieveAccounts = function retrieveAccounts(e) {
     e.preventDefault();
 
-    var sellerAccount = JSON.parse(localStorage.getItem("sellerAccount"));
-
-    DOMElements.payAccountInp.value = sellerAccount.accountNumber;
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageSellerAccountsList();
   };
 
   var saveItem = function saveItem(e) {
     e.preventDefault();
 
+    var now = new Date();
+    var createdDate = now.getUTCFullYear() + "/" + (now.getUTCMonth() + 1) + "/" + now.getUTCDate();
+
     var item = {
       name: DOMElements.itemNameInp.value,
       unit: DOMElements.itemUnitInp.value,
       netPrice: DOMElements.itemPriceInp.valueAsNumber,
-      taxRate: parseFloat(DOMElements.itemTaxRateInp.value)
+      taxRate: parseFloat(DOMElements.itemTaxRateInp.value),
+      date: createdDate
     };
-
-    var items = {};
-    if (localStorage.getItem("items")) {
-      items = JSON.parse(localStorage.getItem("items"));
-    }
-
-    items[item.name] = item;
-
-    localStorage.setItem("items", JSON.stringify(items));
+    StorageCtrl.saveItemToLocal(item);
   };
 
   var retrieveItems = function retrieveItems(e) {
     e.preventDefault();
-    // modal classlist add active
-    DOMElements.itemsListModal.style = "display: block";
-    setTimeout(function () {
-      DOMElements.itemsListModal.classList.add("modal-active");
-    }, 10);
-    // localstorage list items
-    var items = [];
-    if (localStorage.getItem("items")) {
-      var htmlOutput = "";
-      var localStorageItems = JSON.parse(localStorage.getItem("items"));
-      items = Object.entries(localStorageItems);
-      console.log(items);
-      items.forEach(function (item) {
-        var li = document.createElement("li");
-        li.classList.add("items-load__item");
 
-        var loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--load");
-        loadButton.dataset.itemName = item[1].name;
-        loadButton.textContent = "Wybierz";
-
-        var nameSpan = document.createElement("span");
-        nameSpan.classList.add("items-load__item-name");
-        nameSpan.textContent = item[1].name;
-
-        var priceSpan = document.createElement("span");
-        priceSpan.classList.add("items-load__item-price");
-        priceSpan.textContent = item[1].netPrice;
-
-        var taxSpan = document.createElement("span");
-        taxSpan.classList.add("items-load__item-tax");
-        taxSpan.textContent = item[1].taxRate;
-
-        li.appendChild(loadButton);
-        li.appendChild(nameSpan);
-        li.appendChild(priceSpan);
-        li.appendChild(taxSpan);
-        console.log(li);
-        DOMElements.itemsLoadList.appendChild(li);
-      });
-    } else {
-      DOMElements.itemsLoadList.textContent = "Nie ma żadnych produków zapisanych w twojej przeglądarce.";
-    }
+    UiCtrl.openStorageModal();
+    UiCtrl.buildStorageItemsList();
   };
 
-  var fillDraftInput = function fillDraftInput(e) {
-    if (e.target.classList.contains("btn--load")) {
-      console.log(e.target.dataset.itemName);
-      var items = JSON.parse(localStorage.getItem("items"));
-      var item = items[e.target.dataset.itemName];
-      DOMElements.itemNameInp.value = item.name;
-      DOMElements.itemUnitInp.value = item.unit;
-      DOMElements.itemPriceInp.value = item.netPrice;
-      DOMElements.itemTaxRateInp.value = item.taxRate;
-      closeItemsModal();
+  var deleteLocalStorageEntry = function deleteLocalStorageEntry(e) {
+    e.preventDefault();
+    var targetClasses = e.target.classList;
+    if (targetClasses.contains("btn--delete-seller")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
     }
-  };
-
-  var closeItemsModal = function closeItemsModal() {
-    DOMElements.itemsListModal.classList.remove("modal-active");
-    setTimeout(function () {
-      DOMElements.itemsListModal.style = "display: none";
-    }, 250);
-    DOMElements.itemsLoadList.innerHTML = "";
+    if (targetClasses.contains("btn--delete-buyer")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
+    if (targetClasses.contains("btn--delete-account")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
+    if (targetClasses.contains("btn--delete-item")) {
+      // StorageCtrl.deleteSeller();
+      // UiCtrl.removeSeller();
+    }
   };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1237,7 +1516,7 @@ var appController = function (StorageCtrl, UiCtrl) {
 
 appController.init();
 
-// print js script for printing
+// print js script for printing - dependiency - jquery
 $(".btn--print-inv").on("click", function () {
   $(".invoice").printThis();
 });
@@ -1270,7 +1549,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '40483' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '44019' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
