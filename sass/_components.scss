@@ -77,6 +77,11 @@
     }
     &[disabled] {
       background-color: lighten($color4, 25%);
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: lighten($color4, 25%);
+      }
     }
     &:hover,
     &:active,

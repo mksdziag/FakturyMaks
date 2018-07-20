@@ -176,12 +176,13 @@
           <div class="draft-item__constructor-section">
             <input placeholder="cena netto" type="number" step="0.01" name="draft-item__price" id="draft-item__price" class="input draft-item__price"
               min="0">
-            <input placeholder="wartość" type="number" step="0.01" id="draft-item__net-value" class="input draft-item__net-value" disabled>
+            <input placeholder="wartość netto" type="number" step="0.01" id="draft-item__net-value" class="input draft-item__net-value"
+              disabled>
 
             </select>
             <input placeholder="wartość VAT" type="number" step="0.01" id="draft-item__tax-value" class="input draft-item__tax-value"
               disabled>
-            <input placeholder="cena brutto" type="number" step="0.01" id="draft-item__total-value" class="input draft-item__total-value"
+            <input placeholder="wartość brutto" type="number" step="0.01" id="draft-item__total-value" class="input draft-item__total-value"
               disabled>
           </div>
           <button class="btn btn--add-item" disabled>Dodaj</button>
@@ -234,10 +235,10 @@
       <div class="invoice__heading">
         <div class="invoice__title">
           <h2 class="invoice__type">Faktura VAT</h2>
-          <span class="invoice__number">nr 001/05/2018</span>
+          <span class="invoice__number">nr 001/2018</span>
         </div>
         <div class="invoice__details">
-          <p class="invoice__place">miejsce wystawienia: Skierniewice</p>
+          <p class="invoice__place">miejsce wystawienia: Warszawa</p>
           <p class="invoice__place-date">data wystawinia: 10.05.2017</p>
           <p class="invoice__sell-date">data sprzedaży: 11.05.2018</p>
         </div>
@@ -245,24 +246,24 @@
       <div class="invoice__sides">
         <div class="invoice__seller">
           <span class="invoice__side-title">Sprzedawca:</span>
-          <p class="invoice__seller-name">Gospodarstwo Polne Marian Dziag</p>
-          <p class="invoice__seller-street">Gzów 68</p>
+          <p class="invoice__seller-name">Firma Sprzedfająca S.A.</p>
+          <p class="invoice__seller-street">Pocztowa 21</p>
           <p class="">
-            <span class="seller__post-code">96-128</span>
-            <span class="invoice__seller-city">Słupia</span>
+            <span class="seller__post-code">01-128</span>
+            <span class="invoice__seller-city">Warszawa</span>
           </p>
           <p class="invoice__seller-nip">PL 7589558855</p>
 
         </div>
         <div class="invoice__buyer">
           <span class="invoice__side-title">Nabywca:</span>
-          <p class="invoice__buyer-name">Gospodarstwo Polne Marian Dziag</p>
-          <p class="invoice__buyer-street">Gzów 68</p>
+          <p class="invoice__buyer-name">Kupujący Sp. z o.o.</p>
+          <p class="invoice__buyer-street">Warszawska 188</p>
           <p class="">
-            <span class="buyer__post-code">96-128</span>
-            <span class="invoice__buyer-city">Słupia</span>
+            <span class="buyer__post-code">97-100</span>
+            <span class="invoice__buyer-city">Głuchołazy</span>
           </p>
-          <p class="invoice__buyer-nip">PL 7589558855</p>
+          <p class="invoice__buyer-nip">PL 444-125-22-00</p>
         </div>
       </div>
       <table class="invoice__positions">
@@ -271,6 +272,7 @@
             <th class="invoice__item-lp--legend">L.p.</th>
             <th class="invoice__item-name--legend">Produkt</th>
             <th class="invoice__item-unit--legend">J.m.</th>
+            <th class="invoice__item-currency--legend">Waluta</th>
             <th class="invoice__item-quantity--legend">Ilość</th>
             <th class="invoice__item-price--legend">cena netto</th>
             <th class="invoice__item-net-value--legend">wartość netto</th>
@@ -284,36 +286,37 @@
             <td class="invoice__item-lp">1</td>
             <td class="invoice__item-name">Ubrania Damskie</td>
             <td class="invoice__item-unit">szt.</td>
+            <td class="invoice__item-currency">PLN</td>
             <td class="invoice__item-quantity">2</td>
-            <td class="invoice__item-price">55 zł</td>
-            <td class="invoice__item-net-value">55 zł</td>
+            <td class="invoice__item-price">55</td>
+            <td class="invoice__item-net-value">55</td>
             <td class="invoice__item-tax-rate">23%</td>
-            <td class="invoice__item-tax-value">10.33 zł</td>
-            <td class="invoice__item-total-value">65.33 zł</td>
+            <td class="invoice__item-tax-value">12.65</td>
+            <td class="invoice__item-total-value">67.65</td>
           </tr>
 
         </tbody>
         <tfoot class="invoice__positions-summary">
           <tr class="invoice__summary-row">
-            <th colspan="5" class="invoice__summary-legend">Razem:</th>
-            <th class="invoice__summary-net-value--legend">65550.33</th>
+            <th colspan="6" class="invoice__summary-legend">Razem:</th>
+            <th class="invoice__summary-net-value--legend">55</th>
             <th class=""></th>
-            <th class="invoice__summary-vat-value--legend">1122.98</th>
-            <th class="invoice__summary-total--legend">81555.65</th>
+            <th class="invoice__summary-vat-value--legend">12.65</th>
+            <th class="invoice__summary-total--legend">12.65</th>
           </tr>
           <tr class="invoice__summary-row">
-            <td colspan="5" class="invoice__summary-legend">W tym:</td>
-            <td class="invoice__summary-net-value">65550.33</td>
+            <td colspan="6" class="invoice__summary-legend">W tym:</td>
+            <td class="invoice__summary-net-value">55.00</td>
             <td class="">23%</td>
-            <td class="invoice__summary-vat-value">1122.95</td>
-            <td class="invoice__summary-total">81555.65</td>
+            <td class="invoice__summary-vat-value">12.65</td>
+            <td class="invoice__summary-total">67.65</td>
           </tr>
         </tfoot>
       </table>
       <div class="invoice__final">
         <p class="invoice__final-to-pay"></p>
-        <p class="invoice__final-to-pay-in-words">
-          Słownie: osiem tysięcy sześćdziesiąt PLN 20/100 </p>
+        <!-- <p class="invoice__final-to-pay-in-words">
+          Słownie: osiem tysięcy sześćdziesiąt PLN 20/100 </p> -->
         <p class="invoice__final-payment-method">
 
         </p>

@@ -106,21 +106,22 @@ const uiController = (function() {
 
   // displaying draft item taxes in draft item constructor form
   const displayDraftItemNotFilledInputs = function() {
-    // if there is fullfilled draft item quantity and net price can calculate:
+    debugger;
     if (DOMElements.itemQuantInp.value !== "" && DOMElements.itemPriceInp.value !== "") {
-      // net value ptoduct price * quantity
       DOMElements.itemNetValInp.value = (
         DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber
       ).toFixed(2);
-      // tax value
       DOMElements.itemTaxValInp.value = (
         DOMElements.itemQuantInp.valueAsNumber *
         DOMElements.itemPriceInp.valueAsNumber *
         parseFloat(DOMElements.itemTaxRateInp.value / 100)
       ).toFixed(2);
-      // item total price
       DOMElements.itemTotValInp.value = (
         DOMElements.itemNetValInp.valueAsNumber + DOMElements.itemTaxValInp.valueAsNumber
+      ).toFixed(2);
+      DOMElements.itemTotalPriceInp.value = (
+        DOMElements.itemPriceInp.valueAsNumber +
+        DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)
       ).toFixed(2);
     }
   };
@@ -263,6 +264,7 @@ const uiController = (function() {
           <td class="invoice__item-lp">${positionsArray.indexOf(item) + 1}</td>
           <td class="invoice__item-name">${item.name}</td>
           <td class="invoice__item-unit">${item.unit}</td>
+          <td class="invoice__item-currency">PLN</td>
           <td class="invoice__item-quantity">${item.quantity.toFixed(2)}</td>
           <td class="invoice__item-price">${item.netPrice.toFixed(2)}</td>
           <td class="invoice__item-net-value">${item.netValue.toFixed(2)}</td>
@@ -280,7 +282,7 @@ const uiController = (function() {
     const invoiceSumRow = document.createElement("tr");
     invoiceSumRow.classList.add("invoice__summary-row");
     invoiceSumRow.innerHTML = `
-    <th colspan="5" class="invoice__summary-legend">Razem:</th>
+    <th colspan="6" class="invoice__summary-legend">Razem:</th>
     <th class="invoice__summary-net-value">${totalNetVal.toFixed(2)}</th>
     <th class=""></th>
     <th class="invoice__summary-vat-value">${totalTaxVal.toFixed(2)}</th>
@@ -310,7 +312,7 @@ const uiController = (function() {
       const vatRatefinalrow = document.createElement("tr");
       vatRatefinalrow.classList.add("invoice__summary-row");
       vatRatefinalrow.innerHTML = `
-        <td colspan="5" class="invoice__summary-legend">W tym:</td>
+        <td colspan="6" class="invoice__summary-legend">W tym:</td>
         <td class="invoice__summary-net-value">${checkedTaxRate.netValue.toFixed(2)}</td>
         <td class="">${checkingTaxRate}%</td>
         <td class="invoice__summary-vat-value">${checkedTaxRate.taxValue.toFixed(2)}</td>
@@ -609,10 +611,14 @@ const uiController = (function() {
   };
 
   const hideListItem = function(element) {
+    element.addEventListener("transitionend", e => {
+      console.log(e.propertyName);
+      if (e.propertyName === "opacity") {
+        element.style.display = "none";
+      }
+    });
+
     element.classList.add("fade-up");
-    setTimeout(() => {
-      element.style.display = "none";
-    }, 150);
   };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
@@ -945,8 +951,9 @@ const appController = (function(StorageCtrl, UiCtrl) {
   const init = function() {
     loadEventListeners();
   };
+
   const isBankAccountCheck = function(e) {
-    if (e.target.value === "gotówka") {
+    if (e.target.value === "gotówka" || e.target.value === "czek") {
       DOMElements.payAccountInp.parentElement.style.display = "none";
       DOMElements.payAccountInp.setAttribute("disabled", true);
       DOMElements.payAccountInp.value = "";
