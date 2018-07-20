@@ -411,7 +411,9 @@ const uiController = (function() {
   };
 
   const buildStorageSellersList = function() {
-    const localStorageBuyers = JSON.parse(localStorage.getItem("sellers"));
+    const localStorageBuyers = localStorage.getItem("sellers")
+      ? JSON.parse(localStorage.getItem("sellers"))
+      : {};
     if (Object.keys(localStorageBuyers).length > 0) {
       const sellers = Object.entries(localStorageBuyers);
       sellers.forEach(seller => {
@@ -463,7 +465,9 @@ const uiController = (function() {
   };
 
   const buildStorageBuyersList = function() {
-    const localStorageBuyers = JSON.parse(localStorage.getItem("buyers"));
+    const localStorageBuyers = localStorage.getItem("buyers")
+      ? JSON.parse(localStorage.getItem("buyers"))
+      : {};
     if (Object.keys(localStorageBuyers).length > 0) {
       const buyers = Object.entries(localStorageBuyers);
       buyers.forEach(buyer => {
@@ -515,8 +519,10 @@ const uiController = (function() {
   };
 
   const buildStorageSellerAccountsList = function(accounts) {
-    if (localStorage.getItem("accounts")) {
-      const localStorageAccounts = JSON.parse(localStorage.getItem("accounts"));
+    const localStorageAccounts = localStorage.getItem("accounts")
+      ? JSON.parse(localStorage.getItem("accounts"))
+      : {};
+    if (Object.keys(localStorageAccounts).length > 0) {
       const accounts = Object.entries(localStorageAccounts);
       accounts.forEach(account => {
         const li = document.createElement("li");
@@ -552,8 +558,10 @@ const uiController = (function() {
   };
 
   const buildStorageItemsList = function() {
-    if (localStorage.getItem("items")) {
-      const localStorageItems = JSON.parse(localStorage.getItem("items"));
+    const localStorageItems = localStorage.getItem("items")
+      ? JSON.parse(localStorage.getItem("items"))
+      : {};
+    if (Object.keys(localStorageItems).length > 0) {
       const items = Object.entries(localStorageItems);
       items.forEach(item => {
         const li = document.createElement("li");
