@@ -4,7 +4,8 @@
   "description": "",
   "main": "old.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "cssnano": "^4.0.3",
+    "font-awesome": "^4.7.0",
     "node-sass": "^4.9.2"
   }
 }

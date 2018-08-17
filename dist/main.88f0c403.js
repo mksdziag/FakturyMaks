@@ -103,7 +103,287 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({"node_modules/uuid/lib/rng-browser.js":[function(require,module,exports) {
+})({"src/js/printThis.js":[function(require,module,exports) {
+/*
+ * printThis v1.12.3
+ * @desc Printing plug-in for jQuery
+ * @author Jason Day
+ *
+ * Resources (based on) :
+ *              jPrintArea: http://plugins.jquery.com/project/jPrintArea
+ *              jqPrint: https://github.com/permanenttourist/jquery.jqprint
+ *              Ben Nadal: http://www.bennadel.com/blog/1591-Ask-Ben-Print-Part-Of-A-Web-Page-With-jQuery.htm
+ *
+ * Licensed under the MIT licence:
+ *              http://www.opensource.org/licenses/mit-license.php
+ *
+ * (c) Jason Day 2015
+ *
+ * Usage:
+ *
+ *  $("#mySelector").printThis({
+ *      debug: false,               // show the iframe for debugging
+ *      importCSS: true,            // import page CSS
+ *      importStyle: false,         // import style tags
+ *      printContainer: true,       // grab outer container as well as the contents of the selector
+ *      loadCSS: "path/to/my.css",  // path to additional css file - us an array [] for multiple
+ *      pageTitle: "",              // add title to print page
+ *      removeInline: false,        // remove all inline styles from print elements
+ *      printDelay: 333,            // variable print delay
+ *      header: null,               // prefix to html
+ *      footer: null,               // postfix to html
+ *      base: false,                // preserve the BASE tag, or accept a string for the URL
+ *      formValues: true,           // preserve input/form values
+ *      canvas: false,              // copy canvas elements (experimental)
+ *      doctypeString: '...',       // enter a different doctype for older markup
+ *      removeScripts: false,       // remove script tags from print content
+ *      copyTagClasses: false       // copy classes from the html & body tag
+ *  });
+ *
+ * Notes:
+ *  - the loadCSS will load additional css (with or without @media print) into the iframe, adjusting layout
+ */
+(function ($) {
+  function appendContent($el, content) {
+    if (!content) return;
+
+    // Simple test for a jQuery element
+    $el.append(content.jquery ? content.clone() : content);
+  }
+
+  function appendBody($body, $element, opt) {
+    // Clone for safety and convenience
+    // Calls clone(withDataAndEvents = true) to copy form values.
+    var $content = $element.clone(opt.formValues);
+
+    if (opt.formValues) {
+      // Copy original select and textarea values to their cloned counterpart
+      // Makes up for inability to clone select and textarea values with clone(true)
+      copyValues($element, $content, 'select, textarea');
+    }
+
+    if (opt.removeScripts) {
+      $content.find('script').remove();
+    }
+
+    if (opt.printContainer) {
+      // grab $.selector as container
+      $content.appendTo($body);
+    } else {
+      // otherwise just print interior elements of container
+      $content.each(function () {
+        $(this).children().appendTo($body);
+      });
+    }
+  }
+
+  // Copies values from origin to clone for passed in elementSelector
+  function copyValues(origin, clone, elementSelector) {
+    var $originalElements = origin.find(elementSelector);
+
+    clone.find(elementSelector).each(function (index, item) {
+      $(item).val($originalElements.eq(index).val());
+    });
+  }
+
+  var opt;
+  $.fn.printThis = function (options) {
+    opt = $.extend({}, $.fn.printThis.defaults, options);
+    var $element = this instanceof jQuery ? this : $(this);
+
+    var strFrameName = 'printThis-' + new Date().getTime();
+
+    if (window.location.hostname !== document.domain && navigator.userAgent.match(/msie/i)) {
+      // Ugly IE hacks due to IE not inheriting document.domain from parent
+      // checks if document.domain is set by comparing the host name against document.domain
+      var iframeSrc = 'javascript:document.write("<head><script>document.domain=\\"' + document.domain + '\\";</s' + 'cript></head><body></body>")';
+      var printI = document.createElement('iframe');
+      printI.name = 'printIframe';
+      printI.id = strFrameName;
+      printI.className = 'MSIE';
+      document.body.appendChild(printI);
+      printI.src = iframeSrc;
+    } else {
+      // other browsers inherit document.domain, and IE works if document.domain is not explicitly set
+      var $frame = $("<iframe id='" + strFrameName + "' name='printIframe' />");
+      $frame.appendTo('body');
+    }
+
+    var $iframe = $('#' + strFrameName);
+
+    // show frame if in debug mode
+    if (!opt.debug) $iframe.css({
+      position: 'absolute',
+      width: '0px',
+      height: '0px',
+      left: '-600px',
+      top: '-600px'
+    });
+
+    // $iframe.ready() and $iframe.load were inconsistent between browsers
+    setTimeout(function () {
+      // Add doctype to fix the style difference between printing and render
+      function setDocType($iframe, doctype) {
+        var win, doc;
+        win = $iframe.get(0);
+        win = win.contentWindow || win.contentDocument || win;
+        doc = win.document || win.contentDocument || win;
+        doc.open();
+        doc.write(doctype);
+        doc.close();
+      }
+
+      if (opt.doctypeString) {
+        setDocType($iframe, opt.doctypeString);
+      }
+
+      var $doc = $iframe.contents(),
+          $head = $doc.find('head'),
+          $body = $doc.find('body'),
+          $base = $('base'),
+          baseURL;
+
+      // add base tag to ensure elements use the parent domain
+      if (opt.base === true && $base.length > 0) {
+        // take the base tag from the original page
+        baseURL = $base.attr('href');
+      } else if (typeof opt.base === 'string') {
+        // An exact base string is provided
+        baseURL = opt.base;
+      } else {
+        // Use the page URL as the base
+        baseURL = document.location.protocol + '//' + document.location.host;
+      }
+
+      $head.append('<base href="' + baseURL + '">');
+
+      // import page stylesheets
+      if (opt.importCSS) $('link[rel=stylesheet]').each(function () {
+        var href = $(this).attr('href');
+        if (href) {
+          var media = $(this).attr('media') || 'all';
+          $head.append("<link type='text/css' rel='stylesheet' href='" + href + "' media='" + media + "'>");
+        }
+      });
+
+      // import style tags
+      if (opt.importStyle) $('style').each(function () {
+        $head.append(this.outerHTML);
+      });
+
+      // add title of the page
+      if (opt.pageTitle) $head.append('<title>' + opt.pageTitle + '</title>');
+
+      // import additional stylesheet(s)
+      if (opt.loadCSS) {
+        if ($.isArray(opt.loadCSS)) {
+          jQuery.each(opt.loadCSS, function (index, value) {
+            $head.append("<link type='text/css' rel='stylesheet' href='" + this + "'>");
+          });
+        } else {
+          $head.append("<link type='text/css' rel='stylesheet' href='" + opt.loadCSS + "'>");
+        }
+      }
+
+      // copy 'root' tag classes
+      var tag = opt.copyTagClasses;
+      if (tag) {
+        tag = tag === true ? 'bh' : tag;
+        if (tag.indexOf('b') !== -1) {
+          $body.addClass($('body')[0].className);
+        }
+        if (tag.indexOf('h') !== -1) {
+          $doc.find('html').addClass($('html')[0].className);
+        }
+      }
+
+      // print header
+      appendContent($body, opt.header);
+
+      if (opt.canvas) {
+        // add canvas data-ids for easy access after cloning.
+        var canvasId = 0;
+        // .addBack('canvas') adds the top-level element if it is a canvas.
+        $element.find('canvas').addBack('canvas').each(function () {
+          $(this).attr('data-printthis', canvasId++);
+        });
+      }
+
+      appendBody($body, $element, opt);
+
+      if (opt.canvas) {
+        // Re-draw new canvases by referencing the originals
+        $body.find('canvas').each(function () {
+          var cid = $(this).data('printthis'),
+              $src = $('[data-printthis="' + cid + '"]');
+
+          this.getContext('2d').drawImage($src[0], 0, 0);
+
+          // Remove the markup from the original
+          $src.removeData('printthis');
+        });
+      }
+
+      // remove inline styles
+      if (opt.removeInline) {
+        // $.removeAttr available jQuery 1.7+
+        if ($.isFunction($.removeAttr)) {
+          $doc.find('body *').removeAttr('style');
+        } else {
+          $doc.find('body *').attr('style', '');
+        }
+      }
+
+      // print "footer"
+      appendContent($body, opt.footer);
+
+      setTimeout(function () {
+        if ($iframe.hasClass('MSIE')) {
+          // check if the iframe was created with the ugly hack
+          // and perform another ugly hack out of neccessity
+          window.frames['printIframe'].focus();
+          $head.append('<script>  window.print(); </s' + 'cript>');
+        } else {
+          // proper method
+          if (document.queryCommandSupported('print')) {
+            $iframe[0].contentWindow.document.execCommand('print', false, null);
+          } else {
+            $iframe[0].contentWindow.focus();
+            $iframe[0].contentWindow.print();
+          }
+        }
+
+        // remove iframe after print
+        if (!opt.debug) {
+          setTimeout(function () {
+            $iframe.remove();
+          }, 1000);
+        }
+      }, opt.printDelay);
+    }, 333);
+  };
+
+  // defaults
+  $.fn.printThis.defaults = {
+    debug: false, // show the iframe for debugging
+    importCSS: true, // import parent page css
+    importStyle: false, // import style tags
+    printContainer: false, // print outer container/$.selector
+    loadCSS: '', // load an additional css file - load multiple stylesheets with an array []
+    pageTitle: '', // add title to print page
+    removeInline: false, // remove all inline styles
+    printDelay: 150, // variable print delay
+    header: null, // prefix to html
+    footer: null, // postfix to html
+    formValues: true, // preserve input/form values
+    canvas: false, // copy canvas content (experimental)
+    base: false, // preserve the BASE tag, or accept a string for the URL
+    doctypeString: '<!DOCTYPE html>', // html doctype
+    removeScripts: false, // remove script tags before appending
+    copyTagClasses: false // copy classes from the html & body tag
+  };
+})(jQuery);
+},{}],"node_modules/uuid/lib/rng-browser.js":[function(require,module,exports) {
 // Unique ID creation requires a high quality random # generator.  In the
 // browser this is a little complicated due to unknown quality of Math.random()
 // and inconsistent support for the `crypto` API.  We do the best we can via
@@ -378,17 +658,19 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"sass/main.scss":[function(require,module,exports) {
+},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"src/sass/main.scss":[function(require,module,exports) {
 
 var reloadCSS = require('_css_loader');
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"js/main.js":[function(require,module,exports) {
-"use strict";
+},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"src/js/main.js":[function(require,module,exports) {
+'use strict';
 
-var _uuid = require("uuid");
+require('./printThis');
 
-require("../sass/main.scss");
+var _uuid = require('uuid');
+
+require('../sass/main.scss');
 
 var uiController = function () {
   // defining DOM elements
@@ -396,107 +678,106 @@ var uiController = function () {
     // -------------------------------------------------------
     // Invoice details input elements
     // -------------------------------------------------------
-    dataInpuForm: document.querySelector(".data-form"),
+    dataInpuForm: document.querySelector('.data-form'),
 
     // document data inputs
-    docTypeInp: document.querySelector(".data__doc-type"),
-    docNumInp: document.querySelector(".data__doc-number"),
-    docPlaceInp: document.querySelector(".data__doc-place"),
-    docDateInp: document.querySelector(".data__doc-date"),
-    docSellDateInp: document.querySelector(".data__doc-sell-date"),
+    docTypeInp: document.querySelector('.data__doc-type'),
+    docNumInp: document.querySelector('.data__doc-number'),
+    docPlaceInp: document.querySelector('.data__doc-place'),
+    docDateInp: document.querySelector('.data__doc-date'),
+    docSellDateInp: document.querySelector('.data__doc-sell-date'),
 
     // seller data inputs
-    sellerNameInp: document.querySelector(".data__seller-name"),
-    sellerStreetInp: document.querySelector(".data__seller-street"),
-    sellerCityInp: document.querySelector(".data__seller-city"),
-    sellerPostCodeInp: document.querySelector(".data__seller-post-code"),
-    sellerNipInp: document.querySelector(".data__seller-nip"),
-    sellerSaveBtn: document.querySelector(".btn--seller-save"),
-    sellerLoadBtn: document.querySelector(".btn--seller-load"),
+    sellerNameInp: document.querySelector('.data__seller-name'),
+    sellerStreetInp: document.querySelector('.data__seller-street'),
+    sellerCityInp: document.querySelector('.data__seller-city'),
+    sellerPostCodeInp: document.querySelector('.data__seller-post-code'),
+    sellerNipInp: document.querySelector('.data__seller-nip'),
+    sellerSaveBtn: document.querySelector('.btn--seller-save'),
+    sellerLoadBtn: document.querySelector('.btn--seller-load'),
 
     // buyer data inputs
-    buyerNameInp: document.querySelector(".data__buyer-name"),
-    buyerStreetInp: document.querySelector(".data__buyer-street"),
-    buyerCityInp: document.querySelector(".data__buyer-city"),
-    buyerPostCodeInp: document.querySelector(".data__buyer-post-code"),
-    buyerNipInp: document.querySelector(".data__buyer-nip"),
-    buyerSaveBtn: document.querySelector(".btn--buyer-save"),
-    buyerLoadTrigger: document.querySelector(".btn--buyer-load"),
+    buyerNameInp: document.querySelector('.data__buyer-name'),
+    buyerStreetInp: document.querySelector('.data__buyer-street'),
+    buyerCityInp: document.querySelector('.data__buyer-city'),
+    buyerPostCodeInp: document.querySelector('.data__buyer-post-code'),
+    buyerNipInp: document.querySelector('.data__buyer-nip'),
+    buyerSaveBtn: document.querySelector('.btn--buyer-save'),
+    buyerLoadTrigger: document.querySelector('.btn--buyer-load'),
 
     // payment terms inputs
-    payMethodInp: document.querySelector(".payment__method"),
-    payTermInp: document.querySelector(".payment__term"),
-    payAccountInp: document.querySelector(".payment__account"),
-    accountSaveBtn: document.querySelector(".btn--account-save"),
-    accountLoadBtn: document.querySelector(".btn--account-load"),
+    payMethodInp: document.querySelector('.payment__method'),
+    payTermInp: document.querySelector('.payment__term'),
+    payAccountInp: document.querySelector('.payment__account'),
+    accountSaveBtn: document.querySelector('.btn--account-save'),
+    accountLoadBtn: document.querySelector('.btn--account-load'),
 
     // draft positions inputs
-    itemNameInp: document.querySelector(".draft-item__name"),
-    itemUnitInp: document.querySelector(".draft-item__unit"),
-    itemQuantInp: document.querySelector(".draft-item__quantity"),
-    itemPriceInp: document.querySelector(".draft-item__price"),
-    itemNetValInp: document.querySelector(".draft-item__net-value"),
-    itemTaxRateInp: document.querySelector(".draft-item__tax-rate"),
-    itemTaxValInp: document.querySelector(".draft-item__tax-value"),
-    itemTotValInp: document.querySelector(".draft-item__total-value"),
-    itemSaveBtn: document.querySelector(".btn--item-save"),
-    itemLoadTrigger: document.querySelector(".btn--item-load"),
-    storageListModalClose: document.querySelector(".btn--close-storage-list"),
+    itemNameInp: document.querySelector('.draft-item__name'),
+    itemUnitInp: document.querySelector('.draft-item__unit'),
+    itemQuantInp: document.querySelector('.draft-item__quantity'),
+    itemPriceInp: document.querySelector('.draft-item__price'),
+    itemNetValInp: document.querySelector('.draft-item__net-value'),
+    itemTaxRateInp: document.querySelector('.draft-item__tax-rate'),
+    itemTaxValInp: document.querySelector('.draft-item__tax-value'),
+    itemTotValInp: document.querySelector('.draft-item__total-value'),
+    itemSaveBtn: document.querySelector('.btn--item-save'),
+    itemLoadTrigger: document.querySelector('.btn--item-load'),
+    storageListModalClose: document.querySelector('.btn--close-storage-list'),
 
     // draft add button
-    addBtn: document.querySelector(".btn--add-item"),
+    addBtn: document.querySelector('.btn--add-item'),
 
     // draft itens table
-    draftItemConstructor: document.querySelector(".draft-item__constructor"),
-    draftItemTable: document.querySelector(".draft-added-items"),
-    drawtSumTable: document.querySelector(".draft__summary"),
-    itemDelBtn: document.querySelectorAll(".btn--item-del"),
+    draftItemConstructor: document.querySelector('.draft-item__constructor'),
+    draftItemTable: document.querySelector('.draft-added-items'),
+    drawtSumTable: document.querySelector('.draft__summary'),
+    itemDelBtn: document.querySelectorAll('.btn--item-del'),
 
     // storage list modal
-    storageList: document.querySelector(".storage-list"),
-    storageListModal: document.querySelector(".storage-list__modal"),
-    storageListBackdrop: document.querySelector(".storage-list__backdrop"),
+    storageList: document.querySelector('.storage-list'),
+    storageListModal: document.querySelector('.storage-list__modal'),
+    storageListBackdrop: document.querySelector('.storage-list__backdrop'),
 
     // button generate invoice
-    genBtn: document.querySelector(".btn--gen-inv"),
-    printBtn: document.querySelector(".btn--print-inv"),
+    genBtn: document.querySelector('.btn--gen-inv'),
+    printBtn: document.querySelector('.btn--print-inv'),
 
     // -------------------------------------------------------
     //output invoice elements
     // -------------------------------------------------------
-    invoice: document.querySelector(".invoice"),
+    invoice: document.querySelector('.invoice'),
     // invoice heading
-    invType: document.querySelector(".invoice__type"),
-    invNum: document.querySelector(".invoice__number"),
-    invPlace: document.querySelector(".invoice__place"),
-    invSellDate: document.querySelector(".invoice__sell-date"),
-    invDate: document.querySelector(".invoice__place-date"),
+    invType: document.querySelector('.invoice__type'),
+    invNum: document.querySelector('.invoice__number'),
+    invPlace: document.querySelector('.invoice__place'),
+    invSellDate: document.querySelector('.invoice__sell-date'),
+    invDate: document.querySelector('.invoice__place-date'),
     // invoice seller details
-    invSellerName: document.querySelector(".invoice__seller-name"),
-    invSellerStr: document.querySelector(".invoice__seller-street"),
-    invSellerCity: document.querySelector(".invoice__seller-city"),
-    invSellerPostCode: document.querySelector(".seller__post-code"),
-    invSellerNip: document.querySelector(".invoice__seller-nip"),
+    invSellerName: document.querySelector('.invoice__seller-name'),
+    invSellerStr: document.querySelector('.invoice__seller-street'),
+    invSellerCity: document.querySelector('.invoice__seller-city'),
+    invSellerPostCode: document.querySelector('.seller__post-code'),
+    invSellerNip: document.querySelector('.invoice__seller-nip'),
     // invoice buyer details
-    invBuyerName: document.querySelector(".invoice__buyer-name"),
-    invBuyerStr: document.querySelector(".invoice__buyer-street"),
-    invBuyerCity: document.querySelector(".invoice__buyer-city"),
-    invBuyerPostCode: document.querySelector(".buyer__post-code"),
-    invBuyerNip: document.querySelector(".invoice__buyer-nip"),
+    invBuyerName: document.querySelector('.invoice__buyer-name'),
+    invBuyerStr: document.querySelector('.invoice__buyer-street'),
+    invBuyerCity: document.querySelector('.invoice__buyer-city'),
+    invBuyerPostCode: document.querySelector('.buyer__post-code'),
+    invBuyerNip: document.querySelector('.invoice__buyer-nip'),
     // Invoice positions items table
-    invoicePositionsTable: document.querySelector(".invoice__positions-place"),
-    invoicePositionsTableSum: document.querySelector(".invoice__positions-summary"),
+    invoicePositionsTable: document.querySelector('.invoice__positions-place'),
+    invoicePositionsTableSum: document.querySelector('.invoice__positions-summary'),
     // invoice final details
-    invFinalToPay: document.querySelector(".invoice__final-to-pay"),
-    invFinalPayMethod: document.querySelector(".invoice__final-payment-method"),
-    invFinalPayTerm: document.querySelector(".invoice__final-payment-term"),
-    invFinalAccount: document.querySelector(".invoice__final-payment__account")
+    invFinalToPay: document.querySelector('.invoice__final-to-pay'),
+    invFinalPayMethod: document.querySelector('.invoice__final-payment-method'),
+    invFinalPayTerm: document.querySelector('.invoice__final-payment-term'),
+    invFinalAccount: document.querySelector('.invoice__final-payment__account')
   };
 
   // displaying draft item taxes in draft item constructor form
   var displayDraftItemNotFilledInputs = function displayDraftItemNotFilledInputs() {
-    debugger;
-    if (DOMElements.itemQuantInp.value !== "" && DOMElements.itemPriceInp.value !== "") {
+    if (DOMElements.itemQuantInp.value !== '' && DOMElements.itemPriceInp.value !== '') {
       DOMElements.itemNetValInp.value = (DOMElements.itemPriceInp.valueAsNumber * DOMElements.itemQuantInp.valueAsNumber).toFixed(2);
       DOMElements.itemTaxValInp.value = (DOMElements.itemQuantInp.valueAsNumber * DOMElements.itemPriceInp.valueAsNumber * parseFloat(DOMElements.itemTaxRateInp.value / 100)).toFixed(2);
       DOMElements.itemTotValInp.value = (DOMElements.itemNetValInp.valueAsNumber + DOMElements.itemTaxValInp.valueAsNumber).toFixed(2);
@@ -516,17 +797,17 @@ var uiController = function () {
       return item.id === id;
     });
     // create newtable row
-    var newRow = document.createElement("tr");
-    newRow.classList.add("draft__position");
-    newRow.id = "draft-item-" + item.id;
-    newRow.dataset.identifier = "" + item.id;
-    newRow.innerHTML = "\n      <td class=\"draft__item-delete\"><button class=\"btn btn--item-del\">usu\u0144</button></td>\n      <td class=\"draft__item-name\">" + item.name + "</td>\n      <td class=\"draft__item-unit\">" + item.unit + "</td>\n      <td class=\"draft__item-quantity\">" + item.quantity.toFixed(2) + "</td>\n      <td class=\"draft__item-price\">" + item.netPrice.toFixed(2) + "</td>\n      <td class=\"draft__item-net-value\">" + item.netValue.toFixed(2) + "</td>\n      <td class=\"draft__item-tax-rate\">" + item.taxRate + "%</td>\n      <td class=\"draft__item-tax-value\">" + item.taxValue.toFixed(2) + "</td>\n      <td class=\"draft__item-total-value\">" + item.total.toFixed(2) + "</td>";
+    var newRow = document.createElement('tr');
+    newRow.classList.add('draft__position');
+    newRow.id = 'draft-item-' + item.id;
+    newRow.dataset.identifier = '' + item.id;
+    newRow.innerHTML = '\n      <td class="draft__item-delete"><button class="btn btn--item-del">usu\u0144</button></td>\n      <td class="draft__item-name">' + item.name + '</td>\n      <td class="draft__item-unit">' + item.unit + '</td>\n      <td class="draft__item-quantity">' + item.quantity.toFixed(2) + '</td>\n      <td class="draft__item-price">' + item.netPrice.toFixed(2) + '</td>\n      <td class="draft__item-net-value">' + item.netValue.toFixed(2) + '</td>\n      <td class="draft__item-tax-rate">' + item.taxRate + '%</td>\n      <td class="draft__item-tax-value">' + item.taxValue.toFixed(2) + '</td>\n      <td class="draft__item-total-value">' + item.total.toFixed(2) + '</td>';
     DOMElements.draftItemTable.appendChild(newRow);
   };
 
   // helper function for cleat innner HTML in given element
   var clearInnerHtml = function clearInnerHtml(elem) {
-    elem.innerHTML = "";
+    elem.innerHTML = '';
   };
 
   // building draft items table from start
@@ -535,11 +816,11 @@ var uiController = function () {
     // for each drafted item perform same action
     storageController.draftItemsData.items.forEach(function (item) {
       // create newtable row
-      var newRow = document.createElement("tr");
-      newRow.classList.add("draft__position");
-      newRow.id = "draft-item-" + item.id;
-      newRow.dataset.identifier = "" + item.id;
-      newRow.innerHTML = "\n      <td class=\"draft__item-delete\"><button class=\"btn btn--item-del\">usu\u0144</button></td>\n      <td class=\"draft__item-name\">" + item.name + "</td>\n      <td class=\"draft__item-unit\">" + item.unit + "</td>\n      <td class=\"draft__item-quantity\">" + item.quantity.toFixed(2) + "</td>\n      <td class=\"draft__item-price\">" + item.netPrice.toFixed(2) + "</td>\n      <td class=\"draft__item-net-value\">" + item.netValue.toFixed(2) + "</td>\n      <td class=\"draft__item-tax-rate\">" + item.taxRate + "%</td>\n      <td class=\"draft__item-tax-value\">" + item.taxValue.toFixed(2) + "</td>\n      <td class=\"draft__item-total-value\">" + item.total.toFixed(2) + "</td>";
+      var newRow = document.createElement('tr');
+      newRow.classList.add('draft__position');
+      newRow.id = 'draft-item-' + item.id;
+      newRow.dataset.identifier = '' + item.id;
+      newRow.innerHTML = '\n      <td class="draft__item-delete"><button class="btn btn--item-del">usu\u0144</button></td>\n      <td class="draft__item-name">' + item.name + '</td>\n      <td class="draft__item-unit">' + item.unit + '</td>\n      <td class="draft__item-quantity">' + item.quantity.toFixed(2) + '</td>\n      <td class="draft__item-price">' + item.netPrice.toFixed(2) + '</td>\n      <td class="draft__item-net-value">' + item.netValue.toFixed(2) + '</td>\n      <td class="draft__item-tax-rate">' + item.taxRate + '%</td>\n      <td class="draft__item-tax-value">' + item.taxValue.toFixed(2) + '</td>\n      <td class="draft__item-total-value">' + item.total.toFixed(2) + '</td>';
       DOMElements.draftItemTable.appendChild(newRow);
     });
   };
@@ -549,18 +830,18 @@ var uiController = function () {
     // remove all content from summary draft table
     clearInnerHtml(DOMElements.drawtSumTable);
 
-    var draftSumRow = document.createElement("tr");
-    draftSumRow.classList.add("draft__summary-row");
-    draftSumRow.innerHTML = "\n    <th colspan=\"5\" class=\"draft__summary-legend\">Razem:</th>\n    <th class=\"draft__summary-net-value\">" + storageController.draftItemsData.summaries.totalNetVal.toFixed(2) + "</th>\n    <th class=\"\"></th>\n    <th class=\"draft__summary-vat-value\">" + storageController.draftItemsData.summaries.totalTaxVal.toFixed(2) + "</th>\n    <th class=\"draft__summary-total\">" + storageController.draftItemsData.summaries.total.toFixed(2) + "</th>";
+    var draftSumRow = document.createElement('tr');
+    draftSumRow.classList.add('draft__summary-row');
+    draftSumRow.innerHTML = '\n    <th colspan="5" class="draft__summary-legend">Razem:</th>\n    <th class="draft__summary-net-value">' + storageController.draftItemsData.summaries.totalNetVal.toFixed(2) + '</th>\n    <th class=""></th>\n    <th class="draft__summary-vat-value">' + storageController.draftItemsData.summaries.totalTaxVal.toFixed(2) + '</th>\n    <th class="draft__summary-total">' + storageController.draftItemsData.summaries.total.toFixed(2) + '</th>';
     DOMElements.drawtSumTable.appendChild(draftSumRow);
   };
 
   var generateDraftSumRow = function generateDraftSumRow(areTaxRateItems, checkingTaxRate) {
-    var checkedTaxRate = storageController.draftItemsData.summaries.taxRates["tax" + checkingTaxRate];
+    var checkedTaxRate = storageController.draftItemsData.summaries.taxRates['tax' + checkingTaxRate];
     if (areTaxRateItems) {
-      var taxRatefinalRow = document.createElement("tr");
-      taxRatefinalRow.classList.add("draft__summary-row");
-      taxRatefinalRow.innerHTML = "\n      <td colspan=\"5\" class=\"draft__summary-legend\">W tym:</td>\n      <td class=\"draft__summary-net-value\">" + checkedTaxRate.netValue.toFixed(2) + "</td>\n      <td class=\"\">" + checkingTaxRate + "%</td>\n      <td class=\"draft__summary-vat-value\">" + checkedTaxRate.taxValue.toFixed(2) + "</td>\n      <td class=\"draft__summary-total\">" + checkedTaxRate.taxTotal.toFixed(2) + "</td>";
+      var taxRatefinalRow = document.createElement('tr');
+      taxRatefinalRow.classList.add('draft__summary-row');
+      taxRatefinalRow.innerHTML = '\n      <td colspan="5" class="draft__summary-legend">W tym:</td>\n      <td class="draft__summary-net-value">' + checkedTaxRate.netValue.toFixed(2) + '</td>\n      <td class="">' + checkingTaxRate + '%</td>\n      <td class="draft__summary-vat-value">' + checkedTaxRate.taxValue.toFixed(2) + '</td>\n      <td class="draft__summary-total">' + checkedTaxRate.taxTotal.toFixed(2) + '</td>';
       DOMElements.drawtSumTable.appendChild(taxRatefinalRow);
     }
   };
@@ -568,29 +849,29 @@ var uiController = function () {
   var generateInvoice = function generateInvoice() {
     var invoiceObj = storageController.invoices.invoice.details;
     // inserting details of the invoice
-    DOMElements.invType.textContent = "" + invoiceObj.document.type;
-    DOMElements.invNum.textContent = "nr " + invoiceObj.document.number;
-    DOMElements.invPlace.textContent = "Miejsce wystawienia: " + invoiceObj.document.place;
-    DOMElements.invDate.textContent = "Data wystawienia: " + invoiceObj.document.date;
-    DOMElements.invSellDate.textContent = "Data sprzeda\u017Cy: " + invoiceObj.document.sellDate;
-    DOMElements.invSellerName.textContent = "" + invoiceObj.seller.name;
-    DOMElements.invSellerStr.textContent = "" + invoiceObj.seller.street;
-    DOMElements.invSellerCity.textContent = "" + invoiceObj.seller.city;
-    DOMElements.invSellerPostCode.textContent = "" + invoiceObj.seller.postCode;
-    DOMElements.invSellerNip.textContent = "NIP: " + invoiceObj.seller.nip;
-    DOMElements.invBuyerName.textContent = "" + invoiceObj.buyer.name;
-    DOMElements.invBuyerStr.textContent = "" + invoiceObj.buyer.street;
-    DOMElements.invBuyerCity.textContent = "" + invoiceObj.buyer.city;
-    DOMElements.invBuyerPostCode.textContent = "" + invoiceObj.buyer.postCode;
-    DOMElements.invBuyerNip.textContent = "NIP: " + invoiceObj.buyer.nip;
-    DOMElements.invFinalToPay.textContent = "Do zap\u0142aty: " + invoiceObj.payment.toPay.toFixed(2) + " PLN";
-    DOMElements.invFinalPayMethod.textContent = "Spos\xF3b p\u0142atno\u015Bci: " + invoiceObj.payment.method;
-    DOMElements.invFinalPayTerm.textContent = "Termin p\u0142atno\u015Bci: " + invoiceObj.payment.term;
+    DOMElements.invType.textContent = '' + invoiceObj.document.type;
+    DOMElements.invNum.textContent = 'nr ' + invoiceObj.document.number;
+    DOMElements.invPlace.textContent = 'Miejsce wystawienia: ' + invoiceObj.document.place;
+    DOMElements.invDate.textContent = 'Data wystawienia: ' + invoiceObj.document.date;
+    DOMElements.invSellDate.textContent = 'Data sprzeda\u017Cy: ' + invoiceObj.document.sellDate;
+    DOMElements.invSellerName.textContent = '' + invoiceObj.seller.name;
+    DOMElements.invSellerStr.textContent = '' + invoiceObj.seller.street;
+    DOMElements.invSellerCity.textContent = '' + invoiceObj.seller.city;
+    DOMElements.invSellerPostCode.textContent = '' + invoiceObj.seller.postCode;
+    DOMElements.invSellerNip.textContent = 'NIP: ' + invoiceObj.seller.nip;
+    DOMElements.invBuyerName.textContent = '' + invoiceObj.buyer.name;
+    DOMElements.invBuyerStr.textContent = '' + invoiceObj.buyer.street;
+    DOMElements.invBuyerCity.textContent = '' + invoiceObj.buyer.city;
+    DOMElements.invBuyerPostCode.textContent = '' + invoiceObj.buyer.postCode;
+    DOMElements.invBuyerNip.textContent = 'NIP: ' + invoiceObj.buyer.nip;
+    DOMElements.invFinalToPay.textContent = 'Do zap\u0142aty: ' + invoiceObj.payment.toPay.toFixed(2) + ' PLN';
+    DOMElements.invFinalPayMethod.textContent = 'Spos\xF3b p\u0142atno\u015Bci: ' + invoiceObj.payment.method;
+    DOMElements.invFinalPayTerm.textContent = 'Termin p\u0142atno\u015Bci: ' + invoiceObj.payment.term;
     // print account number if choosen method is different than cash
-    if (invoiceObj.payment.method !== "gotówka") {
-      DOMElements.invFinalAccount.textContent = "Konto: " + invoiceObj.payment.account;
+    if (invoiceObj.payment.method !== 'gotówka') {
+      DOMElements.invFinalAccount.textContent = 'Konto: ' + invoiceObj.payment.account;
     } else {
-      DOMElements.invFinalAccount.textContent = "";
+      DOMElements.invFinalAccount.textContent = '';
     }
   };
 
@@ -599,11 +880,11 @@ var uiController = function () {
     clearInnerHtml(DOMElements.invoicePositionsTableSum);
 
     positionsArray.forEach(function (item) {
-      var newRow = document.createElement("tr");
-      newRow.classList.add("invoice__position");
-      newRow.id = "invoice-item" + item.id;
-      newRow.dataset.identifier = "" + item.id;
-      newRow.innerHTML = "\n          <td class=\"invoice__item-lp\">" + (positionsArray.indexOf(item) + 1) + "</td>\n          <td class=\"invoice__item-name\">" + item.name + "</td>\n          <td class=\"invoice__item-unit\">" + item.unit + "</td>\n          <td class=\"invoice__item-currency\">PLN</td>\n          <td class=\"invoice__item-quantity\">" + item.quantity.toFixed(2) + "</td>\n          <td class=\"invoice__item-price\">" + item.netPrice.toFixed(2) + "</td>\n          <td class=\"invoice__item-net-value\">" + item.netValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-tax-rate\">" + item.taxRate + "%</td>\n          <td class=\"invoice__item-tax-value\">" + item.taxValue.toFixed(2) + "</td>\n          <td class=\"invoice__item-total-value\">" + item.total.toFixed(2) + "</td>";
+      var newRow = document.createElement('tr');
+      newRow.classList.add('invoice__position');
+      newRow.id = 'invoice-item' + item.id;
+      newRow.dataset.identifier = '' + item.id;
+      newRow.innerHTML = '\n          <td class="invoice__item-lp">' + (positionsArray.indexOf(item) + 1) + '</td>\n          <td class="invoice__item-name">' + item.name + '</td>\n          <td class="invoice__item-unit">' + item.unit + '</td>\n          <td class="invoice__item-currency">PLN</td>\n          <td class="invoice__item-quantity">' + item.quantity.toFixed(2) + '</td>\n          <td class="invoice__item-price">' + item.netPrice.toFixed(2) + '</td>\n          <td class="invoice__item-net-value">' + item.netValue.toFixed(2) + '</td>\n          <td class="invoice__item-tax-rate">' + item.taxRate + '%</td>\n          <td class="invoice__item-tax-value">' + item.taxValue.toFixed(2) + '</td>\n          <td class="invoice__item-total-value">' + item.total.toFixed(2) + '</td>';
       DOMElements.invoicePositionsTable.appendChild(newRow);
     });
 
@@ -612,9 +893,9 @@ var uiController = function () {
     var totalTaxVal = storageController.draftItemsData.summaries.totalTaxVal;
     var total = storageController.draftItemsData.summaries.total;
 
-    var invoiceSumRow = document.createElement("tr");
-    invoiceSumRow.classList.add("invoice__summary-row");
-    invoiceSumRow.innerHTML = "\n    <th colspan=\"6\" class=\"invoice__summary-legend\">Razem:</th>\n    <th class=\"invoice__summary-net-value\">" + totalNetVal.toFixed(2) + "</th>\n    <th class=\"\"></th>\n    <th class=\"invoice__summary-vat-value\">" + totalTaxVal.toFixed(2) + "</th>\n    <th class=\"invoice__summary-total\">" + total.toFixed(2) + "</th>";
+    var invoiceSumRow = document.createElement('tr');
+    invoiceSumRow.classList.add('invoice__summary-row');
+    invoiceSumRow.innerHTML = '\n    <th colspan="6" class="invoice__summary-legend">Razem:</th>\n    <th class="invoice__summary-net-value">' + totalNetVal.toFixed(2) + '</th>\n    <th class=""></th>\n    <th class="invoice__summary-vat-value">' + totalTaxVal.toFixed(2) + '</th>\n    <th class="invoice__summary-total">' + total.toFixed(2) + '</th>';
     DOMElements.invoicePositionsTable.appendChild(invoiceSumRow);
 
     // generate boolean values for check it there are some products with specific tax rates
@@ -644,72 +925,71 @@ var uiController = function () {
 
   // generate invoice positions sum row for each existing in draft items tavle tax rate determined by first argument the boolean value
   var generateInvoiceSumRow = function generateInvoiceSumRow(isTaxRate, checkingTaxRate) {
-    var checkedTaxRate = storageController.draftItemsData.summaries.taxRates["tax" + checkingTaxRate];
+    var checkedTaxRate = storageController.draftItemsData.summaries.taxRates['tax' + checkingTaxRate];
     if (isTaxRate) {
-      var vatRatefinalrow = document.createElement("tr");
-      vatRatefinalrow.classList.add("invoice__summary-row");
-      vatRatefinalrow.innerHTML = "\n        <td colspan=\"6\" class=\"invoice__summary-legend\">W tym:</td>\n        <td class=\"invoice__summary-net-value\">" + checkedTaxRate.netValue.toFixed(2) + "</td>\n        <td class=\"\">" + checkingTaxRate + "%</td>\n        <td class=\"invoice__summary-vat-value\">" + checkedTaxRate.taxValue.toFixed(2) + "</td>\n        <td class=\"invoice__summary-total\">" + checkedTaxRate.taxTotal.toFixed(2) + "</td>";
+      var vatRatefinalrow = document.createElement('tr');
+      vatRatefinalrow.classList.add('invoice__summary-row');
+      vatRatefinalrow.innerHTML = '\n        <td colspan="6" class="invoice__summary-legend">W tym:</td>\n        <td class="invoice__summary-net-value">' + checkedTaxRate.netValue.toFixed(2) + '</td>\n        <td class="">' + checkingTaxRate + '%</td>\n        <td class="invoice__summary-vat-value">' + checkedTaxRate.taxValue.toFixed(2) + '</td>\n        <td class="invoice__summary-total">' + checkedTaxRate.taxTotal.toFixed(2) + '</td>';
       DOMElements.invoicePositionsTable.appendChild(vatRatefinalrow);
     }
   };
 
   // showing modal complete
   var showCompleteInfo = function showCompleteInfo() {
-    var competionModal = document.querySelector(".not-completed-form-modal");
-    competionModal.style.display = "block";
+    var competionModal = document.querySelector('.not-completed-form-modal');
+    competionModal.style.display = 'block';
     setTimeout(function () {
-      return competionModal.classList.add("completion-modal-active");
+      return competionModal.classList.add('completion-modal-active');
     }, 10);
 
     setTimeout(hideCompletionModal, 3000);
 
     function hideCompletionModal() {
-      competionModal.classList.remove("completion-modal-active");
+      competionModal.classList.remove('completion-modal-active');
       setTimeout(function () {
-        return competionModal.style.display = "none";
+        return competionModal.style.display = 'none';
       }, 250);
     }
   };
 
   var activatePrintInvoice = function activatePrintInvoice() {
-    DOMElements.printBtn.removeAttribute("disabled");
+    DOMElements.printBtn.removeAttribute('disabled');
   };
 
   var closeStorageModal = function closeStorageModal() {
-    DOMElements.storageListModal.classList.remove("modal-active");
+    DOMElements.storageListModal.classList.remove('modal-active');
     setTimeout(function () {
-      DOMElements.storageListModal.style.display = "none";
+      DOMElements.storageListModal.style.display = 'none';
     }, 250);
     hideBackdropModal();
-    DOMElements.storageList.innerHTML = "";
+    DOMElements.storageList.innerHTML = '';
   };
 
   var openStorageModal = function openStorageModal() {
     displayBackdropModal();
-    DOMElements.storageListModal.style.display = "block";
+    DOMElements.storageListModal.style.display = 'block';
     setTimeout(function () {
-      DOMElements.storageListModal.classList.add("modal-active");
+      DOMElements.storageListModal.classList.add('modal-active');
     }, 10);
   };
 
   var hideBackdropModal = function hideBackdropModal() {
-    DOMElements.storageListBackdrop.classList.remove("backdrop-active");
+    DOMElements.storageListBackdrop.classList.remove('backdrop-active');
     setTimeout(function () {
-      DOMElements.storageListBackdrop.style = "display: none";
+      DOMElements.storageListBackdrop.style = 'display: none';
     }, 250);
   };
 
   var displayBackdropModal = function displayBackdropModal() {
-    DOMElements.storageListBackdrop.style = "display: block";
+    DOMElements.storageListBackdrop.style = 'display: block';
     setTimeout(function () {
-      DOMElements.storageListBackdrop.classList.add("backdrop-active");
+      DOMElements.storageListBackdrop.classList.add('backdrop-active');
     }, 10);
   };
 
   var fillInputForm = function fillInputForm(e) {
-    if (e.target.classList.contains("btn--load-item")) {
-      console.log(e.target.dataset.itemName);
-      var items = JSON.parse(localStorage.getItem("items"));
+    if (e.target.classList.contains('btn--load-item')) {
+      var items = JSON.parse(localStorage.getItem('items'));
       var item = items[e.target.dataset.itemName];
       DOMElements.itemNameInp.value = item.name;
       DOMElements.itemUnitInp.value = item.unit;
@@ -718,8 +998,8 @@ var uiController = function () {
       closeStorageModal();
       DOMElements.itemQuantInp.focus();
     }
-    if (e.target.classList.contains("btn--load-seller")) {
-      var sellers = JSON.parse(localStorage.getItem("sellers"));
+    if (e.target.classList.contains('btn--load-seller')) {
+      var sellers = JSON.parse(localStorage.getItem('sellers'));
       var seller = sellers[e.target.dataset.sellerName];
       DOMElements.sellerNameInp.value = seller.name;
       DOMElements.sellerStreetInp.value = seller.street;
@@ -728,8 +1008,8 @@ var uiController = function () {
       DOMElements.sellerNipInp.value = seller.nip;
       closeStorageModal();
     }
-    if (e.target.classList.contains("btn--load-buyer")) {
-      var buyers = JSON.parse(localStorage.getItem("buyers"));
+    if (e.target.classList.contains('btn--load-buyer')) {
+      var buyers = JSON.parse(localStorage.getItem('buyers'));
       var buyer = buyers[e.target.dataset.buyerName];
       DOMElements.buyerNameInp.value = buyer.name;
       DOMElements.buyerStreetInp.value = buyer.street;
@@ -738,8 +1018,8 @@ var uiController = function () {
       DOMElements.buyerNipInp.value = buyer.nip;
       closeStorageModal();
     }
-    if (e.target.classList.contains("btn--load-account")) {
-      var accounts = JSON.parse(localStorage.getItem("accounts"));
+    if (e.target.classList.contains('btn--load-account')) {
+      var accounts = JSON.parse(localStorage.getItem('accounts'));
       var account = accounts[e.target.dataset.accountNumber];
       DOMElements.payAccountInp.value = account.number;
       closeStorageModal();
@@ -747,41 +1027,41 @@ var uiController = function () {
   };
 
   var buildStorageSellersList = function buildStorageSellersList() {
-    var localStorageBuyers = localStorage.getItem("sellers") ? JSON.parse(localStorage.getItem("sellers")) : {};
+    var localStorageBuyers = localStorage.getItem('sellers') ? JSON.parse(localStorage.getItem('sellers')) : {};
     if (Object.keys(localStorageBuyers).length > 0) {
       var sellers = Object.entries(localStorageBuyers);
       sellers.forEach(function (seller) {
-        var li = document.createElement("li");
-        li.classList.add("storage-list__item");
+        var li = document.createElement('li');
+        li.classList.add('storage-list__item');
 
-        var loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--choose");
-        loadButton.classList.add("btn--load-seller");
+        var loadButton = document.createElement('button');
+        loadButton.classList.add('btn');
+        loadButton.classList.add('btn--choose');
+        loadButton.classList.add('btn--load-seller');
         loadButton.dataset.sellerName = seller[1].name;
-        loadButton.textContent = "Wybierz";
+        loadButton.textContent = 'Wybierz';
 
-        var deleteButton = document.createElement("button");
-        deleteButton.classList.add("btn");
-        deleteButton.classList.add("btn--choose");
-        deleteButton.classList.add("btn--delete-seller");
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn');
+        deleteButton.classList.add('btn--choose');
+        deleteButton.classList.add('btn--delete-seller');
         deleteButton.dataset.sellerName = seller[1].name;
-        deleteButton.textContent = "Usuń";
+        deleteButton.textContent = 'Usuń';
 
-        var nameSpan = document.createElement("span");
-        nameSpan.classList.add("storage-list__seller-name");
+        var nameSpan = document.createElement('span');
+        nameSpan.classList.add('storage-list__seller-name');
         nameSpan.textContent = seller[1].name;
 
-        var streetSpan = document.createElement("span");
-        streetSpan.classList.add("storage-list__seller-street");
+        var streetSpan = document.createElement('span');
+        streetSpan.classList.add('storage-list__seller-street');
         streetSpan.textContent = seller[1].street;
 
-        var citySpan = document.createElement("span");
-        citySpan.classList.add("storage-list__seller-city");
+        var citySpan = document.createElement('span');
+        citySpan.classList.add('storage-list__seller-city');
         citySpan.textContent = seller[1].city;
 
-        var nipSpan = document.createElement("span");
-        nipSpan.classList.add("storage-list__seller-nip");
+        var nipSpan = document.createElement('span');
+        nipSpan.classList.add('storage-list__seller-nip');
         nipSpan.textContent = seller[1].nip;
 
         li.appendChild(loadButton);
@@ -794,46 +1074,46 @@ var uiController = function () {
         DOMElements.storageList.appendChild(li);
       });
     } else {
-      noLocalStorageDataInfo("Nie ma żadnych sprzedawców zapisanych w twojej przeglądarce.");
+      noLocalStorageDataInfo('Nie ma żadnych sprzedawców zapisanych w twojej przeglądarce.');
     }
   };
 
   var buildStorageBuyersList = function buildStorageBuyersList() {
-    var localStorageBuyers = localStorage.getItem("buyers") ? JSON.parse(localStorage.getItem("buyers")) : {};
+    var localStorageBuyers = localStorage.getItem('buyers') ? JSON.parse(localStorage.getItem('buyers')) : {};
     if (Object.keys(localStorageBuyers).length > 0) {
       var buyers = Object.entries(localStorageBuyers);
       buyers.forEach(function (buyer) {
-        var li = document.createElement("li");
-        li.classList.add("storage-list__item");
+        var li = document.createElement('li');
+        li.classList.add('storage-list__item');
 
-        var loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--choose");
-        loadButton.classList.add("btn--load-buyer");
+        var loadButton = document.createElement('button');
+        loadButton.classList.add('btn');
+        loadButton.classList.add('btn--choose');
+        loadButton.classList.add('btn--load-buyer');
         loadButton.dataset.buyerName = buyer[1].name;
-        loadButton.textContent = "Wybierz";
+        loadButton.textContent = 'Wybierz';
 
-        var deleteButton = document.createElement("button");
-        deleteButton.classList.add("btn");
-        deleteButton.classList.add("btn--choose");
-        deleteButton.classList.add("btn--delete-buyer");
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn');
+        deleteButton.classList.add('btn--choose');
+        deleteButton.classList.add('btn--delete-buyer');
         deleteButton.dataset.buyerName = buyer[1].name;
-        deleteButton.textContent = "Usuń";
+        deleteButton.textContent = 'Usuń';
 
-        var nameSpan = document.createElement("span");
-        nameSpan.classList.add("storage-list__buyer-name");
+        var nameSpan = document.createElement('span');
+        nameSpan.classList.add('storage-list__buyer-name');
         nameSpan.textContent = buyer[1].name;
 
-        var streetSpan = document.createElement("span");
-        streetSpan.classList.add("storage-list__buyer-street");
+        var streetSpan = document.createElement('span');
+        streetSpan.classList.add('storage-list__buyer-street');
         streetSpan.textContent = buyer[1].street;
 
-        var citySpan = document.createElement("span");
-        citySpan.classList.add("storage-list__buyer-city");
+        var citySpan = document.createElement('span');
+        citySpan.classList.add('storage-list__buyer-city');
         citySpan.textContent = buyer[1].city;
 
-        var nipSpan = document.createElement("span");
-        nipSpan.classList.add("storage-list__buyer-nip");
+        var nipSpan = document.createElement('span');
+        nipSpan.classList.add('storage-list__buyer-nip');
         nipSpan.textContent = buyer[1].nip;
 
         li.appendChild(loadButton);
@@ -846,35 +1126,35 @@ var uiController = function () {
         DOMElements.storageList.appendChild(li);
       });
     } else {
-      noLocalStorageDataInfo("Nie ma żadnych kontrahentów zapisanych w twojej przeglądarce.");
+      noLocalStorageDataInfo('Nie ma żadnych kontrahentów zapisanych w twojej przeglądarce.');
     }
   };
 
   var buildStorageSellerAccountsList = function buildStorageSellerAccountsList(accounts) {
-    var localStorageAccounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")) : {};
+    var localStorageAccounts = localStorage.getItem('accounts') ? JSON.parse(localStorage.getItem('accounts')) : {};
     if (Object.keys(localStorageAccounts).length > 0) {
       var _accounts = Object.entries(localStorageAccounts);
       _accounts.forEach(function (account) {
-        var li = document.createElement("li");
-        li.classList.add("storage-list__item");
+        var li = document.createElement('li');
+        li.classList.add('storage-list__item');
 
-        var loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--choose");
-        loadButton.classList.add("btn--load-account");
+        var loadButton = document.createElement('button');
+        loadButton.classList.add('btn');
+        loadButton.classList.add('btn--choose');
+        loadButton.classList.add('btn--load-account');
         loadButton.dataset.accountNumber = account[1].number;
-        loadButton.textContent = "Wybierz";
+        loadButton.textContent = 'Wybierz';
 
-        var deleteButton = document.createElement("button");
-        deleteButton.classList.add("btn");
-        deleteButton.classList.add("btn--choose");
-        deleteButton.classList.add("btn--delete-account");
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn');
+        deleteButton.classList.add('btn--choose');
+        deleteButton.classList.add('btn--delete-account');
         deleteButton.dataset.accountNumber = account[1].number;
-        deleteButton.textContent = "Usuń";
+        deleteButton.textContent = 'Usuń';
 
-        var accountNumberSpan = document.createElement("span");
-        accountNumberSpan.classList.add("storage-list__account-number");
-        accountNumberSpan.textContent = "Numer Konta: " + account[1].number;
+        var accountNumberSpan = document.createElement('span');
+        accountNumberSpan.classList.add('storage-list__account-number');
+        accountNumberSpan.textContent = 'Numer Konta: ' + account[1].number;
 
         li.appendChild(loadButton);
         li.appendChild(deleteButton);
@@ -883,47 +1163,47 @@ var uiController = function () {
         DOMElements.storageList.appendChild(li);
       });
     } else {
-      noLocalStorageDataInfo("Nie ma żadnych numerów kont zapisanych w twojej przeglądarce.");
+      noLocalStorageDataInfo('Nie ma żadnych numerów kont zapisanych w twojej przeglądarce.');
     }
   };
 
   var buildStorageItemsList = function buildStorageItemsList() {
-    var localStorageItems = localStorage.getItem("items") ? JSON.parse(localStorage.getItem("items")) : {};
+    var localStorageItems = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : {};
     if (Object.keys(localStorageItems).length > 0) {
       var items = Object.entries(localStorageItems);
       items.forEach(function (item) {
-        var li = document.createElement("li");
-        li.classList.add("storage-list__item");
+        var li = document.createElement('li');
+        li.classList.add('storage-list__item');
 
-        var loadButton = document.createElement("button");
-        loadButton.classList.add("btn");
-        loadButton.classList.add("btn--choose");
-        loadButton.classList.add("btn--load-item");
+        var loadButton = document.createElement('button');
+        loadButton.classList.add('btn');
+        loadButton.classList.add('btn--choose');
+        loadButton.classList.add('btn--load-item');
         loadButton.dataset.itemName = item[1].name;
-        loadButton.textContent = "Wybierz";
+        loadButton.textContent = 'Wybierz';
 
-        var deleteButton = document.createElement("button");
-        deleteButton.classList.add("btn");
-        deleteButton.classList.add("btn--choose");
-        deleteButton.classList.add("btn--delete-item");
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn');
+        deleteButton.classList.add('btn--choose');
+        deleteButton.classList.add('btn--delete-item');
         deleteButton.dataset.itemName = item[1].name;
-        deleteButton.textContent = "Usuń";
+        deleteButton.textContent = 'Usuń';
 
-        var nameSpan = document.createElement("span");
-        nameSpan.classList.add("storage-list__item-name");
+        var nameSpan = document.createElement('span');
+        nameSpan.classList.add('storage-list__item-name');
         nameSpan.textContent = item[1].name;
 
-        var priceSpan = document.createElement("span");
-        priceSpan.classList.add("storage-list__item-price");
-        priceSpan.textContent = item[1].netPrice + "PLN/" + item[1].unit;
+        var priceSpan = document.createElement('span');
+        priceSpan.classList.add('storage-list__item-price');
+        priceSpan.textContent = item[1].netPrice + 'PLN/' + item[1].unit;
 
-        var taxSpan = document.createElement("span");
-        taxSpan.classList.add("storage-list__item-tax");
-        taxSpan.textContent = item[1].taxRate + "%";
+        var taxSpan = document.createElement('span');
+        taxSpan.classList.add('storage-list__item-tax');
+        taxSpan.textContent = item[1].taxRate + '%';
 
-        var dateSpan = document.createElement("span");
-        dateSpan.classList.add("storage-list__item-date");
-        dateSpan.textContent = "(zapisano: " + item[1].date + ")";
+        var dateSpan = document.createElement('span');
+        dateSpan.classList.add('storage-list__item-date');
+        dateSpan.textContent = '(zapisano: ' + item[1].date + ')';
 
         li.appendChild(loadButton);
         li.appendChild(deleteButton);
@@ -934,27 +1214,27 @@ var uiController = function () {
         DOMElements.storageList.appendChild(li);
       });
     } else {
-      noLocalStorageDataInfo("Nie ma żadnych produktów zapisanych w twojej przeglądarce.");
+      noLocalStorageDataInfo('Nie ma żadnych produktów zapisanych w twojej przeglądarce.');
     }
   };
 
   var noLocalStorageDataInfo = function noLocalStorageDataInfo(message) {
-    var noDataInfo = document.createElement("h3");
-    noDataInfo.classList.add("storage-list__no-data-info");
+    var noDataInfo = document.createElement('h3');
+    noDataInfo.classList.add('storage-list__no-data-info');
     noDataInfo.textContent = message;
 
     DOMElements.storageList.appendChild(noDataInfo);
   };
 
   var hideListItem = function hideListItem(element) {
-    element.addEventListener("transitionend", function (e) {
+    element.addEventListener('transitionend', function (e) {
       console.log(e.propertyName);
-      if (e.propertyName === "opacity") {
-        element.style.display = "none";
+      if (e.propertyName === 'opacity') {
+        element.style.display = 'none';
       }
     });
 
-    element.classList.add("fade-up");
+    element.classList.add('fade-up');
   };
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Revealed methods 
@@ -1127,9 +1407,9 @@ var storageController = function () {
         return acc + item.total;
       }, 0);
 
-      draftItemsData.summaries.taxRates["tax" + checkingTaxRate].taxValue = taxRateTax;
-      draftItemsData.summaries.taxRates["tax" + checkingTaxRate].taxTotal = taxRateTotal;
-      draftItemsData.summaries.taxRates["tax" + checkingTaxRate].netValue = taxRateNetValue;
+      draftItemsData.summaries.taxRates['tax' + checkingTaxRate].taxValue = taxRateTax;
+      draftItemsData.summaries.taxRates['tax' + checkingTaxRate].taxTotal = taxRateTotal;
+      draftItemsData.summaries.taxRates['tax' + checkingTaxRate].netValue = taxRateNetValue;
     }
   };
 
@@ -1169,71 +1449,69 @@ var storageController = function () {
 
   var saveSellerToLocal = function saveSellerToLocal(seller) {
     var sellers = {};
-    if (localStorage.getItem("sellers")) {
-      sellers = JSON.parse(localStorage.getItem("sellers"));
+    if (localStorage.getItem('sellers')) {
+      sellers = JSON.parse(localStorage.getItem('sellers'));
     }
 
     sellers[seller.name] = seller;
 
-    localStorage.setItem("sellers", JSON.stringify(sellers));
+    localStorage.setItem('sellers', JSON.stringify(sellers));
   };
 
   var saveBuyerToLocal = function saveBuyerToLocal(buyer) {
     var buyers = {};
-    if (localStorage.getItem("buyers")) {
-      buyers = JSON.parse(localStorage.getItem("buyers"));
+    if (localStorage.getItem('buyers')) {
+      buyers = JSON.parse(localStorage.getItem('buyers'));
     }
 
     buyers[buyer.name] = buyer;
 
-    localStorage.setItem("buyers", JSON.stringify(buyers));
+    localStorage.setItem('buyers', JSON.stringify(buyers));
   };
 
   var saveItemToLocal = function saveItemToLocal(item) {
     var items = {};
-    if (localStorage.getItem("items")) {
-      items = JSON.parse(localStorage.getItem("items"));
+    if (localStorage.getItem('items')) {
+      items = JSON.parse(localStorage.getItem('items'));
     }
 
     items[item.name] = item;
 
-    localStorage.setItem("items", JSON.stringify(items));
+    localStorage.setItem('items', JSON.stringify(items));
   };
   var saveAccountToLocal = function saveAccountToLocal(account) {
     var accounts = {};
-    if (localStorage.getItem("accounts")) {
-      accounts = JSON.parse(localStorage.getItem("accounts"));
+    if (localStorage.getItem('accounts')) {
+      accounts = JSON.parse(localStorage.getItem('accounts'));
     }
 
     accounts[account.number] = account;
 
-    localStorage.setItem("accounts", JSON.stringify(accounts));
+    localStorage.setItem('accounts', JSON.stringify(accounts));
   };
 
   var deleteSeller = function deleteSeller(sellerName) {
-    var sellers = JSON.parse(localStorage.getItem("sellers"));
+    var sellers = JSON.parse(localStorage.getItem('sellers'));
     delete sellers[sellerName];
-    localStorage.setItem("sellers", JSON.stringify(sellers));
+    localStorage.setItem('sellers', JSON.stringify(sellers));
   };
 
   var deleteBuyer = function deleteBuyer(buyerName) {
-    var buyers = JSON.parse(localStorage.getItem("buyers"));
+    var buyers = JSON.parse(localStorage.getItem('buyers'));
     delete buyers[buyerName];
-    localStorage.setItem("buyers", JSON.stringify(buyers));
+    localStorage.setItem('buyers', JSON.stringify(buyers));
   };
 
   var deleteAccount = function deleteAccount(account) {
-    var accounts = JSON.parse(localStorage.getItem("accounts"));
+    var accounts = JSON.parse(localStorage.getItem('accounts'));
     delete accounts[account];
-    localStorage.setItem("accounts", JSON.stringify(accounts));
+    localStorage.setItem('accounts', JSON.stringify(accounts));
   };
 
   var deleteItem = function deleteItem(name) {
-    var items = JSON.parse(localStorage.getItem("items"));
-    console.log(items[name]);
+    var items = JSON.parse(localStorage.getItem('items'));
     delete items[name];
-    console.log(items);
-    localStorage.setItem("items", JSON.stringify(items));
+    localStorage.setItem('items', JSON.stringify(items));
   };
 
   /*++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1267,34 +1545,34 @@ var appController = function (StorageCtrl, UiCtrl) {
 
   var loadEventListeners = function loadEventListeners() {
     // generate invoice event listener
-    DOMElements.genBtn.addEventListener("click", generateInvoice);
+    DOMElements.genBtn.addEventListener('click', generateInvoice);
     // event listeners for draft section
-    DOMElements.addBtn.addEventListener("click", addItem);
-    DOMElements.itemQuantInp.addEventListener("change", calculateDraftItem);
-    DOMElements.itemPriceInp.addEventListener("change", calculateDraftItem);
-    DOMElements.itemNetValInp.addEventListener("change", calculateDraftItem);
-    DOMElements.itemTaxRateInp.addEventListener("change", calculateDraftItem);
-    DOMElements.draftItemTable.addEventListener("click", deleteDraftItem);
+    DOMElements.addBtn.addEventListener('click', addItem);
+    DOMElements.itemQuantInp.addEventListener('change', calculateDraftItem);
+    DOMElements.itemPriceInp.addEventListener('change', calculateDraftItem);
+    DOMElements.itemNetValInp.addEventListener('change', calculateDraftItem);
+    DOMElements.itemTaxRateInp.addEventListener('change', calculateDraftItem);
+    DOMElements.draftItemTable.addEventListener('click', deleteDraftItem);
 
     // event listeners for verification for inputs section
-    DOMElements.dataInpuForm.addEventListener("keyup", verifyInputField);
-    DOMElements.dataInpuForm.addEventListener("change", verifyInputField);
-    DOMElements.draftItemConstructor.addEventListener("keyup", verifyDraftItemInput);
+    DOMElements.dataInpuForm.addEventListener('keyup', verifyInputField);
+    DOMElements.dataInpuForm.addEventListener('change', verifyInputField);
+    DOMElements.draftItemConstructor.addEventListener('keyup', verifyDraftItemInput);
 
-    DOMElements.payMethodInp.addEventListener("change", isBankAccountCheck);
+    DOMElements.payMethodInp.addEventListener('change', isBankAccountCheck);
 
     // local storage save and load listeners
-    DOMElements.sellerSaveBtn.addEventListener("click", saveSeller);
-    DOMElements.sellerLoadBtn.addEventListener("click", loadSeller);
-    DOMElements.buyerSaveBtn.addEventListener("click", saveBuyer);
-    DOMElements.buyerLoadTrigger.addEventListener("click", retrieveBuyers);
-    DOMElements.accountSaveBtn.addEventListener("click", saveAccount);
-    DOMElements.accountLoadBtn.addEventListener("click", retrieveAccounts);
-    DOMElements.itemSaveBtn.addEventListener("click", saveItem);
-    DOMElements.itemLoadTrigger.addEventListener("click", retrieveItems);
-    DOMElements.storageListModalClose.addEventListener("click", UiCtrl.closeStorageModal);
-    DOMElements.storageList.addEventListener("click", UiCtrl.fillInputForm);
-    DOMElements.storageList.addEventListener("click", deleteLocalStorageEntry);
+    DOMElements.sellerSaveBtn.addEventListener('click', saveSeller);
+    DOMElements.sellerLoadBtn.addEventListener('click', loadSeller);
+    DOMElements.buyerSaveBtn.addEventListener('click', saveBuyer);
+    DOMElements.buyerLoadTrigger.addEventListener('click', retrieveBuyers);
+    DOMElements.accountSaveBtn.addEventListener('click', saveAccount);
+    DOMElements.accountLoadBtn.addEventListener('click', retrieveAccounts);
+    DOMElements.itemSaveBtn.addEventListener('click', saveItem);
+    DOMElements.itemLoadTrigger.addEventListener('click', retrieveItems);
+    DOMElements.storageListModalClose.addEventListener('click', UiCtrl.closeStorageModal);
+    DOMElements.storageList.addEventListener('click', UiCtrl.fillInputForm);
+    DOMElements.storageList.addEventListener('click', deleteLocalStorageEntry);
   };
 
   // initialization function
@@ -1303,13 +1581,13 @@ var appController = function (StorageCtrl, UiCtrl) {
   };
 
   var isBankAccountCheck = function isBankAccountCheck(e) {
-    if (e.target.value === "gotówka" || e.target.value === "czek") {
-      DOMElements.payAccountInp.parentElement.style.display = "none";
-      DOMElements.payAccountInp.setAttribute("disabled", true);
-      DOMElements.payAccountInp.value = "";
+    if (e.target.value === 'gotówka' || e.target.value === 'czek') {
+      DOMElements.payAccountInp.parentElement.style.display = 'none';
+      DOMElements.payAccountInp.setAttribute('disabled', true);
+      DOMElements.payAccountInp.value = '';
     } else {
-      DOMElements.payAccountInp.parentElement.style.display = "flex";
-      DOMElements.payAccountInp.removeAttribute("disabled");
+      DOMElements.payAccountInp.parentElement.style.display = 'flex';
+      DOMElements.payAccountInp.removeAttribute('disabled');
     }
   };
 
@@ -1319,7 +1597,7 @@ var appController = function (StorageCtrl, UiCtrl) {
     } else if (e.target === DOMElements.sellerNipInp || e.target === DOMElements.buyerNipInp) {
       validationFunctions.validateNip(e);
     } else if (e.target === DOMElements.payAccountInp) {
-      if (DOMElements.payMethodInp.value !== "gotówka" || DOMElements.payMethodInp.value !== "pobranie") {
+      if (DOMElements.payMethodInp.value !== 'gotówka' || DOMElements.payMethodInp.value !== 'pobranie') {
         validationFunctions.validateAccount(e);
       }
     } else {
@@ -1332,21 +1610,21 @@ var appController = function (StorageCtrl, UiCtrl) {
   };
 
   var verifyCompletedForm = function verifyCompletedForm() {
-    var inputs = Array.from(DOMElements.dataInpuForm.getElementsByClassName("input"));
+    var inputs = Array.from(DOMElements.dataInpuForm.getElementsByClassName('input'));
 
     // If payment method is 'gotówka' cuts this field from inputs array to not validate ir
-    if (DOMElements.payMethodInp.value === "gotówka") {
+    if (DOMElements.payMethodInp.value === 'gotówka') {
       inputs = inputs.filter(function (item) {
-        return item.classList.contains("payment__account") === false;
+        return item.classList.contains('payment__account') === false;
       });
     }
     if (inputs.some(function (input) {
-      return input.value === "" || input.value === " ";
+      return input.value === '' || input.value === ' ';
     })) {
       inputs.filter(function (input) {
-        return input.value === "" || input.value === " ";
+        return input.value === '' || input.value === ' ';
       }).forEach(function (input) {
-        return input.classList.add("invalid");
+        return input.classList.add('invalid');
       });
       return false;
     } else {
@@ -1359,37 +1637,37 @@ var appController = function (StorageCtrl, UiCtrl) {
     validatePostCode: function validatePostCode(e) {
       var reg = /^\d\d-\d\d\d$/;
       if (!reg.test(e.target.value)) {
-        e.target.classList.add("invalid");
+        e.target.classList.add('invalid');
       } else {
-        e.target.classList.remove("invalid");
+        e.target.classList.remove('invalid');
       }
     },
     validateNip: function validateNip(e) {
       var reg = /^\d{3}[- ]?\d{3}[- ]?\d\d[- ]?\d\d\s?$/;
       if (!reg.test(e.target.value)) {
-        e.target.classList.add("invalid");
+        e.target.classList.add('invalid');
       } else {
-        e.target.classList.remove("invalid");
+        e.target.classList.remove('invalid');
       }
     },
     validateAccount: function validateAccount(e) {
       var reg = /^([A-Za-z]{2})?[ ]?\d{2}([ ]?\d{4}){6}\s?$/;
       if (!reg.test(e.target.value)) {
-        e.target.classList.add("invalid");
+        e.target.classList.add('invalid');
       } else {
-        e.target.classList.remove("invalid");
+        e.target.classList.remove('invalid');
       }
     },
     validateFillInFormInput: function validateFillInFormInput(e) {
       var reg = /[A-Za-z\d]+/;
       if (!reg.test(e.target.value)) {
-        e.target.classList.add("invalid");
+        e.target.classList.add('invalid');
       } else {
-        e.target.classList.remove("invalid");
+        e.target.classList.remove('invalid');
       }
     },
     validateDraftItemInputs: function validateDraftItemInputs(e) {
-      if (DOMElements.itemNameInp.value !== "" && DOMElements.itemNameInp.value !== "" && DOMElements.itemQuantInp.value !== "" && DOMElements.itemPriceInp.value !== "") {
+      if (DOMElements.itemNameInp.value !== '' && DOMElements.itemNameInp.value !== '' && DOMElements.itemQuantInp.value !== '' && DOMElements.itemPriceInp.value !== '') {
         DOMElements.addBtn.disabled = false;
       } else {
         DOMElements.addBtn.disabled = true;
@@ -1415,7 +1693,7 @@ var appController = function (StorageCtrl, UiCtrl) {
   };
 
   var deleteDraftItem = function deleteDraftItem(e) {
-    if (e.target.classList.contains("btn--item-del")) {
+    if (e.target.classList.contains('btn--item-del')) {
       // determine id of target item
       var delID = e.target.parentElement.parentElement.dataset.identifier;
       // delete item from storage array by given id
@@ -1507,7 +1785,7 @@ var appController = function (StorageCtrl, UiCtrl) {
     e.preventDefault();
 
     var now = new Date();
-    var createdDate = now.getUTCFullYear() + "/" + (now.getUTCMonth() + 1) + "/" + now.getUTCDate();
+    var createdDate = now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/' + now.getUTCDate();
 
     var item = {
       name: DOMElements.itemNameInp.value,
@@ -1529,20 +1807,19 @@ var appController = function (StorageCtrl, UiCtrl) {
   var deleteLocalStorageEntry = function deleteLocalStorageEntry(e) {
     e.preventDefault();
     var targetClasses = e.target.classList;
-    if (targetClasses.contains("btn--delete-seller")) {
+    if (targetClasses.contains('btn--delete-seller')) {
       StorageCtrl.deleteSeller(e.target.dataset.sellerName);
       UiCtrl.hideListItem(e.target.parentElement);
     }
-    if (targetClasses.contains("btn--delete-buyer")) {
+    if (targetClasses.contains('btn--delete-buyer')) {
       StorageCtrl.deleteBuyer(e.target.dataset.buyerName);
       UiCtrl.hideListItem(e.target.parentElement);
     }
-    if (targetClasses.contains("btn--delete-account")) {
+    if (targetClasses.contains('btn--delete-account')) {
       StorageCtrl.deleteAccount(e.target.dataset.accountNumber);
       UiCtrl.hideListItem(e.target.parentElement);
     }
-    if (targetClasses.contains("btn--delete-item")) {
-      console.log(e.target.dataset.itemName);
+    if (targetClasses.contains('btn--delete-item')) {
       StorageCtrl.deleteItem(e.target.dataset.itemName);
       UiCtrl.hideListItem(e.target.parentElement);
     }
@@ -1559,10 +1836,10 @@ var appController = function (StorageCtrl, UiCtrl) {
 appController.init();
 
 // print js script for printing - dependiency - jquery
-$(".btn--print-inv").on("click", function () {
-  $(".invoice").printThis();
+$('.btn--print-inv').on('click', function () {
+  $('.invoice').printThis();
 });
-},{"uuid":"node_modules/uuid/index.js","../sass/main.scss":"sass/main.scss"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./printThis":"src/js/printThis.js","uuid":"node_modules/uuid/index.js","../sass/main.scss":"src/sass/main.scss"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -1591,7 +1868,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '34087' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '43845' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -1732,5 +2009,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/main.js"], null)
-//# sourceMappingURL=/main.b27368ef.map
+},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/js/main.js"], null)
+//# sourceMappingURL=/main.88f0c403.map

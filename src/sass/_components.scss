@@ -26,6 +26,7 @@
     transform: translateY(2px);
     box-shadow: 0 0.25rem 0.5rem rgba($color-black, 0.2);
   }
+
   &--print-inv,
   &--gen-inv {
     display: block;
@@ -51,6 +52,7 @@
       background-color: lighten($color4, 25%);
     }
   }
+
   &--choose {
     display: block;
     width: 100%;
@@ -92,11 +94,13 @@
       transform: translateY(2px);
     }
   }
+
   &--item-del {
     padding: 0.5rem 1rem;
     margin: 0 auto;
     font-size: 1rem;
     background-color: $color4;
+    box-shadow: none;
     &:hover,
     &:active,
     &:focus {
@@ -106,6 +110,7 @@
       transform: translateY(2px);
     }
   }
+
   &--form {
     padding: 0.5rem 1rem;
     margin: 0.5rem;
@@ -120,6 +125,7 @@
       transform: translateY(2px);
     }
   }
+
   &--close {
     padding: 0.5rem;
     font-size: 1rem;
@@ -147,7 +153,9 @@
       transform: translateY(2px);
     }
   }
-} // inputs
+}
+
+// inputs
 .select,
 .input {
   display: inline-block;
